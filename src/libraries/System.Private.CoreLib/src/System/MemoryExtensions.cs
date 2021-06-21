@@ -111,12 +111,12 @@ namespace System
             if (text == null)
             {
                 if (start != 0)
-                    ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.start);
+                    ThrowHelper.ThrowStartArgumentOutOfRangeException();
                 return default;
             }
 
             if ((uint)start > (uint)text.Length)
-                ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.start);
+                ThrowHelper.ThrowStartArgumentOutOfRangeException();
 
             return new ReadOnlySpan<char>(ref Unsafe.Add(ref text.GetRawStringData(), (nint)(uint)start /* force zero-extension */), text.Length - start);
         }
@@ -137,17 +137,17 @@ namespace System
             if (text == null)
             {
                 if (start != 0 || length != 0)
-                    ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.start);
+                    ThrowHelper.ThrowStartArgumentOutOfRangeException();
                 return default;
             }
 
 #if TARGET_64BIT
             // See comment in Span<T>.Slice for how this works.
             if ((ulong)(uint)start + (ulong)(uint)length > (ulong)(uint)text.Length)
-                ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.start);
+                ThrowHelper.ThrowStartArgumentOutOfRangeException();
 #else
             if ((uint)start > (uint)text.Length || (uint)length > (uint)(text.Length - start))
-                ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.start);
+                ThrowHelper.ThrowStartArgumentOutOfRangeException();
 #endif
 
             return new ReadOnlySpan<char>(ref Unsafe.Add(ref text.GetRawStringData(), (nint)(uint)start /* force zero-extension */), length);
@@ -176,12 +176,12 @@ namespace System
             if (text == null)
             {
                 if (start != 0)
-                    ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.start);
+                    ThrowHelper.ThrowStartArgumentOutOfRangeException();
                 return default;
             }
 
             if ((uint)start > (uint)text.Length)
-                ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.start);
+                ThrowHelper.ThrowStartArgumentOutOfRangeException();
 
             return new ReadOnlyMemory<char>(text, start, text.Length - start);
         }
@@ -219,17 +219,17 @@ namespace System
             if (text == null)
             {
                 if (start != 0 || length != 0)
-                    ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.start);
+                    ThrowHelper.ThrowStartArgumentOutOfRangeException();
                 return default;
             }
 
 #if TARGET_64BIT
             // See comment in Span<T>.Slice for how this works.
             if ((ulong)(uint)start + (ulong)(uint)length > (ulong)(uint)text.Length)
-                ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.start);
+                ThrowHelper.ThrowStartArgumentOutOfRangeException();
 #else
             if ((uint)start > (uint)text.Length || (uint)length > (uint)(text.Length - start))
-                ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.start);
+                ThrowHelper.ThrowStartArgumentOutOfRangeException();
 #endif
 
             return new ReadOnlyMemory<char>(text, start, length);
@@ -1158,7 +1158,7 @@ namespace System
         public static Span<T> AsSpan<T>(this ArraySegment<T> segment, int start)
         {
             if (((uint)start) > (uint)segment.Count)
-                ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.start);
+                ThrowHelper.ThrowStartArgumentOutOfRangeException();
 
             return new Span<T>(segment.Array, segment.Offset + start, segment.Count - start);
         }
@@ -1192,7 +1192,7 @@ namespace System
         public static Span<T> AsSpan<T>(this ArraySegment<T> segment, int start, int length)
         {
             if (((uint)start) > (uint)segment.Count)
-                ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.start);
+                ThrowHelper.ThrowStartArgumentOutOfRangeException();
             if (((uint)length) > (uint)(segment.Count - start))
                 ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.length);
 
@@ -1300,7 +1300,7 @@ namespace System
         public static Memory<T> AsMemory<T>(this ArraySegment<T> segment, int start)
         {
             if (((uint)start) > (uint)segment.Count)
-                ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.start);
+                ThrowHelper.ThrowStartArgumentOutOfRangeException();
 
             return new Memory<T>(segment.Array, segment.Offset + start, segment.Count - start);
         }
@@ -1320,7 +1320,7 @@ namespace System
         public static Memory<T> AsMemory<T>(this ArraySegment<T> segment, int start, int length)
         {
             if (((uint)start) > (uint)segment.Count)
-                ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.start);
+                ThrowHelper.ThrowStartArgumentOutOfRangeException();
             if (((uint)length) > (uint)(segment.Count - start))
                 ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.length);
 

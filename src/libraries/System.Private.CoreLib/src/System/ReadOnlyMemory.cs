@@ -160,7 +160,7 @@ namespace System
         {
             if ((uint)start > (uint)_length)
             {
-                ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.start);
+                ThrowHelper.ThrowStartArgumentOutOfRangeException();
             }
 
             // It is expected for _index + start to be negative if the memory is already pre-pinned.
@@ -181,10 +181,10 @@ namespace System
 #if TARGET_64BIT
             // See comment in Span<T>.Slice for how this works.
             if ((ulong)(uint)start + (ulong)(uint)length > (ulong)(uint)_length)
-                ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.start);
+                ThrowHelper.ThrowStartArgumentOutOfRangeException();
 #else
             if ((uint)start > (uint)_length || (uint)length > (uint)(_length - start))
-                ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.start);
+                ThrowHelper.ThrowStartArgumentOutOfRangeException();
 #endif
 
             // It is expected for _index + start to be negative if the memory is already pre-pinned.

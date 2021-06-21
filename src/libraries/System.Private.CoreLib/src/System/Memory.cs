@@ -231,7 +231,7 @@ namespace System
         {
             if ((uint)start > (uint)_length)
             {
-                ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.start);
+                ThrowHelper.ThrowStartArgumentOutOfRangeException();
             }
 
             // It is expected for _index + start to be negative if the memory is already pre-pinned.

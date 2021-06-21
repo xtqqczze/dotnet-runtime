@@ -292,6 +292,12 @@ namespace System
         }
 
         [DoesNotReturn]
+        internal static void ThrowStartArgumentOutOfRangeException()
+        {
+            throw new ArgumentOutOfRangeException(GetArgumentName(ExceptionArgument.start));
+        }
+
+        [DoesNotReturn]
         internal static void ThrowEndOfFileException()
         {
             throw CreateEndOfFileException();
