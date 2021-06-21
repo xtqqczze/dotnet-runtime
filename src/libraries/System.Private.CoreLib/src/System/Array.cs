@@ -747,7 +747,7 @@ namespace System
         public void CopyTo(Array array, int index)
         {
             if (array != null && array.Rank != 1)
-                ThrowHelper.ThrowArgumentException(ExceptionResource.Arg_RankMultiDimNotSupported);
+                ThrowHelper.ThrowArgumentException_RankMultiDimNotSupported();
             // Note: Array.Copy throws a RankException and we want a consistent ArgumentException for all the IList CopyTo methods.
             Array.Copy(this, GetLowerBound(0), array!, index, Length);
         }

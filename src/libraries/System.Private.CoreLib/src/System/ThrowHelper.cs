@@ -84,6 +84,12 @@ namespace System
         }
 
         [DoesNotReturn]
+        internal static void ThrowArgumentException_RankMultiDimNotSupported()
+        {
+            throw GetArgumentException(ExceptionResource.Arg_RankMultiDimNotSupported);
+        }
+
+        [DoesNotReturn]
         internal static void ThrowArgumentException_CannotExtractScalar(ExceptionArgument argument)
         {
             throw GetArgumentException(ExceptionResource.Argument_CannotExtractScalar, argument);

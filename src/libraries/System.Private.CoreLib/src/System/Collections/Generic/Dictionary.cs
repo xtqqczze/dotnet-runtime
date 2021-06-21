@@ -948,7 +948,7 @@ namespace System.Collections.Generic
 
             if (array.Rank != 1)
             {
-                ThrowHelper.ThrowArgumentException(ExceptionResource.Arg_RankMultiDimNotSupported);
+                ThrowHelper.ThrowArgumentException_RankMultiDimNotSupported();
             }
 
             if (array.GetLowerBound(0) != 0)
@@ -1434,7 +1434,7 @@ namespace System.Collections.Generic
 
                 if (array.Rank != 1)
                 {
-                    ThrowHelper.ThrowArgumentException(ExceptionResource.Arg_RankMultiDimNotSupported);
+                    ThrowHelper.ThrowArgumentException_RankMultiDimNotSupported();
                 }
 
                 if (array.GetLowerBound(0) != 0)
@@ -1626,7 +1626,7 @@ namespace System.Collections.Generic
 
                 if (array.Rank != 1)
                 {
-                    ThrowHelper.ThrowArgumentException(ExceptionResource.Arg_RankMultiDimNotSupported);
+                    ThrowHelper.ThrowArgumentException_RankMultiDimNotSupported();
                 }
 
                 if (array.GetLowerBound(0) != 0)

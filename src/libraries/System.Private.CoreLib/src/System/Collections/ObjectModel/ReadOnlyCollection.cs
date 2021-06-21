@@ -101,7 +101,7 @@ namespace System.Collections.ObjectModel
 
             if (array.Rank != 1)
             {
-                ThrowHelper.ThrowArgumentException(ExceptionResource.Arg_RankMultiDimNotSupported);
+                ThrowHelper.ThrowArgumentException_RankMultiDimNotSupported();
             }
 
             if (array.GetLowerBound(0) != 0)

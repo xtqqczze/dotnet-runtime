@@ -357,7 +357,7 @@ namespace System.Collections.Generic
         {
             if ((array != null) && (array.Rank != 1))
             {
-                ThrowHelper.ThrowArgumentException(ExceptionResource.Arg_RankMultiDimNotSupported);
+                ThrowHelper.ThrowArgumentException_RankMultiDimNotSupported();
             }
 
             try
