@@ -871,7 +871,7 @@ namespace System.Collections.Generic
             // count of 0; subsequent check takes care of the rest)
             if (arrayIndex > array.Length || count > array.Length - arrayIndex)
             {
-                ThrowHelper.ThrowArgumentException(ExceptionResource.Arg_ArrayPlusOffTooSmall);
+                ThrowHelper.ThrowArgumentException_ArrayPlusOffTooSmall();
             }
 
             Entry[]? entries = _entries;

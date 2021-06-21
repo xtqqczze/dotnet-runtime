@@ -454,7 +454,7 @@ namespace System.Collections.Concurrent
             long count = GetCount(head, headHead, tail, tailTail);
             if (index > array.Length - count)
             {
-                ThrowHelper.ThrowArgumentException(ExceptionResource.Arg_ArrayPlusOffTooSmall);
+                ThrowHelper.ThrowArgumentException_ArrayPlusOffTooSmall();
             }
 
             // Copy the items to the target array

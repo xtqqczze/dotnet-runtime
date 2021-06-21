@@ -72,6 +72,12 @@ namespace System
         }
 
         [DoesNotReturn]
+        internal static void ThrowArgumentException_ArrayPlusOffTooSmall()
+        {
+            throw GetArgumentException(ExceptionResource.Arg_ArrayPlusOffTooSmall);
+        }
+
+        [DoesNotReturn]
         internal static void ThrowArgumentException_DestinationTooShort()
         {
             throw new ArgumentException(SR.Argument_DestinationTooShort, "destination");

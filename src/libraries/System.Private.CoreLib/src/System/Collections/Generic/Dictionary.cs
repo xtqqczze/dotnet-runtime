@@ -314,7 +314,7 @@ namespace System.Collections.Generic
 
             if (array.Length - index < Count)
             {
-                ThrowHelper.ThrowArgumentException(ExceptionResource.Arg_ArrayPlusOffTooSmall);
+                ThrowHelper.ThrowArgumentException_ArrayPlusOffTooSmall();
             }
 
             int count = _count;
@@ -963,7 +963,7 @@ namespace System.Collections.Generic
 
             if (array.Length - index < Count)
             {
-                ThrowHelper.ThrowArgumentException(ExceptionResource.Arg_ArrayPlusOffTooSmall);
+                ThrowHelper.ThrowArgumentException_ArrayPlusOffTooSmall();
             }
 
             if (array is KeyValuePair<TKey, TValue>[] pairs)
@@ -1391,7 +1391,7 @@ namespace System.Collections.Generic
 
                 if (array.Length - index < _dictionary.Count)
                 {
-                    ThrowHelper.ThrowArgumentException(ExceptionResource.Arg_ArrayPlusOffTooSmall);
+                    ThrowHelper.ThrowArgumentException_ArrayPlusOffTooSmall();
                 }
 
                 int count = _dictionary._count;
@@ -1449,7 +1449,7 @@ namespace System.Collections.Generic
 
                 if (array.Length - index < _dictionary.Count)
                 {
-                    ThrowHelper.ThrowArgumentException(ExceptionResource.Arg_ArrayPlusOffTooSmall);
+                    ThrowHelper.ThrowArgumentException_ArrayPlusOffTooSmall();
                 }
 
                 if (array is TKey[] keys)
@@ -1584,7 +1584,7 @@ namespace System.Collections.Generic
 
                 if (array.Length - index < _dictionary.Count)
                 {
-                    ThrowHelper.ThrowArgumentException(ExceptionResource.Arg_ArrayPlusOffTooSmall);
+                    ThrowHelper.ThrowArgumentException_ArrayPlusOffTooSmall();
                 }
 
                 int count = _dictionary._count;
@@ -1641,7 +1641,7 @@ namespace System.Collections.Generic
 
                 if (array.Length - index < _dictionary.Count)
                 {
-                    ThrowHelper.ThrowArgumentException(ExceptionResource.Arg_ArrayPlusOffTooSmall);
+                    ThrowHelper.ThrowArgumentException_ArrayPlusOffTooSmall();
                 }
 
                 if (array is TValue[] values)

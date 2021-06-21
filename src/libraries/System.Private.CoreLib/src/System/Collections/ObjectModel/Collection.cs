@@ -190,7 +190,7 @@ namespace System.Collections.ObjectModel
 
             if (array.Length - index < Count)
             {
-                ThrowHelper.ThrowArgumentException(ExceptionResource.Arg_ArrayPlusOffTooSmall);
+                ThrowHelper.ThrowArgumentException_ArrayPlusOffTooSmall();
             }
 
             if (array is T[] tArray)
