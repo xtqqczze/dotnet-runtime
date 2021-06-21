@@ -18,7 +18,7 @@ namespace System.Collections.ObjectModel
         {
             if (list == null)
             {
-                ThrowHelper.ThrowArgumentNullException(ExceptionArgument.list);
+                ThrowHelper.ThrowListArgumentNullException();
             }
             this.list = list;
         }

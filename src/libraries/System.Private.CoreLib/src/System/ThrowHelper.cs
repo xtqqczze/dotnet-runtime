@@ -523,6 +523,12 @@ namespace System
         }
 
         [DoesNotReturn]
+        internal static void ThrowListArgumentNullException()
+        {
+            throw new ArgumentNullException(GetArgumentName(ExceptionArgument.list));
+        }
+
+        [DoesNotReturn]
         internal static void ArgumentOutOfRangeException_Enum_Value()
         {
             throw new ArgumentOutOfRangeException("value", SR.ArgumentOutOfRange_Enum);
