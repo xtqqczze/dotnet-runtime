@@ -523,6 +523,12 @@ namespace System
         }
 
         [DoesNotReturn]
+        internal static void ThrowCollectionArgumentNullException()
+        {
+            throw GetArgumentNullException(ExceptionArgument.collection);
+        }
+
+        [DoesNotReturn]
         internal static void ThrowListArgumentNullException()
         {
             throw new ArgumentNullException(GetArgumentName(ExceptionArgument.list));

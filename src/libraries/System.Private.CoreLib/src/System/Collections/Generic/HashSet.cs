@@ -80,7 +80,7 @@ namespace System.Collections.Generic
         {
             if (collection == null)
             {
-                ThrowHelper.ThrowArgumentNullException(ExceptionArgument.collection);
+                ThrowHelper.ThrowCollectionArgumentNullException();
             }
 
             if (collection is HashSet<T> otherAsHashSet && EqualityComparersAreEqual(this, otherAsHashSet))

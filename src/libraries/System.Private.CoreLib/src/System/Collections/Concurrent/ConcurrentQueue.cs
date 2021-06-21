@@ -79,7 +79,7 @@ namespace System.Collections.Concurrent
         {
             if (collection == null)
             {
-                ThrowHelper.ThrowArgumentNullException(ExceptionArgument.collection);
+                ThrowHelper.ThrowCollectionArgumentNullException();
             }
 
             _crossSegmentLock = new object();

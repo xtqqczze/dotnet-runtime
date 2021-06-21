@@ -92,7 +92,7 @@ namespace System.Collections.Generic
         {
             if (collection == null)
             {
-                ThrowHelper.ThrowArgumentNullException(ExceptionArgument.collection);
+                ThrowHelper.ThrowCollectionArgumentNullException();
             }
 
             AddRange(collection);

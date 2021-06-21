@@ -61,7 +61,7 @@ namespace System.Collections.Generic
         public List(IEnumerable<T> collection)
         {
             if (collection == null)
-                ThrowHelper.ThrowArgumentNullException(ExceptionArgument.collection);
+                ThrowHelper.ThrowCollectionArgumentNullException();
 
             if (collection is ICollection<T> c)
             {
@@ -726,7 +726,7 @@ namespace System.Collections.Generic
         {
             if (collection == null)
             {
-                ThrowHelper.ThrowArgumentNullException(ExceptionArgument.collection);
+                ThrowHelper.ThrowCollectionArgumentNullException();
             }
 
             if ((uint)index > (uint)_size)
