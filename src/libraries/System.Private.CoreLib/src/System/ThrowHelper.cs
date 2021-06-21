@@ -276,7 +276,7 @@ namespace System
         [DoesNotReturn]
         internal static void ThrowArgumentOutOfRangeException(ExceptionArgument argument)
         {
-            throw new ArgumentOutOfRangeException(GetArgumentName(argument));
+            throw GetArgumentOutOfRangeException(argument));
         }
 
         [DoesNotReturn]
@@ -588,6 +588,12 @@ namespace System
         private static KeyNotFoundException GetKeyNotFoundException(object? key)
         {
             return new KeyNotFoundException(SR.Format(SR.Arg_KeyNotFoundWithKey, key));
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private static ArgumentOutOfRangeException GetArgumentOutOfRangeException(ExceptionArgument argument)
+        {
+            return new ArgumentOutOfRangeException(GetArgumentName(argument));
         }
 
         private static ArgumentOutOfRangeException GetArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
