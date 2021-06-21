@@ -46,7 +46,7 @@ namespace System.Collections.Generic
         {
             if (capacity < 0)
             {
-                ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.capacity);
+                ThrowHelper.ThrowCapacityArgumentOutOfRangeException();
             }
 
             if (capacity > 0)
@@ -1017,7 +1017,7 @@ namespace System.Collections.Generic
         {
             if (capacity < 0)
             {
-                ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.capacity);
+                ThrowHelper.ThrowCapacityArgumentOutOfRangeException();
             }
 
             int currentCapacity = _entries == null ? 0 : _entries.Length;
@@ -1063,7 +1063,7 @@ namespace System.Collections.Generic
         {
             if (capacity < Count)
             {
-                ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.capacity);
+                ThrowHelper.ThrowCapacityArgumentOutOfRangeException();
             }
 
             int newSize = HashHelpers.GetPrime(capacity);

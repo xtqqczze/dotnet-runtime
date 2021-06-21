@@ -292,6 +292,12 @@ namespace System
         }
 
         [DoesNotReturn]
+        internal static void ThrowCapacityArgumentOutOfRangeException()
+        {
+            throw GetArgumentOutOfRangeException(ExceptionArgument.capacity);
+        }
+
+        [DoesNotReturn]
         internal static void ThrowStartArgumentOutOfRangeException()
         {
             throw new ArgumentOutOfRangeException(GetArgumentName(ExceptionArgument.start));
