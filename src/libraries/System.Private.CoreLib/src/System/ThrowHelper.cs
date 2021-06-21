@@ -212,6 +212,7 @@ namespace System
             throw GetWrongValueTypeArgumentException((object?)value, targetType);
         }
 
+        [MethodImpl(MethodImplOptions.NoInlining)]
         private static ArgumentException GetAddingDuplicateWithKeyArgumentException(object? key)
         {
             return new ArgumentException(SR.Format(SR.Argument_AddingDuplicateWithKey, key));
@@ -558,6 +559,7 @@ namespace System
             throw new ArgumentOutOfRangeException("value", SR.ArgumentOutOfRange_Enum);
         }
 
+        [MethodImpl(MethodImplOptions.NoInlining)]
         private static Exception GetArraySegmentCtorValidationFailedException(Array? array, int offset, int count)
         {
             if (array == null)
@@ -571,6 +573,7 @@ namespace System
             return new ArgumentException(SR.Argument_InvalidOffLen);
         }
 
+        [MethodImpl(MethodImplOptions.NoInlining)]
         private static ArgumentException GetArgumentException(ExceptionResource resource)
         {
             return new ArgumentException(GetResourceString(resource));
@@ -582,21 +585,25 @@ namespace System
             return new ArgumentNullException(GetArgumentName(argument));
         }
 
+        [MethodImpl(MethodImplOptions.NoInlining)]
         private static InvalidOperationException GetInvalidOperationException(ExceptionResource resource)
         {
             return new InvalidOperationException(GetResourceString(resource));
         }
 
+        [MethodImpl(MethodImplOptions.NoInlining)]
         private static ArgumentException GetWrongKeyTypeArgumentException(object? key, Type targetType)
         {
             return new ArgumentException(SR.Format(SR.Arg_WrongType, key, targetType), nameof(key));
         }
 
+        [MethodImpl(MethodImplOptions.NoInlining)]
         private static ArgumentException GetWrongValueTypeArgumentException(object? value, Type targetType)
         {
             return new ArgumentException(SR.Format(SR.Arg_WrongType, value, targetType), nameof(value));
         }
 
+        [MethodImpl(MethodImplOptions.NoInlining)]
         private static KeyNotFoundException GetKeyNotFoundException(object? key)
         {
             return new KeyNotFoundException(SR.Format(SR.Arg_KeyNotFoundWithKey, key));
@@ -608,16 +615,19 @@ namespace System
             return new ArgumentOutOfRangeException(GetArgumentName(argument));
         }
 
+        [MethodImpl(MethodImplOptions.NoInlining)]
         private static ArgumentOutOfRangeException GetArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
         {
             return new ArgumentOutOfRangeException(GetArgumentName(argument), GetResourceString(resource));
         }
 
+        [MethodImpl(MethodImplOptions.NoInlining)]
         private static ArgumentException GetArgumentException(ExceptionResource resource, ExceptionArgument argument)
         {
             return new ArgumentException(GetResourceString(resource), GetArgumentName(argument));
         }
 
+        [MethodImpl(MethodImplOptions.NoInlining)]
         private static ArgumentOutOfRangeException GetArgumentOutOfRangeException(ExceptionArgument argument, int paramNumber, ExceptionResource resource)
         {
             return new ArgumentOutOfRangeException(GetArgumentName(argument) + "[" + paramNumber.ToString() + "]", GetResourceString(resource));
@@ -629,6 +639,7 @@ namespace System
             return new NotSupportedException(GetResourceString(resource));
         }      
 
+        [MethodImpl(MethodImplOptions.NoInlining)]
         private static InvalidOperationException GetInvalidOperationException_EnumCurrent(int index)
         {
             return new InvalidOperationException(
