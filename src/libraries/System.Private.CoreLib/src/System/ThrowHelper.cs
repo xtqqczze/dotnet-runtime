@@ -258,7 +258,7 @@ namespace System
         [DoesNotReturn]
         internal static void ThrowArgumentNullException(ExceptionArgument argument)
         {
-            throw new ArgumentNullException(GetArgumentName(argument));
+            throw GetArgumentNullException(argument);
         }
 
         [DoesNotReturn]
@@ -538,6 +538,12 @@ namespace System
         private static ArgumentException GetArgumentException(ExceptionResource resource)
         {
             return new ArgumentException(GetResourceString(resource));
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private static GetArgumentNullException GetArgumentNullException(ExceptionArgument argument)
+        {
+            return new ArgumentNullException(GetArgumentName(argument));
         }
 
         private static InvalidOperationException GetInvalidOperationException(ExceptionResource resource)
