@@ -39,7 +39,7 @@ namespace System.Collections.ObjectModel
             {
                 if (items.IsReadOnly)
                 {
-                    ThrowHelper.ThrowNotSupportedException(ExceptionResource.NotSupported_ReadOnlyCollection);
+                    ThrowHelper.ThrowNotSupportedException_ReadOnlyCollection();
                 }
 
                 if ((uint)index >= (uint)items.Count)
@@ -55,7 +55,7 @@ namespace System.Collections.ObjectModel
         {
             if (items.IsReadOnly)
             {
-                ThrowHelper.ThrowNotSupportedException(ExceptionResource.NotSupported_ReadOnlyCollection);
+                ThrowHelper.ThrowNotSupportedException_ReadOnlyCollection();
             }
 
             int index = items.Count;
@@ -66,7 +66,7 @@ namespace System.Collections.ObjectModel
         {
             if (items.IsReadOnly)
             {
-                ThrowHelper.ThrowNotSupportedException(ExceptionResource.NotSupported_ReadOnlyCollection);
+                ThrowHelper.ThrowNotSupportedException_ReadOnlyCollection();
             }
 
             ClearItems();
@@ -96,7 +96,7 @@ namespace System.Collections.ObjectModel
         {
             if (items.IsReadOnly)
             {
-                ThrowHelper.ThrowNotSupportedException(ExceptionResource.NotSupported_ReadOnlyCollection);
+                ThrowHelper.ThrowNotSupportedException_ReadOnlyCollection();
             }
 
             if ((uint)index > (uint)items.Count)
@@ -111,7 +111,7 @@ namespace System.Collections.ObjectModel
         {
             if (items.IsReadOnly)
             {
-                ThrowHelper.ThrowNotSupportedException(ExceptionResource.NotSupported_ReadOnlyCollection);
+                ThrowHelper.ThrowNotSupportedException_ReadOnlyCollection();
             }
 
             int index = items.IndexOf(item);
@@ -124,7 +124,7 @@ namespace System.Collections.ObjectModel
         {
             if (items.IsReadOnly)
             {
-                ThrowHelper.ThrowNotSupportedException(ExceptionResource.NotSupported_ReadOnlyCollection);
+                ThrowHelper.ThrowNotSupportedException_ReadOnlyCollection();
             }
 
             if ((uint)index >= (uint)items.Count)
@@ -281,7 +281,7 @@ namespace System.Collections.ObjectModel
         {
             if (items.IsReadOnly)
             {
-                ThrowHelper.ThrowNotSupportedException(ExceptionResource.NotSupported_ReadOnlyCollection);
+                ThrowHelper.ThrowNotSupportedException_ReadOnlyCollection();
             }
             ThrowHelper.IfNullAndNullsAreIllegalThenThrow<T>(value, ExceptionArgument.value);
 
@@ -323,7 +323,7 @@ namespace System.Collections.ObjectModel
         {
             if (items.IsReadOnly)
             {
-                ThrowHelper.ThrowNotSupportedException(ExceptionResource.NotSupported_ReadOnlyCollection);
+                ThrowHelper.ThrowNotSupportedException_ReadOnlyCollection();
             }
             ThrowHelper.IfNullAndNullsAreIllegalThenThrow<T>(value, ExceptionArgument.value);
 
@@ -345,7 +345,7 @@ namespace System.Collections.ObjectModel
         {
             if (items.IsReadOnly)
             {
-                ThrowHelper.ThrowNotSupportedException(ExceptionResource.NotSupported_ReadOnlyCollection);
+                ThrowHelper.ThrowNotSupportedException_ReadOnlyCollection();
             }
 
             if (IsCompatibleObject(value))

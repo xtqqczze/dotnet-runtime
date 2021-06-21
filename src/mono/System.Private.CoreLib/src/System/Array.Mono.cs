@@ -534,7 +534,7 @@ namespace System
 
         internal void InternalArray__ICollection_Clear()
         {
-            ThrowHelper.ThrowNotSupportedException(ExceptionResource.NotSupported_ReadOnlyCollection);
+            ThrowHelper.ThrowNotSupportedException_ReadOnlyCollection();
         }
 
         internal void InternalArray__ICollection_Add<T>(T item)

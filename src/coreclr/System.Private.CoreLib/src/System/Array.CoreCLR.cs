@@ -542,7 +542,7 @@ namespace System
             // ! Warning: "this" is an array, not an SZArrayHelper. See comments above
             // ! or you may introduce a security hole!
 
-            ThrowHelper.ThrowNotSupportedException(ExceptionResource.NotSupported_ReadOnlyCollection);
+            ThrowHelper.ThrowNotSupportedException_ReadOnlyCollection();
         }
 
         private int IndexOf<T>(T value)

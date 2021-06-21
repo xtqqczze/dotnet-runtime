@@ -349,6 +349,12 @@ namespace System
         }
 
         [DoesNotReturn]
+        internal static void ThrowNotSupportedException_ReadOnlyCollection()
+        {
+            throw GetNotSupportedException(ExceptionResource.NotSupported_ReadOnlyCollection);
+        }
+
+        [DoesNotReturn]
         internal static void ThrowNotSupportedException_UnseekableStream()
         {
             throw GetNotSupportedException(ExceptionResource.NotSupported_UnseekableStream);
