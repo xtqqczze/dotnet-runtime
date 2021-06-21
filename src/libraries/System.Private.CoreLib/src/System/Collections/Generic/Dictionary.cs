@@ -953,7 +953,7 @@ namespace System.Collections.Generic
 
             if (array.GetLowerBound(0) != 0)
             {
-                ThrowHelper.ThrowArgumentException(ExceptionResource.Arg_NonZeroLowerBound);
+                ThrowHelper.ThrowArgumentException_NonZeroLowerBound();
             }
 
             if ((uint)index > (uint)array.Length)
@@ -1439,7 +1439,7 @@ namespace System.Collections.Generic
 
                 if (array.GetLowerBound(0) != 0)
                 {
-                    ThrowHelper.ThrowArgumentException(ExceptionResource.Arg_NonZeroLowerBound);
+                    ThrowHelper.ThrowArgumentException_NonZeroLowerBound();
                 }
 
                 if ((uint)index > (uint)array.Length)
@@ -1631,7 +1631,7 @@ namespace System.Collections.Generic
 
                 if (array.GetLowerBound(0) != 0)
                 {
-                    ThrowHelper.ThrowArgumentException(ExceptionResource.Arg_NonZeroLowerBound);
+                    ThrowHelper.ThrowArgumentException_NonZeroLowerBound();
                 }
 
                 if ((uint)index > (uint)array.Length)

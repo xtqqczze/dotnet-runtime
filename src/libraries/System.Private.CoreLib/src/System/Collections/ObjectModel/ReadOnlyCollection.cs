@@ -106,7 +106,7 @@ namespace System.Collections.ObjectModel
 
             if (array.GetLowerBound(0) != 0)
             {
-                ThrowHelper.ThrowArgumentException(ExceptionResource.Arg_NonZeroLowerBound);
+                ThrowHelper.ThrowArgumentException_NonZeroLowerBound();
             }
 
             if (index < 0)

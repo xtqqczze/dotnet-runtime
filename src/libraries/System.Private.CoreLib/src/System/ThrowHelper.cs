@@ -78,6 +78,12 @@ namespace System
         }
 
         [DoesNotReturn]
+        internal static void ThrowArgumentException_RankMultiDimNotSupported()
+        {
+            throw GetArgumentException(ExceptionResource.Arg_NonZeroLowerBound);
+        }
+
+        [DoesNotReturn]
         internal static void ThrowArgumentException_OverlapAlignmentMismatch()
         {
             throw new ArgumentException(SR.Argument_OverlapAlignmentMismatch);
