@@ -24,7 +24,7 @@ namespace System.Runtime.CompilerServices
         {
             if (array == null)
             {
-                ThrowHelper.ThrowArgumentNullException(ExceptionArgument.array);
+                ThrowHelper.ThrowArrayArgumentNullException();
             }
 
             (int offset, int length) = range.GetOffsetAndLength(array.Length);

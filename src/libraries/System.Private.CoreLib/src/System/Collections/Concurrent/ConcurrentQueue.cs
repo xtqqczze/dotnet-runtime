@@ -142,7 +142,7 @@ namespace System.Collections.Concurrent
             // Validate arguments.
             if (array == null)
             {
-                ThrowHelper.ThrowArgumentNullException(ExceptionArgument.array);
+                ThrowHelper.ThrowArrayArgumentNullException();
             }
 
             // Otherwise, fall back to the slower path that first copies the contents
@@ -440,7 +440,7 @@ namespace System.Collections.Concurrent
         {
             if (array == null)
             {
-                ThrowHelper.ThrowArgumentNullException(ExceptionArgument.array);
+                ThrowHelper.ThrowArrayArgumentNullException();
             }
             if (index < 0)
             {

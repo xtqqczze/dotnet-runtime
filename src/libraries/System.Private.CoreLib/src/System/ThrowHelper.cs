@@ -517,6 +517,12 @@ namespace System
         }
 
         [DoesNotReturn]
+        internal static void ThrowArrayArgumentNullException()
+        {
+            throw GetArgumentNullException(ExceptionArgument.array);
+        }
+
+        [DoesNotReturn]
         internal static void ArgumentOutOfRangeException_Enum_Value()
         {
             throw new ArgumentOutOfRangeException("value", SR.ArgumentOutOfRange_Enum);

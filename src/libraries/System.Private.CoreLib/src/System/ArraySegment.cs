@@ -41,7 +41,7 @@ namespace System
         public ArraySegment(T[] array)
         {
             if (array == null)
-                ThrowHelper.ThrowArgumentNullException(ExceptionArgument.array);
+                ThrowHelper.ThrowArrayArgumentNullException();
 
             _array = array;
             _offset = 0;

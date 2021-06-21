@@ -304,7 +304,7 @@ namespace System.Collections.Generic
         {
             if (array == null)
             {
-                ThrowHelper.ThrowArgumentNullException(ExceptionArgument.array);
+                ThrowHelper.ThrowArrayArgumentNullException();
             }
 
             if ((uint)index > (uint)array.Length)
@@ -943,7 +943,7 @@ namespace System.Collections.Generic
         {
             if (array == null)
             {
-                ThrowHelper.ThrowArgumentNullException(ExceptionArgument.array);
+                ThrowHelper.ThrowArrayArgumentNullException();
             }
 
             if (array.Rank != 1)
@@ -1381,7 +1381,7 @@ namespace System.Collections.Generic
             {
                 if (array == null)
                 {
-                    ThrowHelper.ThrowArgumentNullException(ExceptionArgument.array);
+                    ThrowHelper.ThrowArrayArgumentNullException();
                 }
 
                 if (index < 0 || index > array.Length)
@@ -1429,7 +1429,7 @@ namespace System.Collections.Generic
             {
                 if (array == null)
                 {
-                    ThrowHelper.ThrowArgumentNullException(ExceptionArgument.array);
+                    ThrowHelper.ThrowArrayArgumentNullException();
                 }
 
                 if (array.Rank != 1)
@@ -1574,7 +1574,7 @@ namespace System.Collections.Generic
             {
                 if (array == null)
                 {
-                    ThrowHelper.ThrowArgumentNullException(ExceptionArgument.array);
+                    ThrowHelper.ThrowArrayArgumentNullException();
                 }
 
                 if ((uint)index > array.Length)
@@ -1621,7 +1621,7 @@ namespace System.Collections.Generic
             {
                 if (array == null)
                 {
-                    ThrowHelper.ThrowArgumentNullException(ExceptionArgument.array);
+                    ThrowHelper.ThrowArrayArgumentNullException();
                 }
 
                 if (array.Rank != 1)

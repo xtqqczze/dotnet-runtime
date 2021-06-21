@@ -851,7 +851,7 @@ namespace System.Collections.Generic
         {
             if (array == null)
             {
-                ThrowHelper.ThrowArgumentNullException(ExceptionArgument.array);
+                ThrowHelper.ThrowArrayArgumentNullException();
             }
 
             // Check array index valid index into array.

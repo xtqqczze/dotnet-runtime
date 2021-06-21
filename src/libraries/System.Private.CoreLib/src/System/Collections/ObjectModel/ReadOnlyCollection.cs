@@ -96,7 +96,7 @@ namespace System.Collections.ObjectModel
         {
             if (array == null)
             {
-                ThrowHelper.ThrowArgumentNullException(ExceptionArgument.array);
+                ThrowHelper.ThrowArrayArgumentNullException();
             }
 
             if (array.Rank != 1)

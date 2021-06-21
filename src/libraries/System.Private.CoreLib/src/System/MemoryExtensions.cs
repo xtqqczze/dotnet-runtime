@@ -43,7 +43,7 @@ namespace System
             if (array == null)
             {
                 if (!startIndex.Equals(Index.Start))
-                    ThrowHelper.ThrowArgumentNullException(ExceptionArgument.array);
+                    ThrowHelper.ThrowArrayArgumentNullException();
 
                 return default;
             }
@@ -70,7 +70,7 @@ namespace System
                 Index endIndex = range.End;
 
                 if (!startIndex.Equals(Index.Start) || !endIndex.Equals(Index.Start))
-                    ThrowHelper.ThrowArgumentNullException(ExceptionArgument.array);
+                    ThrowHelper.ThrowArrayArgumentNullException();
 
                 return default;
             }
@@ -1238,7 +1238,7 @@ namespace System
             if (array == null)
             {
                 if (!startIndex.Equals(Index.Start))
-                    ThrowHelper.ThrowArgumentNullException(ExceptionArgument.array);
+                    ThrowHelper.ThrowArrayArgumentNullException();
 
                 return default;
             }
@@ -1272,7 +1272,7 @@ namespace System
                 Index startIndex = range.Start;
                 Index endIndex = range.End;
                 if (!startIndex.Equals(Index.Start) || !endIndex.Equals(Index.Start))
-                    ThrowHelper.ThrowArgumentNullException(ExceptionArgument.array);
+                    ThrowHelper.ThrowArrayArgumentNullException();
 
                 return default;
             }

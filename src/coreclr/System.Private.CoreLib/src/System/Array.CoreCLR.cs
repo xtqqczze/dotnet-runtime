@@ -275,7 +275,7 @@ namespace System
         public static unsafe void Clear(Array array)
         {
             if (array == null)
-                ThrowHelper.ThrowArgumentNullException(ExceptionArgument.array);
+                ThrowHelper.ThrowArrayArgumentNullException();
 
             MethodTable* pMT = RuntimeHelpers.GetMethodTable(array);
             nuint totalByteLength = pMT->ComponentSize * array.NativeLength;
@@ -300,7 +300,7 @@ namespace System
         public static unsafe void Clear(Array array, int index, int length)
         {
             if (array == null)
-                ThrowHelper.ThrowArgumentNullException(ExceptionArgument.array);
+                ThrowHelper.ThrowArrayArgumentNullException();
 
             ref byte p = ref Unsafe.As<RawArrayData>(array).Data;
             int lowerBound = 0;
