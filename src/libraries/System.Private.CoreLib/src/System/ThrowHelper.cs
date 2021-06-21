@@ -345,25 +345,25 @@ namespace System
         [DoesNotReturn]
         internal static void ThrowNotSupportedException(ExceptionResource resource)
         {
-            throw new NotSupportedException(GetResourceString(resource));
+            throw GetNotSupportedException(resource);
         }
 
         [DoesNotReturn]
         internal static void ThrowNotSupportedException_UnseekableStream()
         {
-            throw new NotSupportedException(SR.NotSupported_UnseekableStream);
+            throw GetNotSupportedException(ExceptionResource.NotSupported_UnseekableStream);
         }
 
         [DoesNotReturn]
         internal static void ThrowNotSupportedException_UnreadableStream()
         {
-            throw new NotSupportedException(SR.NotSupported_UnreadableStream);
+            throw GetNotSupportedException(ExceptionResource.NotSupported_UnreadableStream);
         }
 
         [DoesNotReturn]
         internal static void ThrowNotSupportedException_UnwritableStream()
         {
-            throw new NotSupportedException(SR.NotSupported_UnwritableStream);
+            throw GetNotSupportedException(ExceptionResource.NotSupported_UnwritableStream);
         }
 
         [DoesNotReturn]
@@ -598,6 +598,12 @@ namespace System
         {
             return new ArgumentOutOfRangeException(GetArgumentName(argument) + "[" + paramNumber.ToString() + "]", GetResourceString(resource));
         }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private static NotSupportedException GetNotSupportedException(ExceptionResource resource)
+        {
+            return new NotSupportedException(GetResourceString(resource));
+        }      
 
         private static InvalidOperationException GetInvalidOperationException_EnumCurrent(int index)
         {
@@ -1019,6 +1025,12 @@ namespace System
                     return SR.CancellationTokenSource_Disposed;
                 case ExceptionResource.Argument_AlignmentMustBePow2:
                     return SR.Argument_AlignmentMustBePow2;
+                case ExceptionResource.NotSupported_UnseekableStream:
+                    return SR.NotSupported_UnseekableStream;
+                case ExceptionResource.NotSupported_UnreadableStream:
+                    return SR.ExceptionResource.NotSupported_UnreadableStream;
+                case ExceptionResource.NotSupported_UnwritableStream:
+                    return SR.NotSupported_UnwritableStream;
                 default:
                     Debug.Fail("The enum value is not defined, please check the ExceptionResource Enum.");
                     return "";
