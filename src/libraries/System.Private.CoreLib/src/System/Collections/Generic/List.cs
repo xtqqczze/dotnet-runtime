@@ -873,16 +873,30 @@ namespace System.Collections.Generic
             }
         }
 
+        public int RemoveAll(Predicate<T> match)
+            => RemoveAll(0, match);
+
         // This method removes all items which matches the predicate.
         // The complexity is O(n).
-        public int RemoveAll(Predicate<T> match)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public int RemoveAll(int startIndex, Predicate<T> match)
         {
+            if ((uint)startIndex >= (uint)_size)
+            {
+                ThrowHelper.ThrowStartIndexArgumentOutOfRange_ArgumentOutOfRange_Index();
+            }
+
             if (match == null)
             {
                 ThrowHelper.ThrowArgumentNullException(ExceptionArgument.match);
             }
 
-            int freeIndex = 0;   // the first free slot in items array
+            return RemoveAllCore(startIndex, match);
+        }
+
+        private int RemoveAllCore(int startIndex, Predicate<T> match)
+        {
+            int freeIndex = startIndex;   // the first free slot in items array
 
             // Find the first item which needs to be removed.
             while (freeIndex < _size && !match(_items[freeIndex])) freeIndex++;
