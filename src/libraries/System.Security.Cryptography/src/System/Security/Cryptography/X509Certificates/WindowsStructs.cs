@@ -125,7 +125,7 @@ namespace System.Security.Cryptography.X509Certificates
     }
 
     [Flags]
-    internal enum CertTrustErrorStatus : int
+    internal enum CertTrustErrorStatus : uint
     {
         CERT_TRUST_NO_ERROR                            = 0x00000000,
         CERT_TRUST_IS_NOT_TIME_VALID                   = 0x00000001,

@@ -13,7 +13,7 @@ namespace System.Security.Cryptography.X509Certificates
             if (dwStatus == CertTrustErrorStatus.CERT_TRUST_NO_ERROR)
                 return Array.Empty<X509ChainStatus>();
 
-            int count = BitOperations.PopCount((uint)dwStatus);
+            int count = BitOperations.PopCount(dwStatus);
             X509ChainStatus[] chainStatus = new X509ChainStatus[count];
             int index = 0;
 
@@ -31,7 +31,7 @@ namespace System.Security.Cryptography.X509Certificates
             }
 
             int shiftCount = 0;
-            for (uint bits = (uint)dwStatus; bits != 0; bits >>= 1)
+            for (uint bits = dwStatus; bits != 0; bits >>= 1)
             {
                 if ((bits & 0x1) != 0)
                 {
