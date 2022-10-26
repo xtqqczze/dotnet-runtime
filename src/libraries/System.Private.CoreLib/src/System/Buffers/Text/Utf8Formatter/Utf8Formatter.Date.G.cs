@@ -67,7 +67,7 @@ namespace System.Buffers.Text
 
                 if (offsetTotalMinutes < 0)
                 {
-                    sign = Utf8Constants.Minus;
+                    sign = Utf8Constants.HyphenMinusMinus;
                     offsetTotalMinutes = -offsetTotalMinutes;
                 }
                 else

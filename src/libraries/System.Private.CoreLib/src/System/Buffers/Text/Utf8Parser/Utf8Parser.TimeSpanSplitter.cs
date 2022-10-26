@@ -53,7 +53,7 @@ namespace System.Buffers.Text
                 }
 
                 // Check for an option negative sign. ('+' is not allowed.)
-                if (c == Utf8Constants.Minus)
+                if (c == Utf8Constants.HyphenMinusMinus)
                 {
                     IsNegative = true;
                     srcIndex++;

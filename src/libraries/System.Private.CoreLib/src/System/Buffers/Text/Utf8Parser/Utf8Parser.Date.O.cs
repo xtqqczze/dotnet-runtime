@@ -44,7 +44,7 @@ namespace System.Buffers.Text
                 year = (int)(digit1 * 1000 + digit2 * 100 + digit3 * 10 + digit4);
             }
 
-            if (source[4] != Utf8Constants.Hyphen)
+            if (source[4] != Utf8Constants.HyphenMinus)
             {
                 value = default;
                 bytesConsumed = 0;
@@ -68,7 +68,7 @@ namespace System.Buffers.Text
                 month = (int)(digit1 * 10 + digit2);
             }
 
-            if (source[7] != Utf8Constants.Hyphen)
+            if (source[7] != Utf8Constants.HyphenMinus)
             {
                 value = default;
                 bytesConsumed = 0;
@@ -194,7 +194,7 @@ namespace System.Buffers.Text
             }
 
             byte offsetChar = (source.Length <= 27) ? default : source[27];
-            if (offsetChar != 'Z' && offsetChar != Utf8Constants.Plus && offsetChar != Utf8Constants.Minus)
+            if (offsetChar != 'Z' && offsetChar != Utf8Constants.Plus && offsetChar != Utf8Constants.HyphenMinusMinus)
             {
                 if (!TryCreateDateTimeOffsetInterpretingDataAsLocalTime(year: year, month: month, day: day, hour: hour, minute: minute, second: second, fraction: fraction, out value))
                 {
@@ -224,7 +224,7 @@ namespace System.Buffers.Text
                 return true;
             }
 
-            Debug.Assert(offsetChar == Utf8Constants.Plus || offsetChar == Utf8Constants.Minus);
+            Debug.Assert(offsetChar == Utf8Constants.Plus || offsetChar == Utf8Constants.HyphenMinusMinus);
             if (source.Length < 33)
             {
                 value = default;
@@ -273,7 +273,7 @@ namespace System.Buffers.Text
                 offsetMinutes = (int)(digit1 * 10 + digit2);
             }
 
-            if (!TryCreateDateTimeOffset(year: year, month: month, day: day, hour: hour, minute: minute, second: second, fraction: fraction, offsetNegative: offsetChar == Utf8Constants.Minus, offsetHours: offsetHours, offsetMinutes: offsetMinutes, out value))
+            if (!TryCreateDateTimeOffset(year: year, month: month, day: day, hour: hour, minute: minute, second: second, fraction: fraction, offsetNegative: offsetChar == Utf8Constants.HyphenMinusMinus, offsetHours: offsetHours, offsetMinutes: offsetMinutes, out value))
             {
                 value = default;
                 bytesConsumed = 0;

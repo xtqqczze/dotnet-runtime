@@ -31,7 +31,7 @@ namespace System.Buffers.Text
             int srcIndex = 0;
             if (number.IsNegative)
             {
-                destination[dstIndex++] = Utf8Constants.Minus;
+                destination[dstIndex++] = Utf8Constants.HyphenMinusMinus;
             }
 
             //
@@ -84,7 +84,7 @@ namespace System.Buffers.Text
             }
             else
             {
-                destination[dstIndex++] = Utf8Constants.Minus;
+                destination[dstIndex++] = Utf8Constants.HyphenMinusMinus;
                 exponent = -exponent;
             }
 

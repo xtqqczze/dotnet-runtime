@@ -44,7 +44,7 @@ namespace System.Buffers.Text
 
             if (number.IsNegative)
             {
-                destination[dstIndex++] = Utf8Constants.Minus;
+                destination[dstIndex++] = Utf8Constants.HyphenMinusMinus;
             }
 
             //

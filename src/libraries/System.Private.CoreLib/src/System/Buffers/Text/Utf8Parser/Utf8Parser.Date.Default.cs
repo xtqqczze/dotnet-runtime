@@ -37,7 +37,7 @@ namespace System.Buffers.Text
             }
 
             byte sign = source[20];
-            if (sign != Utf8Constants.Plus && sign != Utf8Constants.Minus)
+            if (sign != Utf8Constants.Plus && sign != Utf8Constants.HyphenMinusMinus)
             {
                 bytesConsumed = 0;
                 value = default;
@@ -81,7 +81,7 @@ namespace System.Buffers.Text
                 offsetMinutes = (int)(digit1 * 10 + digit2);
             }
 
-            if (!TryCreateDateTimeOffset(dateTime: dateTime, offsetNegative: sign == Utf8Constants.Minus, offsetHours: offsetHours, offsetMinutes: offsetMinutes, out value))
+            if (!TryCreateDateTimeOffset(dateTime: dateTime, offsetNegative: sign == Utf8Constants.HyphenMinusMinus, offsetHours: offsetHours, offsetMinutes: offsetMinutes, out value))
             {
                 bytesConsumed = 0;
                 value = default;

@@ -184,7 +184,7 @@ namespace System.Buffers.Text
             // Write leading '-' if necessary
             if (value.Ticks < 0)
             {
-                destination[idx++] = Utf8Constants.Minus;
+                destination[idx++] = Utf8Constants.HyphenMinusMinus;
             }
 
             // Write day (and separator) if necessary

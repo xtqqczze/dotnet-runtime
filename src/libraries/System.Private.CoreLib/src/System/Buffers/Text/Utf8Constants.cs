@@ -7,12 +7,11 @@ namespace System.Buffers.Text
     {
         public const byte Colon = (byte)':';
         public const byte Comma = (byte)',';
-        public const byte Minus = (byte)'-';
+        public const byte HyphenMinus = (byte)'-';
         public const byte Period = (byte)'.';
         public const byte Plus = (byte)'+';
         public const byte Slash = (byte)'/';
         public const byte Space = (byte)' ';
-        public const byte Hyphen = (byte)'-';
 
         // Invariant formatting uses groups of 3 for each number group separated by commas.
         //   ex. 1,234,567,890

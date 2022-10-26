@@ -39,7 +39,7 @@ namespace System.Buffers.Text
 
             if (insertNegationSign)
             {
-                destination[0] = Utf8Constants.Minus;
+                destination[0] = Utf8Constants.HyphenMinusMinus;
                 destination = destination.Slice(1);
             }
 

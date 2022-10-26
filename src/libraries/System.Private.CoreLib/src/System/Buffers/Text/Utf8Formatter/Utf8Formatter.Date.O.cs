@@ -54,10 +54,10 @@ namespace System.Buffers.Text
             value.GetTimePrecise(out int hour, out int minute, out int second, out int ticks);
 
             FormattingHelpers.WriteFourDecimalDigits((uint)year, destination, 0);
-            destination[4] = Utf8Constants.Minus;
+            destination[4] = Utf8Constants.HyphenMinusMinus;
 
             FormattingHelpers.WriteTwoDecimalDigits((uint)month, destination, 5);
-            destination[7] = Utf8Constants.Minus;
+            destination[7] = Utf8Constants.HyphenMinusMinus;
 
             FormattingHelpers.WriteTwoDecimalDigits((uint)day, destination, 8);
             destination[10] = TimeMarker;
@@ -80,7 +80,7 @@ namespace System.Buffers.Text
 
                 if (offsetTotalMinutes < 0)
                 {
-                    sign = Utf8Constants.Minus;
+                    sign = Utf8Constants.HyphenMinusMinus;
                     offsetTotalMinutes = -offsetTotalMinutes;
                 }
                 else
