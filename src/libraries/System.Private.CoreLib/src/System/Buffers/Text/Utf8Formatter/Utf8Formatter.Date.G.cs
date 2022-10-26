@@ -44,10 +44,10 @@ namespace System.Buffers.Text
             value.GetTime(out int hour, out int minute, out int second);
 
             FormattingHelpers.WriteTwoDecimalDigits((uint)month, destination, 0);
-            destination[2] = Utf8Constants.Slash;
+            destination[2] = Utf8Constants.Solidus;
 
             FormattingHelpers.WriteTwoDecimalDigits((uint)day, destination, 3);
-            destination[5] = Utf8Constants.Slash;
+            destination[5] = Utf8Constants.Solidus;
 
             FormattingHelpers.WriteFourDecimalDigits((uint)year, destination, 6);
             destination[10] = Utf8Constants.Space;

@@ -38,7 +38,7 @@ namespace System.Buffers.Text
                 month = (int)(digit1 * 10 + digit2);
             }
 
-            if (source[2] != Utf8Constants.Slash)
+            if (source[2] != Utf8Constants.Solidus)
             {
                 bytesConsumed = 0;
                 value = default;
@@ -62,7 +62,7 @@ namespace System.Buffers.Text
                 day = (int)(digit1 * 10 + digit2);
             }
 
-            if (source[5] != Utf8Constants.Slash)
+            if (source[5] != Utf8Constants.Solidus)
             {
                 bytesConsumed = 0;
                 value = default;

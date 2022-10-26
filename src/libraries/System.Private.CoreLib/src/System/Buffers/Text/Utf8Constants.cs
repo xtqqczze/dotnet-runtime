@@ -10,7 +10,7 @@ namespace System.Buffers.Text
         public const byte HyphenMinus = (byte)'-';
         public const byte Period = (byte)'.';
         public const byte Plus = (byte)'+';
-        public const byte Slash = (byte)'/';
+        public const byte Solidus = (byte)'/';
         public const byte Space = (byte)' ';
 
         // Invariant formatting uses groups of 3 for each number group separated by commas.
