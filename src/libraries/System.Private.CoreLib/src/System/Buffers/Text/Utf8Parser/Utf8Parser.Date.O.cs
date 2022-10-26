@@ -194,7 +194,7 @@ namespace System.Buffers.Text
             }
 
             byte offsetChar = (source.Length <= 27) ? default : source[27];
-            if (offsetChar != 'Z' && offsetChar != Utf8Constants.Plus && offsetChar != Utf8Constants.HyphenMinusMinus)
+            if (offsetChar != 'Z' && offsetChar != Utf8Constants.PlusSign && offsetChar != Utf8Constants.HyphenMinusMinus)
             {
                 if (!TryCreateDateTimeOffsetInterpretingDataAsLocalTime(year: year, month: month, day: day, hour: hour, minute: minute, second: second, fraction: fraction, out value))
                 {
@@ -224,7 +224,7 @@ namespace System.Buffers.Text
                 return true;
             }
 
-            Debug.Assert(offsetChar == Utf8Constants.Plus || offsetChar == Utf8Constants.HyphenMinusMinus);
+            Debug.Assert(offsetChar == Utf8Constants.PlusSign || offsetChar == Utf8Constants.HyphenMinusMinus);
             if (source.Length < 33)
             {
                 value = default;

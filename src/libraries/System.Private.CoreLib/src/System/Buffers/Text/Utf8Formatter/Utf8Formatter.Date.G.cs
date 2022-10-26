@@ -72,7 +72,7 @@ namespace System.Buffers.Text
                 }
                 else
                 {
-                    sign = Utf8Constants.Plus;
+                    sign = Utf8Constants.PlusSign;
                 }
 
                 int offsetHours = Math.DivRem(offsetTotalMinutes, 60, out int offsetMinutes);

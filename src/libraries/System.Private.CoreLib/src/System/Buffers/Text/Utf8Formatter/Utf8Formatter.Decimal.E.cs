@@ -80,7 +80,7 @@ namespace System.Buffers.Text
             destination[dstIndex++] = exponentSymbol;
             if (exponent >= 0)
             {
-                destination[dstIndex++] = Utf8Constants.Plus;
+                destination[dstIndex++] = Utf8Constants.PlusSign;
             }
             else
             {

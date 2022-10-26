@@ -40,9 +40,9 @@ namespace System.Buffers.Text
             {
                 case Utf8Constants.HyphenMinusMinus:
                     number.IsNegative = true;
-                    goto case Utf8Constants.Plus;
+                    goto case Utf8Constants.PlusSign;
 
-                case Utf8Constants.Plus:
+                case Utf8Constants.PlusSign:
                     srcIndex++;
                     if (srcIndex == source.Length)
                     {
@@ -235,9 +235,9 @@ namespace System.Buffers.Text
             {
                 case Utf8Constants.HyphenMinusMinus:
                     exponentIsNegative = true;
-                    goto case Utf8Constants.Plus;
+                    goto case Utf8Constants.PlusSign;
 
-                case Utf8Constants.Plus:
+                case Utf8Constants.PlusSign:
                     srcIndex++;
                     if (srcIndex == source.Length)
                     {

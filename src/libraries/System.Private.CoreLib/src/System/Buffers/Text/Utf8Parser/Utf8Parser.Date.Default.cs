@@ -37,7 +37,7 @@ namespace System.Buffers.Text
             }
 
             byte sign = source[20];
-            if (sign != Utf8Constants.Plus && sign != Utf8Constants.HyphenMinusMinus)
+            if (sign != Utf8Constants.PlusSign && sign != Utf8Constants.HyphenMinusMinus)
             {
                 bytesConsumed = 0;
                 value = default;

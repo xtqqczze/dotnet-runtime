@@ -126,10 +126,10 @@ namespace System.Buffers.Text
                     case Utf8Constants.HyphenMinusMinus:
                     {
                         isNegative = true;
-                        goto case Utf8Constants.Plus;
+                        goto case Utf8Constants.PlusSign;
                     }
 
-                    case Utf8Constants.Plus:
+                    case Utf8Constants.PlusSign:
                     {
                         srcIndex++;
                         remaining--;

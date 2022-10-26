@@ -9,7 +9,7 @@ namespace System.Buffers.Text
         public const byte Comma = (byte)',';
         public const byte HyphenMinus = (byte)'-';
         public const byte Period = (byte)'.';
-        public const byte Plus = (byte)'+';
+        public const byte PlusSign = (byte)'+';
         public const byte Solidus = (byte)'/';
         public const byte Space = (byte)' ';
 
