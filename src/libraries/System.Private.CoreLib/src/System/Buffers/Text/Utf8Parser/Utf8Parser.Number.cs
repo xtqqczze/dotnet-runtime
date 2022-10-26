@@ -38,7 +38,7 @@ namespace System.Buffers.Text
             byte c = source[srcIndex];
             switch (c)
             {
-                case Utf8Constants.HyphenMinusMinus:
+                case Utf8Constants.HyphenMinus:
                     number.IsNegative = true;
                     goto case Utf8Constants.PlusSign;
 
@@ -233,7 +233,7 @@ namespace System.Buffers.Text
             c = source[srcIndex];
             switch (c)
             {
-                case Utf8Constants.HyphenMinusMinus:
+                case Utf8Constants.HyphenMinus:
                     exponentIsNegative = true;
                     goto case Utf8Constants.PlusSign;
 

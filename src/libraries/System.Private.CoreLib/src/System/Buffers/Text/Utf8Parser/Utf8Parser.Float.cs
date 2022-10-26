@@ -123,7 +123,7 @@ namespace System.Buffers.Text
 
                 switch (c)
                 {
-                    case Utf8Constants.HyphenMinusMinus:
+                    case Utf8Constants.HyphenMinus:
                     {
                         isNegative = true;
                         goto case Utf8Constants.PlusSign;

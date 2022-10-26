@@ -60,7 +60,7 @@ namespace System.Buffers.Text
                     bytesWritten = 0;
                     return false;
                 }
-                destination[0] = Utf8Constants.HyphenMinusMinus;
+                destination[0] = Utf8Constants.HyphenMinus;
                 bytesWritten = digitCount + 1;
                 FormattingHelpers.WriteDigits((uint)value, destination.Slice(1, digitCount));
                 return true;
@@ -84,7 +84,7 @@ namespace System.Buffers.Text
                     bytesWritten = 0;
                     return false;
                 }
-                destination[0] = Utf8Constants.HyphenMinusMinus;
+                destination[0] = Utf8Constants.HyphenMinus;
                 bytesWritten = digitCount + 1;
                 FormattingHelpers.WriteDigits((ulong)value, destination.Slice(1, digitCount));
                 return true;
@@ -110,7 +110,7 @@ namespace System.Buffers.Text
                 bytesWritten = 0;
                 return false;
             }
-            destination[0] = Utf8Constants.HyphenMinusMinus;
+            destination[0] = Utf8Constants.HyphenMinus;
             bytesWritten = digitCount + 1;
             FormattingHelpers.WriteDigits(overNineDigits, destination.Slice(1, digitCountOverNineDigits));
             FormattingHelpers.WriteDigits(lastNineDigits, destination.Slice(digitCountOverNineDigits + 1, 9));
@@ -136,7 +136,7 @@ namespace System.Buffers.Text
                 bytesWritten = 0;
                 return false;
             }
-            destination[0] = Utf8Constants.HyphenMinusMinus;
+            destination[0] = Utf8Constants.HyphenMinus;
             bytesWritten = digitCount + 1;
             FormattingHelpers.WriteDigits(overEighteenDigits, destination.Slice(1, digitCountOverEighteenDigits));
             FormattingHelpers.WriteDigits(middleNineDigits, destination.Slice(digitCountOverEighteenDigits + 1, 9));

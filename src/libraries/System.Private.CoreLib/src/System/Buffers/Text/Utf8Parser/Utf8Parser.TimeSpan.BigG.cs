@@ -25,7 +25,7 @@ namespace System.Buffers.Text
             }
 
             bool isNegative = false;
-            if (c == Utf8Constants.HyphenMinusMinus)
+            if (c == Utf8Constants.HyphenMinus)
             {
                 isNegative = true;
                 srcIndex++;

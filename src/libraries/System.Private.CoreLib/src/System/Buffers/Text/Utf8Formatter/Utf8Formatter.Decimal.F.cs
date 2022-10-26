@@ -27,7 +27,7 @@ namespace System.Buffers.Text
             int dstIndex = 0;
             if (number.IsNegative)
             {
-                destination[dstIndex++] = Utf8Constants.HyphenMinusMinus;
+                destination[dstIndex++] = Utf8Constants.HyphenMinus;
             }
 
             //
