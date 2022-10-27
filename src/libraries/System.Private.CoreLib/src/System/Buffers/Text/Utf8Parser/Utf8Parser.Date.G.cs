@@ -38,7 +38,7 @@ namespace System.Buffers.Text
                 month = (int)(digit1 * 10 + digit2);
             }
 
-            if (source[2] != Utf8Constants.Solidus)
+            if (source[2] is not Utf8Constants.Solidus)
             {
                 bytesConsumed = 0;
                 value = default;
@@ -62,7 +62,7 @@ namespace System.Buffers.Text
                 day = (int)(digit1 * 10 + digit2);
             }
 
-            if (source[5] != Utf8Constants.Solidus)
+            if (source[5] is not Utf8Constants.Solidus)
             {
                 bytesConsumed = 0;
                 value = default;
@@ -88,7 +88,7 @@ namespace System.Buffers.Text
                 year = (int)(digit1 * 1000 + digit2 * 100 + digit3 * 10 + digit4);
             }
 
-            if (source[10] != Utf8Constants.Space)
+            if (source[10] is not Utf8Constants.Space)
             {
                 bytesConsumed = 0;
                 value = default;
@@ -112,7 +112,7 @@ namespace System.Buffers.Text
                 hour = (int)(digit1 * 10 + digit2);
             }
 
-            if (source[13] != Utf8Constants.Colon)
+            if (source[13] is not Utf8Constants.Colon)
             {
                 bytesConsumed = 0;
                 value = default;
@@ -136,7 +136,7 @@ namespace System.Buffers.Text
                 minute = (int)(digit1 * 10 + digit2);
             }
 
-            if (source[16] != Utf8Constants.Colon)
+            if (source[16] is not Utf8Constants.Colon)
             {
                 bytesConsumed = 0;
                 value = default;

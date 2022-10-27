@@ -44,7 +44,7 @@ namespace System.Buffers.Text
                 }
             }
 
-            if (source[4] != Utf8Constants.Space)
+            if (source[4] is not Utf8Constants.Space)
             {
                 bytesConsumed = 0;
                 dateTimeOffset = default;
@@ -66,7 +66,7 @@ namespace System.Buffers.Text
                 day = (int)(digit1 * 10 + digit2);
             }
 
-            if (source[7] != Utf8Constants.Space)
+            if (source[7] is not Utf8Constants.Space)
             {
                 bytesConsumed = 0;
                 dateTimeOffset = default;
@@ -118,7 +118,7 @@ namespace System.Buffers.Text
                 year = (int)(digit1 * 1000 + digit2 * 100 + digit3 * 10 + digit4);
             }
 
-            if (source[16] != Utf8Constants.Space)
+            if (source[16] is not Utf8Constants.Space)
             {
                 bytesConsumed = 0;
                 dateTimeOffset = default;
@@ -140,7 +140,7 @@ namespace System.Buffers.Text
                 hour = (int)(digit1 * 10 + digit2);
             }
 
-            if (source[19] != Utf8Constants.Colon)
+            if (source[19] is not Utf8Constants.Colon)
             {
                 bytesConsumed = 0;
                 dateTimeOffset = default;
@@ -162,7 +162,7 @@ namespace System.Buffers.Text
                 minute = (int)(digit1 * 10 + digit2);
             }
 
-            if (source[22] != Utf8Constants.Colon)
+            if (source[22] is not Utf8Constants.Colon)
             {
                 bytesConsumed = 0;
                 dateTimeOffset = default;

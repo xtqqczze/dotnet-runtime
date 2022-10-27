@@ -29,7 +29,7 @@ namespace System.Buffers.Text
                 return false;
             }
 
-            if (source[19] != Utf8Constants.Space)
+            if (source[19] is not Utf8Constants.Space)
             {
                 bytesConsumed = 0;
                 value = default;
@@ -37,7 +37,7 @@ namespace System.Buffers.Text
             }
 
             byte sign = source[20];
-            if (sign != Utf8Constants.PlusSign && sign != Utf8Constants.HyphenMinus)
+            if (sign is not Utf8Constants.PlusSign && sign is not Utf8Constants.HyphenMinus)
             {
                 bytesConsumed = 0;
                 value = default;
@@ -59,7 +59,7 @@ namespace System.Buffers.Text
                 offsetHours = (int)(digit1 * 10 + digit2);
             }
 
-            if (source[23] != Utf8Constants.Colon)
+            if (source[23] is not Utf8Constants.Colon)
             {
                 bytesConsumed = 0;
                 value = default;

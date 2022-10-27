@@ -24,7 +24,7 @@ namespace System.Buffers.Text
 
             int bytesRequired = MinimumBytesNeeded;
 
-            if (offset != Utf8Constants.NullUtcOffset)
+            if (offset is not Utf8Constants.NullUtcOffset)
             {
                 bytesRequired += 7; // Space['+'|'-']hh:mm
             }
@@ -60,7 +60,7 @@ namespace System.Buffers.Text
 
             FormattingHelpers.WriteTwoDecimalDigits((uint)second, destination, 17);
 
-            if (offset != Utf8Constants.NullUtcOffset)
+            if (offset is not Utf8Constants.NullUtcOffset)
             {
                 int offsetTotalMinutes = (int)(offset.Ticks / TimeSpan.TicksPerMinute);
                 byte sign;

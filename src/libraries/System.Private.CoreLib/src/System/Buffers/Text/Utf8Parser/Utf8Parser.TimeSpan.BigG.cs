@@ -45,7 +45,7 @@ namespace System.Buffers.Text
             }
             srcIndex += justConsumed;
 
-            if (srcIndex == source.Length || source[srcIndex++] != Utf8Constants.Colon)
+            if (srcIndex == source.Length || source[srcIndex++] is not Utf8Constants.Colon)
             {
                 value = default;
                 bytesConsumed = 0;
@@ -60,7 +60,7 @@ namespace System.Buffers.Text
             }
             srcIndex += justConsumed;
 
-            if (srcIndex == source.Length || source[srcIndex++] != Utf8Constants.Colon)
+            if (srcIndex == source.Length || source[srcIndex++] is not Utf8Constants.Colon)
             {
                 value = default;
                 bytesConsumed = 0;
@@ -75,7 +75,7 @@ namespace System.Buffers.Text
             }
             srcIndex += justConsumed;
 
-            if (srcIndex == source.Length || source[srcIndex++] != Utf8Constants.Colon)
+            if (srcIndex == source.Length || source[srcIndex++] is not Utf8Constants.Colon)
             {
                 value = default;
                 bytesConsumed = 0;
@@ -90,7 +90,7 @@ namespace System.Buffers.Text
             }
             srcIndex += justConsumed;
 
-            if (srcIndex == source.Length || source[srcIndex++] != Utf8Constants.Period)
+            if (srcIndex == source.Length || source[srcIndex++] is not Utf8Constants.Period)
             {
                 value = default;
                 bytesConsumed = 0;

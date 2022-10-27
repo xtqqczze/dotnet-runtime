@@ -44,7 +44,7 @@ namespace System.Buffers.Text
                 year = (int)(digit1 * 1000 + digit2 * 100 + digit3 * 10 + digit4);
             }
 
-            if (source[4] != Utf8Constants.HyphenMinus)
+            if (source[4] is not Utf8Constants.HyphenMinus)
             {
                 value = default;
                 bytesConsumed = 0;
@@ -68,7 +68,7 @@ namespace System.Buffers.Text
                 month = (int)(digit1 * 10 + digit2);
             }
 
-            if (source[7] != Utf8Constants.HyphenMinus)
+            if (source[7] is not Utf8Constants.HyphenMinus)
             {
                 value = default;
                 bytesConsumed = 0;
@@ -116,7 +116,7 @@ namespace System.Buffers.Text
                 hour = (int)(digit1 * 10 + digit2);
             }
 
-            if (source[13] != Utf8Constants.Colon)
+            if (source[13] is not Utf8Constants.Colon)
             {
                 value = default;
                 bytesConsumed = 0;
@@ -140,7 +140,7 @@ namespace System.Buffers.Text
                 minute = (int)(digit1 * 10 + digit2);
             }
 
-            if (source[16] != Utf8Constants.Colon)
+            if (source[16] is not Utf8Constants.Colon)
             {
                 value = default;
                 bytesConsumed = 0;
@@ -164,7 +164,7 @@ namespace System.Buffers.Text
                 second = (int)(digit1 * 10 + digit2);
             }
 
-            if (source[19] != Utf8Constants.Period)
+            if (source[19] is not Utf8Constants.Period)
             {
                 value = default;
                 bytesConsumed = 0;
@@ -194,7 +194,7 @@ namespace System.Buffers.Text
             }
 
             byte offsetChar = (source.Length <= 27) ? default : source[27];
-            if (offsetChar != 'Z' && offsetChar != Utf8Constants.PlusSign && offsetChar != Utf8Constants.HyphenMinus)
+            if (offsetChar != 'Z' && offsetChar is not Utf8Constants.PlusSign && offsetChar is not Utf8Constants.HyphenMinus)
             {
                 if (!TryCreateDateTimeOffsetInterpretingDataAsLocalTime(year: year, month: month, day: day, hour: hour, minute: minute, second: second, fraction: fraction, out value))
                 {
@@ -249,7 +249,7 @@ namespace System.Buffers.Text
                 offsetHours = (int)(digit1 * 10 + digit2);
             }
 
-            if (source[30] != Utf8Constants.Colon)
+            if (source[30] is not Utf8Constants.Colon)
             {
                 value = default;
                 bytesConsumed = 0;
