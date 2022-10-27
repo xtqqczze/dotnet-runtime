@@ -21,7 +21,7 @@ namespace System.Buffers.Text
             int bytesRequired = MinimumBytesNeeded;
             DateTimeKind kind = DateTimeKind.Local;
 
-            if (offset is Utf8Constants.NullUtcOffset)
+            if (offset == Utf8Constants.NullUtcOffset)
             {
                 kind = value.Kind;
                 if (kind == DateTimeKind.Local)
