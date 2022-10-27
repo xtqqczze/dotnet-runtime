@@ -75,7 +75,7 @@ namespace System.Buffers.Text
                 ulong temp = '0' + value;
                 value /= 10;
                 buffer[i] = (byte)(temp - (value * 10));
-                if (digitsWritten == Utf8Constants.GroupSize - 1)
+                if (digitsWritten is Utf8Constants.GroupSize - 1)
                 {
                     buffer[--i] = Utf8Constants.Comma;
                     digitsWritten = 0;

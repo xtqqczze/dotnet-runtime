@@ -81,7 +81,7 @@ namespace System.Buffers.Text
                 offsetMinutes = (int)(digit1 * 10 + digit2);
             }
 
-            if (!TryCreateDateTimeOffset(dateTime: dateTime, offsetNegative: sign == Utf8Constants.HyphenMinus, offsetHours: offsetHours, offsetMinutes: offsetMinutes, out value))
+            if (!TryCreateDateTimeOffset(dateTime: dateTime, offsetNegative: sign is Utf8Constants.HyphenMinus, offsetHours: offsetHours, offsetMinutes: offsetMinutes, out value))
             {
                 bytesConsumed = 0;
                 value = default;

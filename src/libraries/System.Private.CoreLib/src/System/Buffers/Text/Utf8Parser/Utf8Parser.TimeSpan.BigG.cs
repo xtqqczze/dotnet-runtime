@@ -25,7 +25,7 @@ namespace System.Buffers.Text
             }
 
             bool isNegative = false;
-            if (c == Utf8Constants.HyphenMinus)
+            if (c is Utf8Constants.HyphenMinus)
             {
                 isNegative = true;
                 srcIndex++;
@@ -117,7 +117,7 @@ namespace System.Buffers.Text
             // There cannot legally be a sixth number. If the next character is a period or colon, treat this as a error as it's likely
             // to indicate the start of a sixth number. Otherwise, treat as end of parse with data left over.
             //
-            if (srcIndex != source.Length && (source[srcIndex] == Utf8Constants.Period || source[srcIndex] == Utf8Constants.Colon))
+            if (srcIndex != source.Length && (source[srcIndex] is Utf8Constants.Period || source[srcIndex] is Utf8Constants.Colon))
             {
                 value = default;
                 bytesConsumed = 0;

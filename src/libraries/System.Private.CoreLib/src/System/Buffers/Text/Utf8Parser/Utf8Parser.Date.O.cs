@@ -224,7 +224,7 @@ namespace System.Buffers.Text
                 return true;
             }
 
-            Debug.Assert(offsetChar == Utf8Constants.PlusSign || offsetChar == Utf8Constants.HyphenMinus);
+            Debug.Assert(offsetChar is Utf8Constants.PlusSign || offsetChar is Utf8Constants.HyphenMinus);
             if (source.Length < 33)
             {
                 value = default;
@@ -273,7 +273,7 @@ namespace System.Buffers.Text
                 offsetMinutes = (int)(digit1 * 10 + digit2);
             }
 
-            if (!TryCreateDateTimeOffset(year: year, month: month, day: day, hour: hour, minute: minute, second: second, fraction: fraction, offsetNegative: offsetChar == Utf8Constants.HyphenMinus, offsetHours: offsetHours, offsetMinutes: offsetMinutes, out value))
+            if (!TryCreateDateTimeOffset(year: year, month: month, day: day, hour: hour, minute: minute, second: second, fraction: fraction, offsetNegative: offsetChar is Utf8Constants.HyphenMinus, offsetHours: offsetHours, offsetMinutes: offsetMinutes, out value))
             {
                 value = default;
                 bytesConsumed = 0;

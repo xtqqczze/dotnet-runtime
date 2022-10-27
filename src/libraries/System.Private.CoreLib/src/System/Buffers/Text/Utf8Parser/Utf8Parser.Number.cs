@@ -125,7 +125,7 @@ namespace System.Buffers.Text
             }
 
             int numDigitsAfterDecimal = 0;
-            if (c == Utf8Constants.Period)
+            if (c is Utf8Constants.Period)
             {
                 //
                 // Parse the digits after the decimal point.

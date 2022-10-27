@@ -53,7 +53,7 @@ namespace System.Buffers.Text
                 }
 
                 // Check for an option negative sign. ('+' is not allowed.)
-                if (c == Utf8Constants.HyphenMinus)
+                if (c is Utf8Constants.HyphenMinus)
                 {
                     IsNegative = true;
                     srcIndex++;
@@ -163,7 +163,7 @@ namespace System.Buffers.Text
                 // There cannot legally be a sixth number. If the next character is a period or colon, treat this as a error as it's likely
                 // to indicate the start of a sixth number. Otherwise, treat as end of parse with data left over.
                 //
-                if (srcIndex != source.Length && (source[srcIndex] == Utf8Constants.Period || source[srcIndex] == Utf8Constants.Colon))
+                if (srcIndex != source.Length && (source[srcIndex] is Utf8Constants.Period || source[srcIndex] is Utf8Constants.Colon))
                 {
                     bytesConsumed = 0;
                     return false;
@@ -185,7 +185,7 @@ namespace System.Buffers.Text
                 }
 
                 byte c = source[srcIndex];
-                if (c == Utf8Constants.Colon || (c == Utf8Constants.Period && neverParseAsFraction))
+                if (c is Utf8Constants.Colon || (c is Utf8Constants.Period && neverParseAsFraction))
                 {
                     srcIndex++;
 
@@ -196,9 +196,9 @@ namespace System.Buffers.Text
                     }
 
                     srcIndex += bytesConsumed;
-                    return c == Utf8Constants.Colon ? ComponentParseResult.Colon : ComponentParseResult.Period;
+                    return c is Utf8Constants.Colon ? ComponentParseResult.Colon : ComponentParseResult.Period;
                 }
-                else if (c == Utf8Constants.Period)
+                else if (c is Utf8Constants.Period)
                 {
                     srcIndex++;
 

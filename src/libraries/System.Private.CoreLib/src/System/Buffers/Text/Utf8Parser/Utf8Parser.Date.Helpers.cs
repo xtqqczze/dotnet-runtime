@@ -24,7 +24,7 @@ namespace System.Buffers.Text
                 return false;
             }
 
-            if (offsetHours == Utf8Constants.DateTimeMaxUtcOffsetHours && offsetMinutes != 0)
+            if (offsetHours is Utf8Constants.DateTimeMaxUtcOffsetHours && offsetMinutes != 0)
             {
                 value = default;
                 return false;

@@ -28,7 +28,7 @@ namespace System.Buffers.Text
             // Handle the first digit (or period) as a special case. This ensures some compatible edge-case behavior with the classic parse routines
             // (at least one digit must precede any commas, and a string without any digits prior to the decimal point must have at least
             // one digit after the decimal point.)
-            if (c == Utf8Constants.Period)
+            if (c is Utf8Constants.Period)
                 goto FractionalPartWithoutLeadingDigits;
             if (!ParserHelpers.IsDigit(c))
                 goto FalseExit;
@@ -41,10 +41,10 @@ namespace System.Buffers.Text
                     goto Done;
 
                 c = source[index];
-                if (c == Utf8Constants.Comma)
+                if (c is Utf8Constants.Comma)
                     continue;
 
-                if (c == Utf8Constants.Period)
+                if (c is Utf8Constants.Period)
                     goto FractionalDigits;
 
                 if (!ParserHelpers.IsDigit(c))
@@ -109,7 +109,7 @@ namespace System.Buffers.Text
             // Handle the first digit (or period) as a special case. This ensures some compatible edge-case behavior with the classic parse routines
             // (at least one digit must precede any commas, and a string without any digits prior to the decimal point must have at least
             // one digit after the decimal point.)
-            if (c == Utf8Constants.Period)
+            if (c is Utf8Constants.Period)
                 goto FractionalPartWithoutLeadingDigits;
             if (!ParserHelpers.IsDigit(c))
                 goto FalseExit;
@@ -122,10 +122,10 @@ namespace System.Buffers.Text
                     goto Done;
 
                 c = source[index];
-                if (c == Utf8Constants.Comma)
+                if (c is Utf8Constants.Comma)
                     continue;
 
-                if (c == Utf8Constants.Period)
+                if (c is Utf8Constants.Period)
                     goto FractionalDigits;
 
                 if (!ParserHelpers.IsDigit(c))
@@ -190,7 +190,7 @@ namespace System.Buffers.Text
             // Handle the first digit (or period) as a special case. This ensures some compatible edge-case behavior with the classic parse routines
             // (at least one digit must precede any commas, and a string without any digits prior to the decimal point must have at least
             // one digit after the decimal point.)
-            if (c == Utf8Constants.Period)
+            if (c is Utf8Constants.Period)
                 goto FractionalPartWithoutLeadingDigits;
             if (!ParserHelpers.IsDigit(c))
                 goto FalseExit;
@@ -203,10 +203,10 @@ namespace System.Buffers.Text
                     goto Done;
 
                 c = source[index];
-                if (c == Utf8Constants.Comma)
+                if (c is Utf8Constants.Comma)
                     continue;
 
-                if (c == Utf8Constants.Period)
+                if (c is Utf8Constants.Period)
                     goto FractionalDigits;
 
                 if (!ParserHelpers.IsDigit(c))
@@ -271,7 +271,7 @@ namespace System.Buffers.Text
             // Handle the first digit (or period) as a special case. This ensures some compatible edge-case behavior with the classic parse routines
             // (at least one digit must precede any commas, and a string without any digits prior to the decimal point must have at least
             // one digit after the decimal point.)
-            if (c == Utf8Constants.Period)
+            if (c is Utf8Constants.Period)
                 goto FractionalPartWithoutLeadingDigits;
             if (!ParserHelpers.IsDigit(c))
                 goto FalseExit;
@@ -284,10 +284,10 @@ namespace System.Buffers.Text
                     goto Done;
 
                 c = source[index];
-                if (c == Utf8Constants.Comma)
+                if (c is Utf8Constants.Comma)
                     continue;
 
-                if (c == Utf8Constants.Period)
+                if (c is Utf8Constants.Period)
                     goto FractionalDigits;
 
                 if (!ParserHelpers.IsDigit(c))
