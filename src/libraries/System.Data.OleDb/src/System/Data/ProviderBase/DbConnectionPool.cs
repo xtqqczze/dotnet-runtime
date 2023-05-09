@@ -238,7 +238,6 @@ namespace System.Data.ProviderBase
                 _errorEvent = new ManualResetEvent(false);
                 _creationSemaphore = new Semaphore(1, 1);
 
-                RuntimeHelpers.PrepareConstrainedRegions();
                 try
                 {
                     // because SafeWaitHandle doesn't have reliability contract
@@ -710,25 +709,15 @@ namespace System.Data.ProviderBase
                 // Failed to create instance
                 _resError = e;
 
-                // Make sure the timer starts even if ThreadAbort occurs after setting the ErrorEvent.
-
-                // timer allocation has to be done out of CER block
                 Timer t = new Timer(new TimerCallback(this.ErrorCallback), null, Timeout.Infinite, Timeout.Infinite);
-                bool timerIsNotDisposed;
-                RuntimeHelpers.PrepareConstrainedRegions();
-                try
-                { }
-                finally
-                {
-                    _waitHandles.ErrorEvent.Set();
-                    _errorOccurred = true;
+                _waitHandles.ErrorEvent.Set();
+                _errorOccurred = true;
 
-                    // Enable the timer.
-                    // Note that the timer is created to allow periodic invocation. If ThreadAbort occurs in the middle of ErrorCallback,
-                    // the timer will restart. Otherwise, the timer callback (ErrorCallback) destroys the timer after resetting the error to avoid second callback.
-                    _errorTimer = t;
-                    timerIsNotDisposed = t.Change(_errorWait, _errorWait);
-                }
+                // Enable the timer.
+                // Note that the timer is created to allow periodic invocation. If ThreadAbort occurs in the middle of ErrorCallback,
+                // the timer will restart. Otherwise, the timer callback (ErrorCallback) destroys the timer after resetting the error to avoid second callback.
+                _errorTimer = t;
+                bool timerIsNotDisposed = t.Change(_errorWait, _errorWait);
 
                 Debug.Assert(timerIsNotDisposed, "ErrorCallback timer has been disposed");
 
@@ -932,24 +921,13 @@ namespace System.Data.ProviderBase
 
             do
             {
-                bool started = false;
+                if (Interlocked.Exchange(ref _pendingOpensWaiting, 1) != 0)
+                {
+                    return;
+                }
 
-                RuntimeHelpers.PrepareConstrainedRegions();
                 try
                 {
-                    RuntimeHelpers.PrepareConstrainedRegions();
-                    try
-                    { }
-                    finally
-                    {
-                        started = Interlocked.CompareExchange(ref _pendingOpensWaiting, 1, 0) == 0;
-                    }
-
-                    if (!started)
-                    {
-                        return;
-                    }
-
                     while (_pendingOpens.TryDequeue(out next))
                     {
                         if (next.Completion.Task.IsCompleted)
@@ -971,7 +949,6 @@ namespace System.Data.ProviderBase
                         bool timeout = false;
                         Exception? caughtException = null;
 
-                        RuntimeHelpers.PrepareConstrainedRegions();
                         try
                         {
                             bool allowCreate = true;
@@ -1020,10 +997,7 @@ namespace System.Data.ProviderBase
                 }
                 finally
                 {
-                    if (started)
-                    {
-                        Interlocked.Exchange(ref _pendingOpensWaiting, 0);
-                    }
+                    Interlocked.Exchange(ref _pendingOpensWaiting, 0);
                 }
 
             } while (_pendingOpens.TryPeek(out next));
@@ -1107,31 +1081,24 @@ namespace System.Data.ProviderBase
 
                     bool mustRelease = false;
                     int waitForMultipleObjectsExHR = 0;
-                    RuntimeHelpers.PrepareConstrainedRegions();
                     try
                     {
                         _waitHandles.DangerousAddRef(ref mustRelease);
 
                         // We absolutely must have the value of waitResult set,
                         // or we may leak the mutex in async abort cases.
-                        RuntimeHelpers.PrepareConstrainedRegions();
-                        try
-                        {
-                            Debug.Assert(2 == waitHandleCount || 3 == waitHandleCount, "unexpected waithandle count");
-                        }
-                        finally
-                        {
-                            unsafe
-                            {
-                                nint* handle = (nint*)_waitHandles.DangerousGetHandle();
-                                waitResult = Interop.Kernel32.WaitForMultipleObjects(waitHandleCount, handle, false, waitForMultipleObjectsTimeout);
-                            }
+                        Debug.Assert(2 == waitHandleCount || 3 == waitHandleCount, "unexpected waithandle count");
 
-                            // call GetHRForLastWin32Error immediately after after the native call
-                            if (waitResult == WAIT_FAILED)
-                            {
-                                waitForMultipleObjectsExHR = Marshal.GetHRForLastWin32Error();
-                            }
+                        unsafe
+                        {
+                            nint* handle = (nint*)_waitHandles.DangerousGetHandle();
+                            waitResult = Interop.Kernel32.WaitForMultipleObjects(waitHandleCount, handle, false, waitForMultipleObjectsTimeout);
+                        }
+
+                        // call GetHRForLastWin32Error immediately after after the native call
+                        if (waitResult == WAIT_FAILED)
+                        {
+                            waitForMultipleObjectsExHR = Marshal.GetHRForLastWin32Error();
                         }
 
                         // From the WaitAny docs: "If more than one object became signaled during
@@ -1213,7 +1180,6 @@ namespace System.Data.ProviderBase
                                     {
                                         if (_waitHandles.CreationSemaphore.WaitOne(unchecked((int)waitForMultipleObjectsTimeout)))
                                         {
-                                            RuntimeHelpers.PrepareConstrainedRegions();
                                             try
                                             {
                                                 obj = UserCreateRequest(owningObject, userOptions);
@@ -1432,20 +1398,13 @@ namespace System.Data.ProviderBase
                         int waitResult = BOGUS_HANDLE;
                         uint timeout = (uint)CreationTimeout;
 
-                        RuntimeHelpers.PrepareConstrainedRegions();
                         try
                         {
                             _waitHandles.DangerousAddRef(ref mustRelease);
 
                             // Obtain creation mutex so we're the only one creating objects
                             // and we must have the wait result
-                            RuntimeHelpers.PrepareConstrainedRegions();
-                            try
-                            { }
-                            finally
-                            {
-                                waitResult = Interop.Kernel32.WaitForSingleObject(_waitHandles.CreationHandle, (int)timeout);
-                            }
+                            waitResult = Interop.Kernel32.WaitForSingleObject(_waitHandles.CreationHandle, (int)timeout);
                             if (WAIT_OBJECT_0 == waitResult)
                             {
                                 DbConnectionInternal newObj;

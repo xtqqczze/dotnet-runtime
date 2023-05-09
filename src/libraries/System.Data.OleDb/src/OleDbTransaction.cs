@@ -25,16 +25,10 @@ namespace System.Data.OleDb
 
             internal WrappedTransaction(UnsafeNativeMethods.ITransactionLocal transaction, int isolevel, out OleDbHResult hr) : base(transaction)
             {
-                RuntimeHelpers.PrepareConstrainedRegions();
-                try
-                { }
-                finally
+                hr = transaction.StartTransaction(isolevel, 0, IntPtr.Zero, out _);
+                if (0 <= hr)
                 {
-                    hr = transaction.StartTransaction(isolevel, 0, IntPtr.Zero, out _);
-                    if (0 <= hr)
-                    {
-                        _mustComplete = true;
-                    }
+                    _mustComplete = true;
                 }
             }
 
@@ -48,18 +42,11 @@ namespace System.Data.OleDb
                 Debug.Assert(_mustComplete, "transaction already completed");
                 OleDbHResult hr;
                 bool mustRelease = false;
-                RuntimeHelpers.PrepareConstrainedRegions();
                 try
                 {
                     DangerousAddRef(ref mustRelease);
-                    RuntimeHelpers.PrepareConstrainedRegions();
-                    try
-                    { }
-                    finally
-                    {
-                        hr = (OleDbHResult)NativeOledbWrapper.ITransactionAbort(DangerousGetHandle());
-                        _mustComplete = false;
-                    }
+                    hr = (OleDbHResult)NativeOledbWrapper.ITransactionAbort(DangerousGetHandle());
+                    _mustComplete = false;
                 }
                 finally
                 {
@@ -76,20 +63,13 @@ namespace System.Data.OleDb
                 Debug.Assert(_mustComplete, "transaction already completed");
                 OleDbHResult hr;
                 bool mustRelease = false;
-                RuntimeHelpers.PrepareConstrainedRegions();
                 try
                 {
                     DangerousAddRef(ref mustRelease);
-                    RuntimeHelpers.PrepareConstrainedRegions();
-                    try
-                    { }
-                    finally
+                    hr = (OleDbHResult)NativeOledbWrapper.ITransactionCommit(DangerousGetHandle());
+                    if ((0 <= (int)hr) || (OleDbHResult.XACT_E_NOTRANSACTION == hr))
                     {
-                        hr = (OleDbHResult)NativeOledbWrapper.ITransactionCommit(DangerousGetHandle());
-                        if ((0 <= (int)hr) || (OleDbHResult.XACT_E_NOTRANSACTION == hr))
-                        {
-                            _mustComplete = false;
-                        }
+                        _mustComplete = false;
                     }
                 }
                 finally

@@ -125,7 +125,6 @@ namespace System.Data.OleDb
 
             bool mustRelease = false;
 
-            RuntimeHelpers.PrepareConstrainedRegions();
             try
             {
                 DangerousAddRef(ref mustRelease);
@@ -173,7 +172,6 @@ namespace System.Data.OleDb
 
             object? value = null;
             bool mustRelease = false;
-            RuntimeHelpers.PrepareConstrainedRegions();
             try
             {
                 DangerousAddRef(ref mustRelease);
@@ -202,14 +200,12 @@ namespace System.Data.OleDb
             ValidateCheck(offset, 2 * ODB.SizeOf_Variant);
 
             bool mustRelease = false;
-            RuntimeHelpers.PrepareConstrainedRegions();
             try
             {
                 DangerousAddRef(ref mustRelease);
 
                 IntPtr buffer = ADP.IntPtrOffset(DangerousGetHandle(), offset);
 
-                RuntimeHelpers.PrepareConstrainedRegions();
                 try
                 {
                     // GetNativeVariantForObject must be in try block since it has no reliability contract
@@ -243,22 +239,15 @@ namespace System.Data.OleDb
 
             IntPtr ptr;
             bool mustRelease = false;
-            RuntimeHelpers.PrepareConstrainedRegions();
             try
             {
                 DangerousAddRef(ref mustRelease);
 
-                RuntimeHelpers.PrepareConstrainedRegions();
-                try
-                { }
-                finally
-                {
-                    ptr = Interop.OleAut32.SysAllocStringLen(value, (uint)value.Length);
+                ptr = Interop.OleAut32.SysAllocStringLen(value, (uint)value.Length);
 
-                    // safe to copy ptr, even if SysAllocStringLen failed
-                    Marshal.WriteIntPtr(base.handle, offset, ptr);
-                    Marshal.WriteIntPtr(base.handle, offset + IntPtr.Size, ptr);
-                }
+                // safe to copy ptr, even if SysAllocStringLen failed
+                Marshal.WriteIntPtr(base.handle, offset, ptr);
+                Marshal.WriteIntPtr(base.handle, offset + IntPtr.Size, ptr);
             }
             finally
             {
@@ -285,19 +274,12 @@ namespace System.Data.OleDb
                 pinnedValue = ADP.IntPtrOffset(base.handle, _emptyStringOffset);
             }
             bool mustRelease = false;
-            RuntimeHelpers.PrepareConstrainedRegions();
             try
             {
                 DangerousAddRef(ref mustRelease);
 
-                RuntimeHelpers.PrepareConstrainedRegions();
-                try
-                { }
-                finally
-                {
-                    Marshal.WriteIntPtr(base.handle, offset, pinnedValue);               // parameter input value
-                    Marshal.WriteIntPtr(base.handle, offset + IntPtr.Size, pinnedValue); // original parameter value
-                }
+                Marshal.WriteIntPtr(base.handle, offset, pinnedValue);               // parameter input value
+                Marshal.WriteIntPtr(base.handle, offset + IntPtr.Size, pinnedValue); // original parameter value
             }
             finally
             {
@@ -345,7 +327,6 @@ namespace System.Data.OleDb
                 { // prevent Dispose/ResetValues race condition
 
                     bool mustRelease = false;
-                    RuntimeHelpers.PrepareConstrainedRegions();
                     try
                     {
                         DangerousAddRef(ref mustRelease);
@@ -484,27 +465,21 @@ namespace System.Data.OleDb
 
             // two contiguous BSTR ptrs that need to be freed
             // the second should only be freed if different from the first
-            RuntimeHelpers.PrepareConstrainedRegions();
-            try
-            { }
-            finally
+            IntPtr currentValue = Marshal.ReadIntPtr(buffer, valueOffset);
+            IntPtr originalValue = Marshal.ReadIntPtr(buffer, valueOffset + IntPtr.Size);
+
+            if ((IntPtr.Zero != currentValue) && (currentValue != originalValue))
             {
-                IntPtr currentValue = Marshal.ReadIntPtr(buffer, valueOffset);
-                IntPtr originalValue = Marshal.ReadIntPtr(buffer, valueOffset + IntPtr.Size);
-
-                if ((IntPtr.Zero != currentValue) && (currentValue != originalValue))
-                {
-                    Interop.OleAut32.SysFreeString(currentValue);
-                }
-                if (IntPtr.Zero != originalValue)
-                {
-                    Interop.OleAut32.SysFreeString(originalValue);
-                }
-
-                // for debugability - delay clearing memory until after FreeBSTR
-                Marshal.WriteIntPtr(buffer, valueOffset, IntPtr.Zero);
-                Marshal.WriteIntPtr(buffer, valueOffset + IntPtr.Size, IntPtr.Zero);
+                Interop.OleAut32.SysFreeString(currentValue);
             }
+            if (IntPtr.Zero != originalValue)
+            {
+                Interop.OleAut32.SysFreeString(originalValue);
+            }
+
+            // for debugability - delay clearing memory until after FreeBSTR
+            Marshal.WriteIntPtr(buffer, valueOffset, IntPtr.Zero);
+            Marshal.WriteIntPtr(buffer, valueOffset + IntPtr.Size, IntPtr.Zero);
         }
 
         private static void FreeCoTaskMem(IntPtr buffer, int valueOffset)
@@ -513,24 +488,18 @@ namespace System.Data.OleDb
 
             // two contiguous CoTaskMemAlloc ptrs that need to be freed
             // the first should only be freed if different from the first
-            RuntimeHelpers.PrepareConstrainedRegions();
-            try
-            { }
-            finally
+            IntPtr currentValue = Marshal.ReadIntPtr(buffer, valueOffset);
+            IntPtr originalValue = Marshal.ReadIntPtr(buffer, valueOffset + IntPtr.Size);
+
+            // originalValue is pinned managed memory or pointer to emptyStringOffset
+            if ((IntPtr.Zero != currentValue) && (currentValue != originalValue))
             {
-                IntPtr currentValue = Marshal.ReadIntPtr(buffer, valueOffset);
-                IntPtr originalValue = Marshal.ReadIntPtr(buffer, valueOffset + IntPtr.Size);
-
-                // originalValue is pinned managed memory or pointer to emptyStringOffset
-                if ((IntPtr.Zero != currentValue) && (currentValue != originalValue))
-                {
-                    Interop.Ole32.CoTaskMemFree(currentValue);
-                }
-
-                // for debugability - delay clearing memory until after CoTaskMemFree
-                Marshal.WriteIntPtr(buffer, valueOffset, IntPtr.Zero);
-                Marshal.WriteIntPtr(buffer, valueOffset + IntPtr.Size, IntPtr.Zero);
+                Interop.Ole32.CoTaskMemFree(currentValue);
             }
+
+            // for debugability - delay clearing memory until after CoTaskMemFree
+            Marshal.WriteIntPtr(buffer, valueOffset, IntPtr.Zero);
+            Marshal.WriteIntPtr(buffer, valueOffset + IntPtr.Size, IntPtr.Zero);
         }
 
         private static void FreeVariant(IntPtr buffer, int valueOffset)
@@ -545,23 +514,17 @@ namespace System.Data.OleDb
             IntPtr originalHandle = ADP.IntPtrOffset(buffer, valueOffset + ODB.SizeOf_Variant);
             bool different = NativeOledbWrapper.MemoryCompare(currentHandle, originalHandle, ODB.SizeOf_Variant);
 
-            RuntimeHelpers.PrepareConstrainedRegions();
-            try
-            { }
-            finally
+            // always clear the first structure
+            Interop.OleAut32.VariantClear(currentHandle);
+            if (different)
             {
-                // always clear the first structure
-                Interop.OleAut32.VariantClear(currentHandle);
-                if (different)
-                {
-                    // second structure different from the first
-                    Interop.OleAut32.VariantClear(originalHandle);
-                }
-                else
-                {
-                    // second structure same as the first, just clear the field
-                    SafeNativeMethods.ZeroMemory(originalHandle, ODB.SizeOf_Variant);
-                }
+                // second structure different from the first
+                Interop.OleAut32.VariantClear(originalHandle);
+            }
+            else
+            {
+                // second structure same as the first, just clear the field
+                SafeNativeMethods.ZeroMemory(originalHandle, ODB.SizeOf_Variant);
             }
         }
 
@@ -576,23 +539,17 @@ namespace System.Data.OleDb
             IntPtr originalHandle = ADP.IntPtrOffset(buffer, valueOffset + sizeof(PROPVARIANT));
             bool different = NativeOledbWrapper.MemoryCompare(currentHandle, originalHandle, sizeof(PROPVARIANT));
 
-            RuntimeHelpers.PrepareConstrainedRegions();
-            try
-            { }
-            finally
+            // always clear the first structure
+            Interop.Ole32.PropVariantClear(currentHandle);
+            if (different)
             {
-                // always clear the first structure
-                Interop.Ole32.PropVariantClear(currentHandle);
-                if (different)
-                {
-                    // second structure different from the first
-                    Interop.Ole32.PropVariantClear(originalHandle);
-                }
-                else
-                {
-                    // second structure same as the first, just clear the field
-                    SafeNativeMethods.ZeroMemory(originalHandle, sizeof(PROPVARIANT));
-                }
+                // second structure different from the first
+                Interop.Ole32.PropVariantClear(originalHandle);
+            }
+            else
+            {
+                // second structure same as the first, just clear the field
+                SafeNativeMethods.ZeroMemory(originalHandle, sizeof(PROPVARIANT));
             }
         }
 
@@ -603,7 +560,6 @@ namespace System.Data.OleDb
 
             IntPtr value;
             bool mustRelease = false;
-            RuntimeHelpers.PrepareConstrainedRegions();
             try
             {
                 DangerousAddRef(ref mustRelease);

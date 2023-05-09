@@ -135,13 +135,7 @@ namespace System.Data.OleDb
 
         private ChapterHandle(object chapteredRowset, RowBinding binding, int valueOffset) : base(chapteredRowset)
         {
-            RuntimeHelpers.PrepareConstrainedRegions();
-            try
-            { }
-            finally
-            {
-                _chapterHandle = binding.InterlockedExchangePointer(valueOffset);
-            }
+            _chapterHandle = binding.InterlockedExchangePointer(valueOffset);
         }
 
         internal IntPtr HChapter
@@ -663,66 +657,44 @@ namespace System.Data.OleDb
     {
         internal static unsafe OleDbHResult IChapteredRowsetReleaseChapter(System.IntPtr ptr, System.IntPtr chapter)
         {
-            OleDbHResult hr;
-            IntPtr hchapter = chapter;
-            RuntimeHelpers.PrepareConstrainedRegions();
-            try
-            { }
-            finally
+            Guid IID_IChapteredRowset = typeof(System.Data.Common.UnsafeNativeMethods.IChapteredRowset).GUID;
+            int hr = Marshal.QueryInterface(ptr, ref IID_IChapteredRowset, out var pChapteredRowset);
+            if (pChapteredRowset != IntPtr.Zero)
             {
-                Guid IID_IChapteredRowset = typeof(System.Data.Common.UnsafeNativeMethods.IChapteredRowset).GUID;
-                hr = (OleDbHResult)Marshal.QueryInterface(ptr, ref IID_IChapteredRowset, out var pChapteredRowset);
-                if (pChapteredRowset != IntPtr.Zero)
-                {
-                    var chapteredRowset = (System.Data.Common.UnsafeNativeMethods.IChapteredRowset)Marshal.GetObjectForIUnknown(pChapteredRowset);
-                    hr = (OleDbHResult)chapteredRowset.ReleaseChapter(hchapter, out _);
-                    Marshal.ReleaseComObject(chapteredRowset);
-                    Marshal.Release(pChapteredRowset);
-                }
+                var chapteredRowset = (System.Data.Common.UnsafeNativeMethods.IChapteredRowset)Marshal.GetObjectForIUnknown(pChapteredRowset);
+                hr = chapteredRowset.ReleaseChapter(chapter, out _);
+                Marshal.ReleaseComObject(chapteredRowset);
+                Marshal.Release(pChapteredRowset);
             }
-            return hr;
+            return (OleDbHResult)hr;
         }
 
         internal static unsafe OleDbHResult ITransactionAbort(System.IntPtr ptr)
         {
-            OleDbHResult hr;
-            RuntimeHelpers.PrepareConstrainedRegions();
-            try
-            { }
-            finally
+            Guid IID_ITransactionLocal = typeof(ITransactionLocal).GUID;
+            int hr = Marshal.QueryInterface(ptr, ref IID_ITransactionLocal, out var pTransaction);
+            if (pTransaction != IntPtr.Zero)
             {
-                Guid IID_ITransactionLocal = typeof(ITransactionLocal).GUID;
-                hr = (OleDbHResult)Marshal.QueryInterface(ptr, ref IID_ITransactionLocal, out var pTransaction);
-                if (pTransaction != IntPtr.Zero)
-                {
-                    ITransactionLocal transactionLocal = (ITransactionLocal)Marshal.GetObjectForIUnknown(pTransaction);
-                    hr = (OleDbHResult)transactionLocal.Abort(IntPtr.Zero, false, false);
-                    Marshal.ReleaseComObject(transactionLocal);
-                    Marshal.Release(pTransaction);
-                }
+                ITransactionLocal transactionLocal = (ITransactionLocal)Marshal.GetObjectForIUnknown(pTransaction);
+                hr = transactionLocal.Abort(IntPtr.Zero, false, false);
+                Marshal.ReleaseComObject(transactionLocal);
+                Marshal.Release(pTransaction);
             }
-            return hr;
+            return (OleDbHResult)hr;
         }
 
         internal static unsafe OleDbHResult ITransactionCommit(System.IntPtr ptr)
         {
-            OleDbHResult hr;
-            RuntimeHelpers.PrepareConstrainedRegions();
-            try
-            { }
-            finally
+            Guid IID_ITransactionLocal = typeof(ITransactionLocal).GUID;
+            int hr = Marshal.QueryInterface(ptr, ref IID_ITransactionLocal, out var pTransaction);
+            if (pTransaction != IntPtr.Zero)
             {
-                Guid IID_ITransactionLocal = typeof(ITransactionLocal).GUID;
-                hr = (OleDbHResult)Marshal.QueryInterface(ptr, ref IID_ITransactionLocal, out var pTransaction);
-                if (pTransaction != IntPtr.Zero)
-                {
-                    ITransactionLocal transactionLocal = (ITransactionLocal)Marshal.GetObjectForIUnknown(pTransaction);
-                    hr = (OleDbHResult)transactionLocal.Commit(false, (uint)XACTTC.XACTTC_SYNC_PHASETWO, 0);
-                    Marshal.ReleaseComObject(transactionLocal);
-                    Marshal.Release(pTransaction);
-                }
+                ITransactionLocal transactionLocal = (ITransactionLocal)Marshal.GetObjectForIUnknown(pTransaction);
+                hr = transactionLocal.Commit(false, (uint)XACTTC.XACTTC_SYNC_PHASETWO, 0);
+                Marshal.ReleaseComObject(transactionLocal);
+                Marshal.Release(pTransaction);
             }
-            return hr;
+            return (OleDbHResult)hr;
         }
 
         internal static bool MemoryCompare(System.IntPtr buf1, System.IntPtr buf2, int count)

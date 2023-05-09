@@ -811,7 +811,6 @@ namespace System.Data.OleDb
             Bindings? bindings = ParameterBindings;
             bool mustRelease = false;
 
-            RuntimeHelpers.PrepareConstrainedRegions();
             try
             {
                 if (null != bindings)
@@ -968,7 +967,6 @@ namespace System.Data.OleDb
             StringMemHandle? sptr = null;
             bool mustReleaseStringHandle = false;
 
-            RuntimeHelpers.PrepareConstrainedRegions();
             try
             {
                 sptr = new StringMemHandle(ExpandCommandText());
@@ -989,7 +987,6 @@ namespace System.Data.OleDb
                             if (null != propSet)
                             {
                                 bool mustRelease = false;
-                                RuntimeHelpers.PrepareConstrainedRegions();
                                 try
                                 {
                                     propSet.DangerousAddRef(ref mustRelease);

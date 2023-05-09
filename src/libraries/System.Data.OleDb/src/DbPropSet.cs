@@ -25,16 +25,10 @@ namespace System.Data.OleDb
         {
             this.propertySetCount = propertysetCount;
             nuint countOfBytes = (nuint)(propertysetCount * ODB.SizeOf_tagDBPROPSET);
-            RuntimeHelpers.PrepareConstrainedRegions();
-            try
-            { }
-            finally
+            base.handle = Interop.Ole32.CoTaskMemAlloc(countOfBytes);
+            if (IntPtr.Zero != base.handle)
             {
-                base.handle = Interop.Ole32.CoTaskMemAlloc(countOfBytes);
-                if (IntPtr.Zero != base.handle)
-                {
-                    SafeNativeMethods.ZeroMemory(base.handle, (int)countOfBytes);
-                }
+                SafeNativeMethods.ZeroMemory(base.handle, (int)countOfBytes);
             }
             if (IntPtr.Zero == base.handle)
             {
@@ -182,7 +176,6 @@ namespace System.Data.OleDb
             ItagDBPROP[]? properties = null;
 
             bool mustRelease = false;
-            RuntimeHelpers.PrepareConstrainedRegions();
             try
             {
                 DangerousAddRef(ref mustRelease);
@@ -230,29 +223,22 @@ namespace System.Data.OleDb
             tagDBPROPSET propset = new tagDBPROPSET(properties.Length, propertySet);
 
             bool mustRelease = false;
-            RuntimeHelpers.PrepareConstrainedRegions();
             try
             {
                 DangerousAddRef(ref mustRelease);
 
                 IntPtr propsetPtr = ADP.IntPtrOffset(DangerousGetHandle(), index * ODB.SizeOf_tagDBPROPSET);
 
-                RuntimeHelpers.PrepareConstrainedRegions();
-                try
-                { }
-                finally
+                // must allocate and clear the memory without interruption
+                propset.rgProperties = Interop.Ole32.CoTaskMemAlloc(countOfBytes);
+                if (IntPtr.Zero != propset.rgProperties)
                 {
-                    // must allocate and clear the memory without interruption
-                    propset.rgProperties = Interop.Ole32.CoTaskMemAlloc(countOfBytes);
-                    if (IntPtr.Zero != propset.rgProperties)
-                    {
-                        // clearing is important so that we don't treat existing
-                        // garbage as important information during releaseHandle
-                        SafeNativeMethods.ZeroMemory(propset.rgProperties, (int)countOfBytes);
+                    // clearing is important so that we don't treat existing
+                    // garbage as important information during releaseHandle
+                    SafeNativeMethods.ZeroMemory(propset.rgProperties, (int)countOfBytes);
 
-                        // writing the structure to native memory so that it knows to free the referenced pointers
-                        Marshal.StructureToPtr(propset, propsetPtr, false/*deleteold*/);
-                    }
+                    // writing the structure to native memory so that it knows to free the referenced pointers
+                    Marshal.StructureToPtr(propset, propsetPtr, false/*deleteold*/);
                 }
                 if (IntPtr.Zero == propset.rgProperties)
                 {

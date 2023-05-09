@@ -24,14 +24,9 @@ namespace System.Data.OleDb
         {
             if (null != unknown)
             {
-                RuntimeHelpers.PrepareConstrainedRegions();
-                try
-                { }
-                finally
-                {
-                    // store the QI result for IID_IDataInitialize
-                    base.handle = Marshal.GetComInterfaceForObject(unknown, typeof(UnsafeNativeMethods.IDataInitialize));
-                }
+                // store the QI result for IID_IDataInitialize
+                base.handle = Marshal.GetComInterfaceForObject(unknown, typeof(UnsafeNativeMethods.IDataInitialize));
+
                 // native COM rules are the QI result is the 'this' pointer
                 // the pointer stored at that location is the vtable
                 // since IDataInitialize is a public,shipped COM interface, its layout will not change (ever)
@@ -46,7 +41,6 @@ namespace System.Data.OleDb
             OleDbHResult hr;
             UnsafeNativeMethods.IDataInitializeGetDataSource GetDataSource = DangerousIDataInitializeGetDataSource!;
             bool mustRelease = false;
-            RuntimeHelpers.PrepareConstrainedRegions();
             try
             {
                 DangerousAddRef(ref mustRelease);
@@ -125,7 +119,6 @@ namespace System.Data.OleDb
             OleDbHResult hr;
             bool mustRelease = false;
             IntPtr idbCreateSession = IntPtr.Zero;
-            RuntimeHelpers.PrepareConstrainedRegions();
             try
             {
                 DangerousAddRef(ref mustRelease);
@@ -327,7 +320,6 @@ namespace System.Data.OleDb
             if (!constr.HaveQueriedForCreateCommand || (null != constr.DangerousIDBCreateCommandCreateCommand))
             {
                 IntPtr idbCreateCommand = IntPtr.Zero;
-                RuntimeHelpers.PrepareConstrainedRegions();
                 try
                 {
                     // native COM rules are the QI result is the 'this' pointer
@@ -405,7 +397,6 @@ namespace System.Data.OleDb
             {
                 IntPtr nativeICommandText = IntPtr.Zero;
                 bool mustRelease = false;
-                RuntimeHelpers.PrepareConstrainedRegions();
                 try
                 {
                     DangerousAddRef(ref mustRelease);

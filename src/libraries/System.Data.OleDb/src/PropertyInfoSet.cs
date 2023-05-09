@@ -33,13 +33,7 @@ namespace System.Data.OleDb
         {
             OleDbHResult hr;
             int propIDSetCount = propIDSet.Count;
-            RuntimeHelpers.PrepareConstrainedRegions();
-            try
-            { }
-            finally
-            {
-                hr = idbProperties.GetPropertyInfo(propIDSetCount, propIDSet, out this.setCount, out base.handle, out this.descBuffer);
-            }
+            hr = idbProperties.GetPropertyInfo(propIDSetCount, propIDSet, out this.setCount, out base.handle, out this.descBuffer);
             if ((0 <= hr) && (IntPtr.Zero != handle))
             {
                 SafeNativeMethods.Wrapper.ClearErrorInfo();
@@ -59,7 +53,6 @@ namespace System.Data.OleDb
             Dictionary<string, OleDbPropertyInfo>? propertyLookup = null;
 
             bool mustRelease = false;
-            RuntimeHelpers.PrepareConstrainedRegions();
             try
             {
                 DangerousAddRef(ref mustRelease);

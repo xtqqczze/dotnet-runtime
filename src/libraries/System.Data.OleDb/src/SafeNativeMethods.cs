@@ -12,10 +12,9 @@ namespace System.Data.Common
     [SuppressUnmanagedCodeSecurity]
     internal static partial class SafeNativeMethods
     {
-        internal static void ZeroMemory(IntPtr ptr, int length)
+        internal static unsafe void ZeroMemory(IntPtr ptr, int byteCount)
         {
-            var zeroes = new byte[length];
-            Marshal.Copy(zeroes, 0, ptr, length);
+            new Span<byte>((void*)ptr, byteCount).Clear();
         }
 
         internal static unsafe IntPtr InterlockedExchangePointer(
