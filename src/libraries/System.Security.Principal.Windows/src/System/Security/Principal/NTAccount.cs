@@ -231,7 +231,7 @@ namespace System.Security.Principal
 
                     Names[currentName].Buffer = nta.ToString();
 
-                    if (Names[currentName].Buffer.Length * 2 + 2 > ushort.MaxValue)
+                    if (Names[currentName].Buffer.Length > Win32.UNICODE_STRING_MAX_CHARS)
                     {
                         // this should never happen since we are already validating account name length in constructor and
                         // it is less than this limit
@@ -239,8 +239,8 @@ namespace System.Security.Principal
                         throw new InvalidOperationException();
                     }
 
-                    Names[currentName].Length = (ushort)(Names[currentName].Buffer.Length * 2);
-                    Names[currentName].MaximumLength = (ushort)(Names[currentName].Length + 2);
+                    Names[currentName].Length = (ushort)(Names[currentName].Buffer.Length * sizeof(ushort);
+                    Names[currentName].MaximumLength = (ushort)(Names[currentName].Length + sizeof(ushort));
                     currentName++;
                 }
 
