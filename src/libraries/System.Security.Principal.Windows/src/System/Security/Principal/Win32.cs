@@ -12,6 +12,8 @@ namespace System.Security.Principal
     {
         internal const int FALSE = 0;
 
+        internal const int UNICODE_STRING_MAX_CHARS = 32767;
+
         //
         // Wrapper around advapi32.LsaOpenPolicy
         //
