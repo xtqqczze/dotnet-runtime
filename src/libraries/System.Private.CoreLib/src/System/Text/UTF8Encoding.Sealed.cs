@@ -93,6 +93,7 @@ namespace System.Text
                 return (charCount * MaxUtf8BytesPerChar) + MaxUtf8BytesPerChar;
             }
 
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
             public override int GetMaxCharCount(int byteCount)
             {
                 // This is a specialization of UTF8Encoding.GetMaxCharCount
