@@ -2238,17 +2238,17 @@ namespace System.Text
         {
             Debug.Assert(AllBytesInUInt32AreAscii(value));
 
-            if (AdvSimd.Arm64.IsSupported)
+            if (AdvSimd.IsSupported)
             {
-                Vector128<byte> vecNarrow = AdvSimd.DuplicateToVector128(value).AsByte();
-                Vector128<ulong> vecWide = AdvSimd.Arm64.ZipLow(vecNarrow, Vector128<byte>.Zero).AsUInt64();
-                Unsafe.WriteUnaligned(ref Unsafe.As<char, byte>(ref outputBuffer), vecWide.ToScalar());
+                Vector64<byte> vecNarrow = Vector64.CreateScalar(value).AsByte();
+                Vector64<ushort> vecWide = Vector64.WidenLower(vecNarrow);
+                vecWide.StoreUnsafe(ref Unsafe.As<char, ushort>(ref outputBuffer));
             }
             else if (Vector128.IsHardwareAccelerated)
             {
                 Vector128<byte> vecNarrow = Vector128.CreateScalar(value).AsByte();
-                Vector128<ulong> vecWide = Vector128.WidenLower(vecNarrow).AsUInt64();
-                Unsafe.WriteUnaligned(ref Unsafe.As<char, byte>(ref outputBuffer), vecWide.ToScalar());
+                Vector128<ushort> vecWide = Vector128.WidenLower(vecNarrow);
+                vecWide.StoreLowerUnsafe(ref Unsafe.As<char, ushort>(ref outputBuffer));
             }
             else
             {
