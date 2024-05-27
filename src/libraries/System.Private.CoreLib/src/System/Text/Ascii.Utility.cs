@@ -2238,13 +2238,7 @@ namespace System.Text
         {
             Debug.Assert(AllBytesInUInt32AreAscii(value));
 
-            if (AdvSimd.IsSupported)
-            {
-                Vector64<byte> vecNarrow = Vector64.CreateScalar(value).AsByte();
-                Vector64<ushort> vecWide = Vector64.WidenLower(vecNarrow);
-                vecWide.StoreUnsafe(ref Unsafe.As<char, ushort>(ref outputBuffer));
-            }
-            else if (Vector128.IsHardwareAccelerated)
+            if (Vector128.IsHardwareAccelerated)
             {
                 Vector128<byte> vecNarrow = Vector128.CreateScalar(value).AsByte();
                 Vector128<ushort> vecWide = Vector128.WidenLower(vecNarrow);
