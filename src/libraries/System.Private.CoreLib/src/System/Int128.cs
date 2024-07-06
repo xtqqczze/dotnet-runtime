@@ -1186,8 +1186,9 @@ namespace System
         /// <inheritdoc cref="IMultiplyOperators{TSelf, TOther, TResult}.op_Multiply(TSelf, TOther)" />
         public static Int128 operator *(Int128 left, Int128 right)
         {
-            // Multiplication is the same for signed and unsigned provided the "upper" bits aren't needed
-            return (Int128)((UInt128)(left) * (UInt128)(right));
+            ulong upper = Math.BigMul(left._lower, right._lower, out ulong lower);
+            upper += (left._upper * right._lower) + (left._lower * right._upper);
+            return new Int128(upper, lower);
         }
 
         /// <inheritdoc cref="IMultiplyOperators{TSelf, TOther, TResult}.op_CheckedMultiply(TSelf, TOther)" />
