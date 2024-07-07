@@ -797,7 +797,8 @@ namespace System
         public static (UInt128 Quotient, UInt128 Remainder) DivRem(UInt128 left, UInt128 right)
         {
             UInt128 quotient = left / right;
-            return (quotient, left - (quotient * right));
+            UInt128 tmp = quotient * right;
+            return (quotient, left - tmp);
         }
 
         /// <inheritdoc cref="IBinaryInteger{TSelf}.LeadingZeroCount(TSelf)" />

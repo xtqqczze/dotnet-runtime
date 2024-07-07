@@ -17,7 +17,8 @@ namespace System.Numerics
         static virtual (TSelf Quotient, TSelf Remainder) DivRem(TSelf left, TSelf right)
         {
             TSelf quotient = left / right;
-            return (quotient, (left - (quotient * right)));
+            TSelf tmp = quotient * right;
+            return (quotient, left - tmp);
         }
 
         /// <summary>Computes the number of leading zero bits in a value.</summary>
