@@ -35,35 +35,35 @@ namespace System
 
                 if (sizeof(T) == 1)
                 {
-                    vector = Vector.Create(Unsafe.BitCast<T, byte>(value));
+                    vector = Vector.Create(BitCastUnsafe<T, byte>(value));
                 }
                 else if (sizeof(T) == 2)
                 {
-                    vector = Vector.AsVectorByte(Vector.Create(Unsafe.BitCast<T, ushort>(value)));
+                    vector = Vector.AsVectorByte(Vector.Create(BitCastUnsafe<T, ushort>(value)));
                 }
                 else if (sizeof(T) == 4)
                 {
                     // special-case float since it's already passed in a SIMD reg
                     vector = (typeof(T) == typeof(float))
                         ? Vector.AsVectorByte(Vector.Create(Unsafe.BitCast<T, float>(value)))
-                        : Vector.AsVectorByte(Vector.Create(Unsafe.BitCast<T, uint>(value)));
+                        : Vector.AsVectorByte(Vector.Create(BitCastUnsafe<T, uint>(value)));
                 }
                 else if (sizeof(T) == 8)
                 {
                     // special-case double since it's already passed in a SIMD reg
                     vector = (typeof(T) == typeof(double))
                         ? Vector.AsVectorByte(Vector.Create(Unsafe.BitCast<T, double>(value)))
-                        : Vector.AsVectorByte(Vector.Create(Unsafe.BitCast<T, ulong>(value)));
+                        : Vector.AsVectorByte(Vector.Create(BitCastUnsafe<T, ulong>(value)));
                 }
                 else if (sizeof(T) == 16)
                 {
                     if (Vector<byte>.Count == 16)
                     {
-                        vector = Unsafe.BitCast<T, Vector128<byte>>(value).AsVector();
+                        vector = BitCastUnsafe<T, Vector128<byte>>(value).AsVector();
                     }
                     else if (Vector<byte>.Count == 32)
                     {
-                        vector = Vector256.Create(Unsafe.BitCast<T, Vector128<byte>>(value)).AsVector();
+                        vector = Vector256.Create(BitCastUnsafe<T, Vector128<byte>>(value)).AsVector();
                     }
                     else
                     {
@@ -75,7 +75,7 @@ namespace System
                 {
                     if (Vector<byte>.Count == 32)
                     {
-                        vector = Unsafe.BitCast<T, Vector256<byte>>(value).AsVector();
+                        vector = BitCastUnsafe<T, Vector256<byte>>(value).AsVector();
                     }
                     else
                     {
@@ -183,6 +183,16 @@ namespace System
             if ((numElements & 1) != 0)
             {
                 Unsafe.Add(ref refData, (nint)i) = value;
+            }
+
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            static unsafe TTo BitCastUnsafe<TFrom, TTo>(TFrom source)
+            {
+                Debug.Assert(sizeof(TFrom) == sizeof(TTo));
+
+                return (default(TFrom) is not null)
+                    ? Unsafe.BitCast<TFrom, TTo>(source)
+                    : Unsafe.ReadUnaligned<TTo>(ref Unsafe.As<TFrom, byte>(ref source));
             }
         }
 
