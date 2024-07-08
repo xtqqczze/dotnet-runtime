@@ -1104,10 +1104,9 @@ namespace System
                     return left._lower / right._lower;
                 }
             }
-
-            if (right >= left)
+            else if (left._upper <= right._upper)
             {
-                return (right == left) ? One : Zero;
+                return (left._upper == right._upper && left._lower >= right._lower) ? One : Zero;
             }
 
             return DivideSlow(left, right);
