@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Diagnostics;
+using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Runtime.Intrinsics;
@@ -45,7 +46,7 @@ namespace System.Text
         /// <returns>True if <paramref name="value"/> is ASCII, False otherwise.</returns>
         public static bool IsValid(char value) => value <= 127;
 
-        private static unsafe bool IsValidCore<T>(ref T searchSpace, int length) where T : unmanaged
+        private static unsafe bool IsValidCore<T>(ref T searchSpace, int length) where T : unmanaged, IBinaryInteger<T>
         {
             Debug.Assert(typeof(T) == typeof(byte) || typeof(T) == typeof(ushort));
 
@@ -108,7 +109,7 @@ namespace System.Text
             // Process inputs with lengths [16, 32] bytes.
             if (length <= 2 * Vector128<T>.Count)
             {
-                return AllCharsInVectorAreAscii(
+                return IsValid<T, Vector128<T>>(
                     Vector128.LoadUnsafe(ref searchSpace) |
                     Vector128.LoadUnsafe(ref Unsafe.Subtract(ref searchSpaceEnd, Vector128<T>.Count)));
             }
@@ -118,7 +119,7 @@ namespace System.Text
                 // Process inputs with lengths [33, 64] bytes.
                 if (length <= 2 * Vector256<T>.Count)
                 {
-                    return AllCharsInVectorAreAscii(
+                    return IsValid<T, Vector256<T>>(
                         Vector256.LoadUnsafe(ref searchSpace) |
                         Vector256.LoadUnsafe(ref Unsafe.Subtract(ref searchSpaceEnd, Vector256<T>.Count)));
                 }
@@ -127,7 +128,7 @@ namespace System.Text
                 if (length > 4 * Vector256<T>.Count)
                 {
                     // Process the first 128 bytes.
-                    if (!AllCharsInVectorAreAscii(
+                    if (!IsValid<T, Vector256<T>>(
                         Vector256.LoadUnsafe(ref searchSpace) |
                         Vector256.LoadUnsafe(ref searchSpace, (nuint)Vector256<T>.Count) |
                         Vector256.LoadUnsafe(ref searchSpace, 2 * (nuint)Vector256<T>.Count) |
@@ -151,7 +152,7 @@ namespace System.Text
                     {
                         ref T current = ref Unsafe.Add(ref searchSpace, i);
 
-                        if (!AllCharsInVectorAreAscii(
+                        if (!IsValid<T, Vector256<T>>(
                             Vector256.LoadUnsafe(ref current) |
                             Vector256.LoadUnsafe(ref current, (nuint)Vector256<T>.Count) |
                             Vector256.LoadUnsafe(ref current, 2 * (nuint)Vector256<T>.Count) |
@@ -167,7 +168,7 @@ namespace System.Text
                 // Process the last [1, 128] bytes.
                 // The search space has at least 2 * Vector256 bytes available to read.
                 // We process the first 2 and last 2 vectors, which may overlap.
-                return AllCharsInVectorAreAscii(
+                return IsValid<T, Vector256<T>>(
                     Vector256.LoadUnsafe(ref searchSpace) |
                     Vector256.LoadUnsafe(ref searchSpace, (nuint)Vector256<T>.Count) |
                     Vector256.LoadUnsafe(ref Unsafe.Subtract(ref searchSpaceEnd, 2 * Vector256<T>.Count)) |
@@ -179,7 +180,7 @@ namespace System.Text
                 if (length > 4 * Vector128<T>.Count)
                 {
                     // Process the first 64 bytes.
-                    if (!AllCharsInVectorAreAscii(
+                    if (!IsValid<T, Vector128<T>>(
                         Vector128.LoadUnsafe(ref searchSpace) |
                         Vector128.LoadUnsafe(ref searchSpace, (nuint)Vector128<T>.Count) |
                         Vector128.LoadUnsafe(ref searchSpace, 2 * (nuint)Vector128<T>.Count) |
@@ -203,7 +204,7 @@ namespace System.Text
                     {
                         ref T current = ref Unsafe.Add(ref searchSpace, i);
 
-                        if (!AllCharsInVectorAreAscii(
+                        if (!IsValid<T, Vector128<T>>(
                             Vector128.LoadUnsafe(ref current) |
                             Vector128.LoadUnsafe(ref current, (nuint)Vector128<T>.Count) |
                             Vector128.LoadUnsafe(ref current, 2 * (nuint)Vector128<T>.Count) |
@@ -219,7 +220,7 @@ namespace System.Text
                 // Process the last [1, 64] bytes.
                 // The search space has at least 2 * Vector128 bytes available to read.
                 // We process the first 2 and last 2 vectors, which may overlap.
-                return AllCharsInVectorAreAscii(
+                return IsValid<T, Vector128<T>>(
                     Vector128.LoadUnsafe(ref searchSpace) |
                     Vector128.LoadUnsafe(ref searchSpace, (nuint)Vector128<T>.Count) |
                     Vector128.LoadUnsafe(ref Unsafe.Subtract(ref searchSpaceEnd, 2 * Vector128<T>.Count)) |

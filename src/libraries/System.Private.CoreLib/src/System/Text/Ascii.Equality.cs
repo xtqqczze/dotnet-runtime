@@ -39,8 +39,8 @@ namespace System.Text
             && Equals<ushort, ushort, PlainLoader<ushort>>(ref Unsafe.As<char, ushort>(ref MemoryMarshal.GetReference(left)), ref Unsafe.As<char, ushort>(ref MemoryMarshal.GetReference(right)), (uint)right.Length);
 
         private static bool Equals<TLeft, TRight, TLoader>(ref TLeft left, ref TRight right, nuint length)
-            where TLeft : unmanaged, INumberBase<TLeft>
-            where TRight : unmanaged, INumberBase<TRight>
+            where TLeft : unmanaged, IBinaryInteger<TLeft>
+            where TRight : unmanaged, IBinaryInteger<TRight>
             where TLoader : struct, ILoader<TLeft, TRight>
         {
             Debug.Assert(
@@ -138,7 +138,7 @@ namespace System.Text
                     leftValues = TLoader.Load128(ref currentLeftSearchSpace);
                     rightValues = Vector128.LoadUnsafe(ref currentRightSearchSpace);
 
-                    if (leftValues != rightValues || !AllCharsInVectorAreAscii(leftValues))
+                    if (leftValues != rightValues || !IsValid<TRight, Vector128<TRight>>(leftValues))
                     {
                         return false;
                     }
@@ -154,7 +154,7 @@ namespace System.Text
                     leftValues = TLoader.Load128(ref oneVectorAwayFromLeftEnd);
                     rightValues = Vector128.LoadUnsafe(ref oneVectorAwayFromRightEnd);
 
-                    if (leftValues != rightValues || !AllCharsInVectorAreAscii(leftValues))
+                    if (leftValues != rightValues || !IsValid<TRight, Vector128<TRight>>(leftValues))
                     {
                         return false;
                     }
@@ -193,8 +193,8 @@ namespace System.Text
             EqualsIgnoreCase<ushort, ushort, PlainLoader<ushort>>(ref Unsafe.As<char, ushort>(ref left), ref Unsafe.As<char, ushort>(ref right), length);
 
         private static bool EqualsIgnoreCase<TLeft, TRight, TLoader>(ref TLeft left, ref TRight right, nuint length)
-            where TLeft : unmanaged, INumberBase<TLeft>
-            where TRight : unmanaged, INumberBase<TRight>
+            where TLeft : unmanaged, IBinaryInteger<TLeft>
+            where TRight : unmanaged, IBinaryInteger<TRight>
             where TLoader : ILoader<TLeft, TRight>
         {
             Debug.Assert(
@@ -250,7 +250,7 @@ namespace System.Text
                 {
                     leftValues = TLoader.Load512(ref currentLeftSearchSpace);
                     rightValues = Vector512.LoadUnsafe(ref currentRightSearchSpace);
-                    if (!AllCharsInVectorAreAscii(leftValues | rightValues))
+                    if (!IsValid<TRight, Vector512<TRight>>(leftValues | rightValues))
                     {
                         return false;
                     }
@@ -281,7 +281,7 @@ namespace System.Text
                     leftValues = TLoader.Load512(ref oneVectorAwayFromLeftEnd);
                     rightValues = Vector512.LoadUnsafe(ref oneVectorAwayFromRightEnd);
 
-                    if (!AllCharsInVectorAreAscii(leftValues | rightValues))
+                    if (!IsValid<TRight, Vector512<TRight>>(leftValues | rightValues))
                     {
                         return false;
                     }
@@ -322,7 +322,7 @@ namespace System.Text
                     leftValues = TLoader.Load256(ref currentLeftSearchSpace);
                     rightValues = Vector256.LoadUnsafe(ref currentRightSearchSpace);
 
-                    if (!AllCharsInVectorAreAscii(leftValues | rightValues))
+                    if (!IsValid<TRight, Vector256<TRight>>(leftValues | rightValues))
                     {
                         return false;
                     }
@@ -353,7 +353,7 @@ namespace System.Text
                     leftValues = TLoader.Load256(ref oneVectorAwayFromLeftEnd);
                     rightValues = Vector256.LoadUnsafe(ref oneVectorAwayFromRightEnd);
 
-                    if (!AllCharsInVectorAreAscii(leftValues | rightValues))
+                    if (!IsValid<TRight, Vector256<TRight>>(leftValues | rightValues))
                     {
                         return false;
                     }
@@ -395,7 +395,7 @@ namespace System.Text
                     leftValues = TLoader.Load128(ref currentLeftSearchSpace);
                     rightValues = Vector128.LoadUnsafe(ref currentRightSearchSpace);
 
-                    if (!AllCharsInVectorAreAscii(leftValues | rightValues))
+                    if (!IsValid<TRight, Vector128<TRight>>(leftValues | rightValues))
                     {
                         return false;
                     }
@@ -426,7 +426,7 @@ namespace System.Text
                     leftValues = TLoader.Load128(ref oneVectorAwayFromLeftEnd);
                     rightValues = Vector128.LoadUnsafe(ref oneVectorAwayFromRightEnd);
 
-                    if (!AllCharsInVectorAreAscii(leftValues | rightValues))
+                    if (!IsValid<TRight, Vector128<TRight>>(leftValues | rightValues))
                     {
                         return false;
                     }
@@ -452,8 +452,8 @@ namespace System.Text
         }
 
         private interface ILoader<TLeft, TRight>
-            where TLeft : unmanaged, INumberBase<TLeft>
-            where TRight : unmanaged, INumberBase<TRight>
+            where TLeft : unmanaged, IBinaryInteger<TLeft>
+            where TRight : unmanaged, IBinaryInteger<TRight>
         {
             static abstract nuint Count128 { get; }
             static abstract nuint Count256 { get; }
@@ -465,7 +465,7 @@ namespace System.Text
             static abstract bool EqualAndAscii512(ref TLeft left, ref TRight right);
         }
 
-        private readonly struct PlainLoader<T> : ILoader<T, T> where T : unmanaged, INumberBase<T>
+        private readonly struct PlainLoader<T> : ILoader<T, T> where T : unmanaged, IBinaryInteger<T>
         {
             public static nuint Count128 => (uint)Vector128<T>.Count;
             public static nuint Count256 => (uint)Vector256<T>.Count;
@@ -481,7 +481,7 @@ namespace System.Text
                 Vector256<T> leftValues = Vector256.LoadUnsafe(ref left);
                 Vector256<T> rightValues = Vector256.LoadUnsafe(ref right);
 
-                if (leftValues != rightValues || !AllCharsInVectorAreAscii(leftValues))
+                if (leftValues != rightValues || !IsValid<T, Vector256<T>>(leftValues))
                 {
                     return false;
                 }
@@ -495,7 +495,7 @@ namespace System.Text
                 Vector512<T> leftValues = Vector512.LoadUnsafe(ref left);
                 Vector512<T> rightValues = Vector512.LoadUnsafe(ref right);
 
-                if (leftValues != rightValues || !AllCharsInVectorAreAscii(leftValues))
+                if (leftValues != rightValues || !IsValid<T, Vector512<T>>(leftValues))
                 {
                     return false;
                 }
@@ -550,7 +550,7 @@ namespace System.Text
                 Debug.Assert(Vector256<byte>.Count == Vector256<ushort>.Count * 2);
 
                 Vector256<byte> leftNotWidened = Vector256.LoadUnsafe(ref utf8);
-                if (!AllCharsInVectorAreAscii(leftNotWidened))
+                if (!IsValid<byte, Vector256<byte>>(leftNotWidened))
                 {
                     return false;
                 }
@@ -575,7 +575,7 @@ namespace System.Text
                 Debug.Assert(Vector512<byte>.Count == Vector512<ushort>.Count * 2);
 
                 Vector512<byte> leftNotWidened = Vector512.LoadUnsafe(ref utf8);
-                if (!AllCharsInVectorAreAscii(leftNotWidened))
+                if (!IsValid<byte, Vector512<byte>>(leftNotWidened))
                 {
                     return false;
                 }

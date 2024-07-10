@@ -276,15 +276,5 @@ namespace System.Text.Unicode
             indicator |= 0xFF7F_FF7F_FF7F_FF7Ful;
             return (differentBits & indicator) == 0;
         }
-
-        /// <summary>
-        /// Returns true iff the TVector represents ASCII UTF-16 characters in machine endianness.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static bool AllCharsInVectorAreAscii<TVector>(TVector vec)
-            where TVector : struct, ISimdVector<TVector, ushort>
-        {
-            return (vec & TVector.Create(unchecked((ushort)~0x007F))).Equals(TVector.Zero);
-        }
     }
 }

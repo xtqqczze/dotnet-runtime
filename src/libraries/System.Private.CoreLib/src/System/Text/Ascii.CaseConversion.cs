@@ -238,7 +238,7 @@ namespace System.Text
                 // Unaligned read and check for non-ASCII data.
 
                 Vector128<TFrom> srcVector = Vector128.LoadUnsafe(ref *pSrc);
-                if (VectorContainsNonAsciiChar(srcVector))
+                if (!IsValid<TFrom, Vector128<TFrom>>(srcVector))
                 {
                     goto Drain64;
                 }
@@ -291,7 +291,7 @@ namespace System.Text
                     // Unaligned read & check for non-ASCII data.
 
                     srcVector = Vector128.LoadUnsafe(ref *pSrc, i);
-                    if (VectorContainsNonAsciiChar(srcVector))
+                    if (!IsValid<TFrom, Vector128<TFrom>>(srcVector))
                     {
                         goto Drain64;
                     }

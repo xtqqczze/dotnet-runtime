@@ -13,6 +13,8 @@ namespace System.Text
 {
     public static partial class Ascii
     {
+        private const byte AsciiMask = 0x7f;
+
         /// <summary>
         /// Returns <see langword="true"/> iff all bytes in <paramref name="value"/> are ASCII.
         /// </summary>
@@ -202,7 +204,7 @@ namespace System.Text
             }
             else if (Vector128.IsHardwareAccelerated && bufferLength >= 2 * (uint)Vector128<byte>.Count)
             {
-                if (!VectorContainsNonAsciiChar(Vector128.Load(pBuffer)))
+                if (IsValid<byte, Vector128<byte>>(Vector128.Load(pBuffer)))
                 {
                     // The first several elements of the input buffer were ASCII. Bump up the pointer to the
                     // next aligned boundary, then perform aligned reads from here on out until we find non-ASCII
@@ -222,7 +224,7 @@ namespace System.Text
                     do
                     {
                         Debug.Assert((nuint)pBuffer % Vector128.Size == 0, "Vector read should be aligned.");
-                        if (VectorContainsNonAsciiChar(Vector128.LoadAligned(pBuffer)))
+                        if (!IsValid<byte, Vector128<byte>>(Vector128.LoadAligned(pBuffer)))
                         {
                             break; // found non-ASCII data
                         }
@@ -746,7 +748,7 @@ namespace System.Text
             {
                 const uint SizeOfVector512InChars = Vector512.Size / sizeof(ushort);
 
-                if (!VectorContainsNonAsciiChar(Vector512.Load((ushort*)pBuffer)))
+                if (IsValid<ushort, Vector512<ushort>>(Vector512.Load((ushort*)pBuffer)))
                 {
                     // The first several elements of the input buffer were ASCII. Bump up the pointer to the
                     // next aligned boundary, then perform aligned reads from here on out until we find non-ASCII
@@ -766,7 +768,7 @@ namespace System.Text
                     do
                     {
                         Debug.Assert((nuint)pBuffer % Vector512.Size == 0, "Vector read should be aligned.");
-                        if (VectorContainsNonAsciiChar(Vector512.LoadAligned((ushort*)pBuffer)))
+                        if (!IsValid<ushort, Vector512<ushort>>(Vector512.LoadAligned((ushort*)pBuffer)))
                         {
                             break; // found non-ASCII data
                         }
@@ -782,7 +784,7 @@ namespace System.Text
             {
                 const uint SizeOfVector256InChars = Vector256.Size / sizeof(ushort);
 
-                if (!VectorContainsNonAsciiChar(Vector256.Load((ushort*)pBuffer)))
+                if (IsValid<ushort, Vector256<ushort>>(Vector256.Load((ushort*)pBuffer)))
                 {
                     // The first several elements of the input buffer were ASCII. Bump up the pointer to the
                     // next aligned boundary, then perform aligned reads from here on out until we find non-ASCII
@@ -802,7 +804,7 @@ namespace System.Text
                     do
                     {
                         Debug.Assert((nuint)pBuffer % Vector256.Size == 0, "Vector read should be aligned.");
-                        if (VectorContainsNonAsciiChar(Vector256.LoadAligned((ushort*)pBuffer)))
+                        if (!IsValid<ushort, Vector256<ushort>>(Vector256.LoadAligned((ushort*)pBuffer)))
                         {
                             break; // found non-ASCII data
                         }
@@ -818,7 +820,7 @@ namespace System.Text
             {
                 const uint SizeOfVector128InChars = Vector128.Size / sizeof(ushort); // JIT will make this a const
 
-                if (!VectorContainsNonAsciiChar(Vector128.Load((ushort*)pBuffer)))
+                if (IsValid<ushort, Vector128<ushort>>(Vector128.Load((ushort*)pBuffer)))
                 {
                     // The first several elements of the input buffer were ASCII. Bump up the pointer to the
                     // next aligned boundary, then perform aligned reads from here on out until we find non-ASCII
@@ -837,7 +839,7 @@ namespace System.Text
                     do
                     {
                         Debug.Assert((nuint)pBuffer % Vector128.Size == 0, "Vector read should be aligned.");
-                        if (VectorContainsNonAsciiChar(Vector128.LoadAligned((ushort*)pBuffer)))
+                        if (!IsValid<ushort, Vector128<ushort>>(Vector128.LoadAligned((ushort*)pBuffer)))
                         {
                             break; // found non-ASCII data
                         }
@@ -971,7 +973,7 @@ namespace System.Text
             // Read the first vector unaligned.
 
             firstVector = Vector128.LoadUnsafe(ref *(ushort*)pBuffer);
-            if (VectorContainsNonAsciiChar(firstVector))
+            if (!IsValid<ushort, Vector128<ushort>>(firstVector))
             {
                 goto FoundNonAsciiDataInFirstVector;
             }
@@ -1018,7 +1020,7 @@ namespace System.Text
                     secondVector = Vector128.LoadUnsafe(ref *(ushort*)pBuffer, SizeOfVector128InChars);
                     Vector128<ushort> combinedVector = firstVector | secondVector;
 
-                    if (VectorContainsNonAsciiChar(combinedVector))
+                    if (!IsValid<ushort, Vector128<ushort>>(combinedVector))
                     {
                         goto FoundNonAsciiDataInFirstOrSecondVector;
                     }
@@ -1046,7 +1048,7 @@ namespace System.Text
             // Remember, at this point pBuffer is still aligned.
 
             firstVector = Vector128.LoadUnsafe(ref *(ushort*)pBuffer);
-            if (VectorContainsNonAsciiChar(firstVector))
+            if (!IsValid<ushort, Vector128<ushort>>(firstVector))
             {
                 goto FoundNonAsciiDataInFirstVector;
             }
@@ -1064,7 +1066,7 @@ namespace System.Text
 
                 pBuffer = (char*)((byte*)pBuffer + (bufferLength & (Vector128.Size - 1)) - Vector128.Size);
                 firstVector = Vector128.LoadUnsafe(ref *(ushort*)pBuffer);
-                if (VectorContainsNonAsciiChar(firstVector))
+                if (!IsValid<ushort, Vector128<ushort>>(firstVector))
                 {
                     goto FoundNonAsciiDataInFirstVector;
                 }
@@ -1083,7 +1085,7 @@ namespace System.Text
             // vector, and if that's all-ASCII then the second vector must be the culprit. Either way
             // we'll make sure the first vector local is the one that contains the non-ASCII data.
 
-            if (VectorContainsNonAsciiChar(firstVector))
+            if (!IsValid<ushort, Vector128<ushort>>(firstVector))
             {
                 goto FoundNonAsciiDataInFirstVector;
             }
@@ -1496,141 +1498,15 @@ namespace System.Text
             goto Finish;
         }
 
+        /// <summary>
+        /// Returns true iff the TVector represents ASCII UTF-16 characters in machine endianness.
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static bool VectorContainsNonAsciiChar(Vector128<byte> asciiVector)
+        internal static bool IsValid<T, TVector>(TVector vector)
+            where T : unmanaged, IBinaryInteger<T>
+            where TVector : struct, ISimdVector<TVector, T>
         {
-            // max ASCII character is 0b_0111_1111, so the most significant bit (0x80) tells whether it contains non ascii
-
-            // prefer architecture specific intrinsic as they offer better perf
-            if (Sse41.IsSupported)
-            {
-                return (asciiVector & Vector128.Create((byte)0x80)) != Vector128<byte>.Zero;
-            }
-            else if (AdvSimd.Arm64.IsSupported)
-            {
-                Vector128<byte> maxBytes = AdvSimd.Arm64.MaxPairwise(asciiVector, asciiVector);
-                return (maxBytes.AsUInt64().ToScalar() & 0x8080808080808080) != 0;
-            }
-            else
-            {
-                return asciiVector.ExtractMostSignificantBits() != 0;
-            }
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static bool VectorContainsNonAsciiChar(Vector128<ushort> utf16Vector)
-        {
-            // prefer architecture specific intrinsic as they offer better perf
-#pragma warning disable IntrinsicsInSystemPrivateCoreLibConditionParsing // A negated IsSupported condition isn't parseable by the intrinsics analyzer
-            if (Sse2.IsSupported && !Sse41.IsSupported)
-#pragma warning restore IntrinsicsInSystemPrivateCoreLibConditionParsing
-            {
-                Vector128<ushort> asciiMaskForAddSaturate = Vector128.Create((ushort)0x7F80);
-                // The operation below forces the 0x8000 bit of each WORD to be set iff the WORD element
-                // has value >= 0x0800 (non-ASCII). Then we'll treat the vector as a BYTE vector in order
-                // to extract the mask. Reminder: the 0x0080 bit of each WORD should be ignored.
-                return (Sse2.MoveMask(Sse2.AddSaturate(utf16Vector, asciiMaskForAddSaturate).AsByte()) & 0b_1010_1010_1010_1010) != 0;
-            }
-            else if (AdvSimd.Arm64.IsSupported)
-            {
-                // First we pick four chars, a larger one from all four pairs of adjecent chars in the vector.
-                // If any of those four chars has a non-ASCII bit set, we have seen non-ASCII data.
-                Vector128<ushort> maxChars = AdvSimd.Arm64.MaxPairwise(utf16Vector, utf16Vector);
-                return (maxChars.AsUInt64().ToScalar() & 0xFF80FF80FF80FF80) != 0;
-            }
-            else
-            {
-                const ushort asciiMask = ushort.MaxValue - 127; // 0xFF80
-                Vector128<ushort> zeroIsAscii = utf16Vector & Vector128.Create(asciiMask);
-                // If a non-ASCII bit is set in any WORD of the vector, we have seen non-ASCII data.
-                return zeroIsAscii != Vector128<ushort>.Zero;
-            }
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static bool VectorContainsNonAsciiChar(Vector256<ushort> utf16Vector)
-        {
-            const ushort asciiMask = ushort.MaxValue - 127; // 0xFF80
-            Vector256<ushort> zeroIsAscii = utf16Vector & Vector256.Create(asciiMask);
-            // If a non-ASCII bit is set in any WORD of the vector, we have seen non-ASCII data.
-            return zeroIsAscii != Vector256<ushort>.Zero;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static bool VectorContainsNonAsciiChar(Vector512<ushort> utf16Vector)
-        {
-            const ushort asciiMask = ushort.MaxValue - 127; // 0xFF80
-            Vector512<ushort> zeroIsAscii = utf16Vector & Vector512.Create(asciiMask);
-            // If a non-ASCII bit is set in any WORD of the vector, we have seen non-ASCII data.
-            return zeroIsAscii != Vector512<ushort>.Zero;
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static bool VectorContainsNonAsciiChar<T>(Vector128<T> vector)
-            where T : unmanaged
-        {
-            Debug.Assert(typeof(T) == typeof(byte) || typeof(T) == typeof(ushort));
-
-            return typeof(T) == typeof(byte)
-                ? VectorContainsNonAsciiChar(vector.AsByte())
-                : VectorContainsNonAsciiChar(vector.AsUInt16());
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static bool AllCharsInVectorAreAscii<T>(Vector128<T> vector)
-            where T : unmanaged
-        {
-            Debug.Assert(typeof(T) == typeof(byte) || typeof(T) == typeof(ushort));
-
-            // This is a copy of VectorContainsNonAsciiChar with an inverted condition.
-            if (typeof(T) == typeof(byte))
-            {
-                return
-                    Sse41.IsSupported ? (vector.AsByte() & Vector128.Create((byte)0x80)) == Vector128<byte>.Zero :
-                    AdvSimd.Arm64.IsSupported ? AllBytesInUInt64AreAscii(AdvSimd.Arm64.MaxPairwise(vector.AsByte(), vector.AsByte()).AsUInt64().ToScalar()) :
-                    vector.AsByte().ExtractMostSignificantBits() == 0;
-            }
-            else
-            {
-                return
-                    AdvSimd.Arm64.IsSupported ? AllCharsInUInt64AreAscii(AdvSimd.Arm64.MaxPairwise(vector.AsUInt16(), vector.AsUInt16()).AsUInt64().ToScalar()) :
-                    (vector.AsUInt16() & Vector128.Create((ushort)0xFF80)) == Vector128<ushort>.Zero;
-            }
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        [CompExactlyDependsOn(typeof(Avx))]
-        private static bool AllCharsInVectorAreAscii<T>(Vector256<T> vector)
-            where T : unmanaged
-        {
-            Debug.Assert(typeof(T) == typeof(byte) || typeof(T) == typeof(ushort));
-
-            if (typeof(T) == typeof(byte))
-            {
-                return
-                    Avx.IsSupported ? (vector.AsByte() & Vector256.Create((byte)0x80)) == Vector256<byte>.Zero:
-                    vector.AsByte().ExtractMostSignificantBits() == 0;
-            }
-            else
-            {
-                return (vector.AsUInt16() & Vector256.Create((ushort)0xFF80)) == Vector256<ushort>.Zero;
-            }
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static bool AllCharsInVectorAreAscii<T>(Vector512<T> vector)
-            where T : unmanaged
-        {
-            Debug.Assert(typeof(T) == typeof(byte) || typeof(T) == typeof(ushort));
-
-            if (typeof(T) == typeof(byte))
-            {
-                return vector.AsByte().ExtractMostSignificantBits() == 0;
-            }
-            else
-            {
-                return (vector.AsUInt16() & Vector512.Create((ushort)0xFF80)) == Vector512<ushort>.Zero;
-            }
+            return (vector & TVector.Create(T.CreateTruncating(~AsciiMask))).Equals(TVector.Zero);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1698,7 +1574,7 @@ namespace System.Text
             Vector128<ushort> utf16VectorFirst = Vector128.LoadUnsafe(ref utf16Buffer);
 
             // If there's non-ASCII data in the first 8 elements of the vector, there's nothing we can do.
-            if (VectorContainsNonAsciiChar(utf16VectorFirst))
+            if (!IsValid<ushort, Vector128<ushort>>(utf16VectorFirst))
             {
                 return 0;
             }
@@ -1727,7 +1603,7 @@ namespace System.Text
 
                 utf16VectorFirst = Vector128.LoadUnsafe(ref utf16Buffer, currentOffsetInElements);
 
-                if (VectorContainsNonAsciiChar(utf16VectorFirst))
+                if (!IsValid<ushort, Vector128<ushort>>(utf16VectorFirst))
                 {
                     goto Finish;
                 }
@@ -1755,7 +1631,7 @@ namespace System.Text
                 Vector128<ushort> utf16VectorSecond = Vector128.LoadUnsafe(ref utf16Buffer, currentOffsetInElements + SizeOfVector128 / sizeof(short));
                 Vector128<ushort> combinedVector = utf16VectorFirst | utf16VectorSecond;
 
-                if (VectorContainsNonAsciiChar(combinedVector))
+                if (!IsValid<ushort, Vector128<ushort>>(combinedVector))
                 {
                     goto FoundNonAsciiDataInLoop;
                 }
@@ -1778,7 +1654,7 @@ namespace System.Text
 
             // Can we at least narrow the high vector?
             // See comments in GetIndexOfFirstNonAsciiChar_Intrinsified for information about how this works.
-            if (VectorContainsNonAsciiChar(utf16VectorFirst))
+            if (!IsValid<ushort, Vector128<ushort>>(utf16VectorFirst))
             {
                 goto Finish;
             }
@@ -1816,7 +1692,7 @@ namespace System.Text
             Vector256<ushort> utf16VectorFirst = Vector256.LoadUnsafe(ref utf16Buffer);
 
             // If there's non-ASCII data in the first 16 elements of the vector, there's nothing we can do.
-            if (VectorContainsNonAsciiChar(utf16VectorFirst))
+            if (!IsValid<ushort, Vector256<ushort>>(utf16VectorFirst))
             {
                 return 0;
             }
@@ -1844,7 +1720,7 @@ namespace System.Text
 
                 utf16VectorFirst = Vector256.LoadUnsafe(ref utf16Buffer, currentOffsetInElements);
 
-                if (VectorContainsNonAsciiChar(utf16VectorFirst))
+                if (!IsValid<ushort, Vector256<ushort>>(utf16VectorFirst))
                 {
                     goto Finish;
                 }
@@ -1872,7 +1748,7 @@ namespace System.Text
                 Vector256<ushort> utf16VectorSecond = Vector256.LoadUnsafe(ref utf16Buffer, currentOffsetInElements + Vector256.Size / sizeof(short));
                 Vector256<ushort> combinedVector = utf16VectorFirst | utf16VectorSecond;
 
-                if (VectorContainsNonAsciiChar(combinedVector))
+                if (!IsValid<ushort, Vector256<ushort>>(combinedVector))
                 {
                     goto FoundNonAsciiDataInLoop;
                 }
@@ -1895,7 +1771,7 @@ namespace System.Text
 
             // Can we at least narrow the high vector?
             // See comments in GetIndexOfFirstNonAsciiChar_Intrinsified for information about how this works.
-            if (VectorContainsNonAsciiChar(utf16VectorFirst))
+            if (!IsValid<ushort, Vector256<ushort>>(utf16VectorFirst))
             {
                 goto Finish;
             }
@@ -1933,7 +1809,7 @@ namespace System.Text
             Vector512<ushort> utf16VectorFirst = Vector512.LoadUnsafe(ref utf16Buffer);
 
             // If there's non-ASCII data in the first 32 elements of the vector, there's nothing we can do.
-            if (VectorContainsNonAsciiChar(utf16VectorFirst))
+            if (!IsValid<ushort, Vector512<ushort>>(utf16VectorFirst))
             {
                 return 0;
             }
@@ -1962,7 +1838,7 @@ namespace System.Text
 
                 utf16VectorFirst = Vector512.LoadUnsafe(ref utf16Buffer, currentOffsetInElements);
 
-                if (VectorContainsNonAsciiChar(utf16VectorFirst))
+                if (!IsValid<ushort, Vector512<ushort>>(utf16VectorFirst))
                 {
                     goto Finish;
                 }
@@ -1990,7 +1866,7 @@ namespace System.Text
                 Vector512<ushort> utf16VectorSecond = Vector512.LoadUnsafe(ref utf16Buffer, currentOffsetInElements + Vector512.Size / sizeof(short));
                 Vector512<ushort> combinedVector = utf16VectorFirst | utf16VectorSecond;
 
-                if (VectorContainsNonAsciiChar(combinedVector))
+                if (!IsValid<ushort, Vector512<ushort>>(combinedVector))
                 {
                     goto FoundNonAsciiDataInLoop;
                 }
@@ -2013,7 +1889,7 @@ namespace System.Text
 
             // Can we at least narrow the high vector?
             // See comments in GetIndexOfFirstNonAsciiChar_Intrinsified for information about how this works.
-            if (VectorContainsNonAsciiChar(utf16VectorFirst))
+            if (!IsValid<ushort, Vector512<ushort>>(utf16VectorFirst))
             {
                 goto Finish;
             }

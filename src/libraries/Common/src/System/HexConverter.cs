@@ -282,7 +282,7 @@ namespace System
                 // or some byte greater than 0x0f.
                 Vector128<byte> nibbles = Vector128.Min(t2 - Vector128.Create((byte)0xF0), t4);
                 // Any high bit is a sign that input is not a valid hex data
-                if (!Utf16Utility.AllCharsInVectorAreAscii(vec1 | vec2) ||
+                if (!Ascii.IsValid<ushort, Vector128<ushort>>(vec1 | vec2) ||
                     Vector128.AddSaturate(nibbles, Vector128.Create((byte)(127 - 15))).ExtractMostSignificantBits() != 0)
                 {
                     // Input is either non-ASCII or invalid hex data

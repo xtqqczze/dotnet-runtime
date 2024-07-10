@@ -665,7 +665,7 @@ namespace System.Buffers.Text
                 Vector512<ushort> utf16VectorLower = Vector512.Load(src);
                 Vector512<ushort> utf16VectorUpper = Vector512.Load(src + 32);
 #if NET9_0_OR_GREATER
-                if (Ascii.VectorContainsNonAsciiChar(utf16VectorLower | utf16VectorUpper))
+                if (!Ascii.IsValid<ushort, Vector512<ushort>>(utf16VectorLower | utf16VectorUpper))
 #else
                 if (Base64Helper.VectorContainsNonAsciiChar(utf16VectorLower | utf16VectorUpper))
 #endif
@@ -689,7 +689,7 @@ namespace System.Buffers.Text
                 Vector256<ushort> utf16VectorUpper = Avx.LoadVector256(src + 16);
 
 #if NET9_0_OR_GREATER
-                if (Ascii.VectorContainsNonAsciiChar(utf16VectorLower | utf16VectorUpper))
+                if (!Ascii.IsValid<ushort, Vector256<ushort>>(utf16VectorLower | utf16VectorUpper))
 #else
                 if (Base64Helper.VectorContainsNonAsciiChar(utf16VectorLower | utf16VectorUpper))
 #endif
@@ -709,7 +709,7 @@ namespace System.Buffers.Text
                 Vector128<ushort> utf16VectorLower = Vector128.LoadUnsafe(ref *src);
                 Vector128<ushort> utf16VectorUpper = Vector128.LoadUnsafe(ref *src, 8);
 #if NET9_0_OR_GREATER
-                if (Ascii.VectorContainsNonAsciiChar(utf16VectorLower | utf16VectorUpper))
+                if (!Ascii.IsValid<ushort, Vector128<ushort>>(utf16VectorLower | utf16VectorUpper))
                 {
                     str = default;
                     return false;
@@ -737,7 +737,7 @@ namespace System.Buffers.Text
                 var (s11, s12, s21, s22) = AdvSimd.Arm64.Load4xVector128AndUnzip(src);
                 var (s31, s32, s41, s42) = AdvSimd.Arm64.Load4xVector128AndUnzip(src + 32);
 
-                if (Ascii.VectorContainsNonAsciiChar(s11 | s12 | s21 | s22 | s31 | s32 | s41 | s42))
+                if (!Ascii.IsValid<ushort, Vector128<ushort>>(s11 | s12 | s21 | s22 | s31 | s32 | s41 | s42))
                 {
                     str1 = str2 = str3 = str4 = default;
                     return false;

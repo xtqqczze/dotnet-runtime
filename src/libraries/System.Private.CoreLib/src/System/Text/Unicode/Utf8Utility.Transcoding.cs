@@ -968,7 +968,7 @@ namespace System.Text.Unicode
                             }
                             else
                             {
-                                if ((utf16Data & nonAsciiUtf16DataMask) != Vector128<short>.Zero)
+                                if (!Ascii.IsValid<ushort, Vector128<ushort>>(utf16Data.AsUInt16()))
                                 {
                                     goto LoopTerminatedDueToNonAsciiDataInVectorLocal;
                                 }

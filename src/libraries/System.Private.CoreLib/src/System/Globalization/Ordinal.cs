@@ -7,6 +7,7 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Runtime.Intrinsics;
 using System.Runtime.Intrinsics.X86;
+using System.Text;
 using System.Text.Unicode;
 
 namespace System.Globalization
@@ -96,7 +97,7 @@ namespace System.Globalization
                 vec1 = TVector.LoadUnsafe(ref Unsafe.As<char, ushort>(ref charA), i);
                 vec2 = TVector.LoadUnsafe(ref Unsafe.As<char, ushort>(ref charB), i);
 
-                if (!Utf16Utility.AllCharsInVectorAreAscii(vec1 | vec2))
+                if (!Ascii.IsValid<ushort, TVector>(vec1 | vec2))
                 {
                     goto NON_ASCII;
                 }
@@ -123,7 +124,7 @@ namespace System.Globalization
                 vec1 = TVector.LoadUnsafe(ref Unsafe.As<char, ushort>(ref charA), i);
                 vec2 = TVector.LoadUnsafe(ref Unsafe.As<char, ushort>(ref charB), i);
 
-                if (!Utf16Utility.AllCharsInVectorAreAscii(vec1 | vec2))
+                if (!Ascii.IsValid<ushort, TVector>(vec1 | vec2))
                 {
                     goto NON_ASCII;
                 }
@@ -144,7 +145,7 @@ namespace System.Globalization
             return true;
 
         NON_ASCII:
-            if (Utf16Utility.AllCharsInVectorAreAscii(vec1) || Utf16Utility.AllCharsInVectorAreAscii(vec2))
+            if (Ascii.IsValid<ushort, TVector>(vec1) || Ascii.IsValid<ushort, TVector>(vec2))
             {
                 // No need to use the fallback if one of the inputs is full-ASCII
                 return false;
