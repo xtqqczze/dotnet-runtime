@@ -56,7 +56,10 @@ namespace System
         // Creates a new guid from an array of bytes.
         public Guid(byte[] b)
         {
-            ArgumentNullException.ThrowIfNull(b);
+            if (b == null)
+            {
+                ThrowGuidArrayCtorArgumentNullException();
+            }
 
             if (b.Length != 16)
             {
@@ -113,6 +116,13 @@ namespace System
         private static void ThrowGuidArrayCtorArgumentException()
         {
             throw new ArgumentException(SR.Format(SR.Arg_GuidArrayCtor, "16"), "b");
+        }
+
+        [DoesNotReturn]
+        [StackTraceHidden]
+        private static void ThrowGuidArrayCtorArgumentNullException()
+        {
+            throw new ArgumentNullException("b");
         }
 
         [CLSCompliant(false)]
