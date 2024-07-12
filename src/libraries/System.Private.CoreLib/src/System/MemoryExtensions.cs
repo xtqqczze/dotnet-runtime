@@ -2654,7 +2654,7 @@ namespace System
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Span<T> AsSpan<T>(this T[]? array)
         {
-            return new Span<T>(array);
+            return array is not null ? new Span<T>(array) : default;
         }
 
         /// <summary>
@@ -2755,7 +2755,7 @@ namespace System
         /// <summary>
         /// Creates a new memory over the target array.
         /// </summary>
-        public static Memory<T> AsMemory<T>(this T[]? array) => new Memory<T>(array);
+        public static Memory<T> AsMemory<T>(this T[]? array) => array is not null ? new Memory<T>(array) : default;
 
         /// <summary>
         /// Creates a new memory over the portion of the target array beginning
@@ -2881,7 +2881,10 @@ namespace System
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void CopyTo<T>(this T[]? source, Span<T> destination)
         {
-            new ReadOnlySpan<T>(source).CopyTo(destination);
+            if (source is not null)
+            {
+                new ReadOnlySpan<T>(source).CopyTo(destination);
+            }
         }
 
         /// <summary>
@@ -2897,7 +2900,10 @@ namespace System
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void CopyTo<T>(this T[]? source, Memory<T> destination)
         {
-            source.CopyTo(destination.Span);
+            if (source is not null)
+            {
+                source.CopyTo(destination.Span);
+            }
         }
 
         //
