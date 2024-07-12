@@ -2755,6 +2755,7 @@ namespace System
         /// <summary>
         /// Creates a new memory over the target array.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Memory<T> AsMemory<T>(this T[]? array) => array is not null ? new Memory<T>(array) : default;
 
         /// <summary>
