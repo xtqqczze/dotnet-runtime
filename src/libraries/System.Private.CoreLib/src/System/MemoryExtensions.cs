@@ -2654,7 +2654,7 @@ namespace System
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Span<T> AsSpan<T>(this T[]? array)
         {
-            return array is not null ? new Span<T>(array) : default;
+            return array is null ? default : new Span<T>(array);
         }
 
         /// <summary>
@@ -2756,7 +2756,7 @@ namespace System
         /// Creates a new memory over the target array.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Memory<T> AsMemory<T>(this T[]? array) => array is not null ? new Memory<T>(array) : default;
+        public static Memory<T> AsMemory<T>(this T[]? array) => array is null ? default : new Memory<T>(array);
 
         /// <summary>
         /// Creates a new memory over the portion of the target array beginning
