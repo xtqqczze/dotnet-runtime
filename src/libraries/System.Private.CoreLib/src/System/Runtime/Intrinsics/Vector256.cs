@@ -609,6 +609,7 @@ namespace System.Runtime.Intrinsics
         public static void CopyTo<T>(this Vector256<T> vector, T[] destination)
         {
             // We explicitly don't check for `null` because historically this has thrown `NullReferenceException` for perf reasons
+            ThrowHelper.ThrowForUnsupportedIntrinsicsVector256BaseType<T>();
 
             if (destination.Length < Vector256<T>.Count)
             {
@@ -631,6 +632,7 @@ namespace System.Runtime.Intrinsics
         public static void CopyTo<T>(this Vector256<T> vector, T[] destination, int startIndex)
         {
             // We explicitly don't check for `null` because historically this has thrown `NullReferenceException` for perf reasons
+            ThrowHelper.ThrowForUnsupportedIntrinsicsVector256BaseType<T>();
 
             if ((uint)startIndex >= (uint)destination.Length)
             {
@@ -654,6 +656,8 @@ namespace System.Runtime.Intrinsics
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void CopyTo<T>(this Vector256<T> vector, Span<T> destination)
         {
+            ThrowHelper.ThrowForUnsupportedIntrinsicsVector256BaseType<T>();
+
             if (destination.Length < Vector256<T>.Count)
             {
                 ThrowHelper.ThrowArgumentException_DestinationTooShort();
@@ -772,6 +776,7 @@ namespace System.Runtime.Intrinsics
         public static Vector256<T> Create<T>(T[] values)
         {
             // We explicitly don't check for `null` because historically this has thrown `NullReferenceException` for perf reasons
+            ThrowHelper.ThrowForUnsupportedIntrinsicsVector256BaseType<T>();
 
             if (values.Length < Vector256<T>.Count)
             {
@@ -793,6 +798,7 @@ namespace System.Runtime.Intrinsics
         public static Vector256<T> Create<T>(T[] values, int index)
         {
             // We explicitly don't check for `null` because historically this has thrown `NullReferenceException` for perf reasons
+            ThrowHelper.ThrowForUnsupportedIntrinsicsVector256BaseType<T>();
 
             if ((index < 0) || ((values.Length - index) < Vector256<T>.Count))
             {
@@ -811,6 +817,8 @@ namespace System.Runtime.Intrinsics
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector256<T> Create<T>(ReadOnlySpan<T> values)
         {
+            ThrowHelper.ThrowForUnsupportedIntrinsicsVector256BaseType<T>();
+
             if (values.Length < Vector256<T>.Count)
             {
                 ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.values);
@@ -3229,6 +3237,8 @@ namespace System.Runtime.Intrinsics
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool TryCopyTo<T>(this Vector256<T> vector, Span<T> destination)
         {
+            ThrowHelper.ThrowForUnsupportedIntrinsicsVector256BaseType<T>();
+
             if (destination.Length < Vector256<T>.Count)
             {
                 return false;

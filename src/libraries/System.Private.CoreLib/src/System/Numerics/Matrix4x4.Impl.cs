@@ -1119,7 +1119,7 @@ namespace System.Numerics
                     result = true;
                 }
 
-                scale = Unsafe.ReadUnaligned<Vector3>(scales);
+                scale = Vector3.LoadUnsafe(ref *scales);
                 return result;
             }
 

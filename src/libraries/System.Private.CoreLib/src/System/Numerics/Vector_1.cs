@@ -57,6 +57,7 @@ namespace System.Numerics
         public Vector(T[] values)
         {
             // We explicitly don't check for `null` because historically this has thrown `NullReferenceException` for perf reasons
+            ThrowHelper.ThrowForUnsupportedNumericsVectorBaseType<T>();
 
             if (values.Length < Count)
             {
@@ -76,6 +77,7 @@ namespace System.Numerics
         public Vector(T[] values, int index)
         {
             // We explicitly don't check for `null` because historically this has thrown `NullReferenceException` for perf reasons
+            ThrowHelper.ThrowForUnsupportedNumericsVectorBaseType<T>();
 
             if ((index < 0) || ((values.Length - index) < Count))
             {
@@ -93,6 +95,7 @@ namespace System.Numerics
         public Vector(ReadOnlySpan<T> values)
         {
             // We explicitly don't check for `null` because historically this has thrown `NullReferenceException` for perf reasons
+            ThrowHelper.ThrowForUnsupportedNumericsVectorBaseType<T>();
 
             if (values.Length < Count)
             {
@@ -618,6 +621,7 @@ namespace System.Numerics
         public void CopyTo(T[] destination)
         {
             // We explicitly don't check for `null` because historically this has thrown `NullReferenceException` for perf reasons
+            ThrowHelper.ThrowForUnsupportedNumericsVectorBaseType<T>();
 
             if (destination.Length < Count)
             {
@@ -637,6 +641,7 @@ namespace System.Numerics
         public void CopyTo(T[] destination, int startIndex)
         {
             // We explicitly don't check for `null` because historically this has thrown `NullReferenceException` for perf reasons
+            ThrowHelper.ThrowForUnsupportedNumericsVectorBaseType<T>();
 
             if ((uint)startIndex >= (uint)destination.Length)
             {
@@ -673,6 +678,8 @@ namespace System.Numerics
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void CopyTo(Span<T> destination)
         {
+            ThrowHelper.ThrowForUnsupportedNumericsVectorBaseType<T>();
+
             if (destination.Length < Count)
             {
                 ThrowHelper.ThrowArgumentException_DestinationTooShort();
@@ -795,6 +802,8 @@ namespace System.Numerics
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool TryCopyTo(Span<T> destination)
         {
+            ThrowHelper.ThrowForUnsupportedNumericsVectorBaseType<T>();
+
             if (destination.Length < Count)
             {
                 return false;

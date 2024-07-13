@@ -554,6 +554,7 @@ namespace System.Runtime.Intrinsics
         public static void CopyTo<T>(this Vector64<T> vector, T[] destination)
         {
             // We explicitly don't check for `null` because historically this has thrown `NullReferenceException` for perf reasons
+            ThrowHelper.ThrowForUnsupportedIntrinsicsVector64BaseType<T>();
 
             if (destination.Length < Vector64<T>.Count)
             {
@@ -576,6 +577,7 @@ namespace System.Runtime.Intrinsics
         public static unsafe void CopyTo<T>(this Vector64<T> vector, T[] destination, int startIndex)
         {
             // We explicitly don't check for `null` because historically this has thrown `NullReferenceException` for perf reasons
+            ThrowHelper.ThrowForUnsupportedIntrinsicsVector64BaseType<T>();
 
             if ((uint)startIndex >= (uint)destination.Length)
             {
@@ -599,6 +601,8 @@ namespace System.Runtime.Intrinsics
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void CopyTo<T>(this Vector64<T> vector, Span<T> destination)
         {
+            ThrowHelper.ThrowForUnsupportedIntrinsicsVector64BaseType<T>();
+
             if (destination.Length < Vector64<T>.Count)
             {
                 ThrowHelper.ThrowArgumentException_DestinationTooShort();
@@ -719,6 +723,7 @@ namespace System.Runtime.Intrinsics
         public static Vector64<T> Create<T>(T[] values)
         {
             // We explicitly don't check for `null` because historically this has thrown `NullReferenceException` for perf reasons
+            ThrowHelper.ThrowForUnsupportedIntrinsicsVector64BaseType<T>();
 
             if (values.Length < Vector64<T>.Count)
             {
@@ -740,6 +745,7 @@ namespace System.Runtime.Intrinsics
         public static Vector64<T> Create<T>(T[] values, int index)
         {
             // We explicitly don't check for `null` because historically this has thrown `NullReferenceException` for perf reasons
+            ThrowHelper.ThrowForUnsupportedIntrinsicsVector64BaseType<T>();
 
             if ((index < 0) || ((values.Length - index) < Vector64<T>.Count))
             {
@@ -758,6 +764,8 @@ namespace System.Runtime.Intrinsics
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector64<T> Create<T>(ReadOnlySpan<T> values)
         {
+            ThrowHelper.ThrowForUnsupportedIntrinsicsVector64BaseType<T>();
+
             if (values.Length < Vector64<T>.Count)
             {
                 ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.values);
@@ -3218,6 +3226,8 @@ namespace System.Runtime.Intrinsics
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool TryCopyTo<T>(this Vector64<T> vector, Span<T> destination)
         {
+            ThrowHelper.ThrowForUnsupportedIntrinsicsVector64BaseType<T>();
+
             if (destination.Length < Vector64<T>.Count)
             {
                 return false;

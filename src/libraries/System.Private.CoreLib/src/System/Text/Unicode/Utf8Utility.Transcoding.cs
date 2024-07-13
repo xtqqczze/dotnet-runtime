@@ -951,7 +951,7 @@ namespace System.Text.Unicode
                             // Luckily, this is a nop and will be elided by the JIT
                             Unsafe.SkipInit(out nonAsciiUtf16DataMask);
 
-                            utf16Data = Unsafe.ReadUnaligned<Vector128<short>>(pInputBuffer);
+                            utf16Data = Vector128.Load((short*)pInputBuffer);
 
                             if (AdvSimd.Arm64.IsSupported)
                             {

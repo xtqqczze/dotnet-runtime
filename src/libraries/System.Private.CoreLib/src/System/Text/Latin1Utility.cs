@@ -49,7 +49,7 @@ namespace System.Text
 
                 Vector<ushort> maxLatin1 = new Vector<ushort>(0x00FF);
 
-                if (Vector.LessThanOrEqualAll(Unsafe.ReadUnaligned<Vector<ushort>>(pBuffer), maxLatin1))
+                if (Vector.LessThanOrEqualAll(Vector.Load((ushort*)pBuffer), maxLatin1))
                 {
                     // The first several elements of the input buffer were Latin-1. Bump up the pointer to the
                     // next aligned boundary, then perform aligned reads from here on out until we find non-Latin-1
@@ -610,8 +610,8 @@ namespace System.Text
                     nuint finalOffsetWhereCanLoop = elementCount - 2 * SizeOfVector;
                     do
                     {
-                        Vector<ushort> utf16VectorHigh = Unsafe.ReadUnaligned<Vector<ushort>>(pUtf16Buffer + currentOffset);
-                        Vector<ushort> utf16VectorLow = Unsafe.ReadUnaligned<Vector<ushort>>(pUtf16Buffer + currentOffset + Vector<ushort>.Count);
+                        Vector<ushort> utf16VectorHigh = Vector.Load((ushort*)pUtf16Buffer + currentOffset);
+                        Vector<ushort> utf16VectorLow = Vector.Load((ushort*)pUtf16Buffer + currentOffset + Vector<ushort>.Count);
 
                         if (Vector.GreaterThanAny(Vector.BitwiseOr(utf16VectorHigh, utf16VectorLow), maxLatin1))
                         {
@@ -1084,7 +1084,7 @@ namespace System.Text
                     nuint finalOffsetWhereCanIterate = elementCount - SizeOfVector;
                     do
                     {
-                        Vector<byte> latin1Vector = Unsafe.ReadUnaligned<Vector<byte>>(pLatin1Buffer + currentOffset);
+                        Vector<byte> latin1Vector = Vector.Load(pLatin1Buffer + currentOffset);
                         Vector.Widen(Vector.AsVectorByte(latin1Vector), out Vector<ushort> utf16LowVector, out Vector<ushort> utf16HighVector);
 
                         // TODO: Is the below logic also valid for big-endian platforms?

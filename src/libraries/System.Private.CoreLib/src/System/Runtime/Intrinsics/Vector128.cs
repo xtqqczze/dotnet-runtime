@@ -768,6 +768,7 @@ namespace System.Runtime.Intrinsics
         public static void CopyTo<T>(this Vector128<T> vector, T[] destination)
         {
             // We explicitly don't check for `null` because historically this has thrown `NullReferenceException` for perf reasons
+            ThrowHelper.ThrowForUnsupportedIntrinsicsVector128BaseType<T>();
 
             if (destination.Length < Vector128<T>.Count)
             {
@@ -790,6 +791,7 @@ namespace System.Runtime.Intrinsics
         public static unsafe void CopyTo<T>(this Vector128<T> vector, T[] destination, int startIndex)
         {
             // We explicitly don't check for `null` because historically this has thrown `NullReferenceException` for perf reasons
+            ThrowHelper.ThrowForUnsupportedIntrinsicsVector128BaseType<T>();
 
             if ((uint)startIndex >= (uint)destination.Length)
             {
@@ -813,6 +815,8 @@ namespace System.Runtime.Intrinsics
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void CopyTo<T>(this Vector128<T> vector, Span<T> destination)
         {
+            ThrowHelper.ThrowForUnsupportedIntrinsicsVector128BaseType<T>();
+
             if (destination.Length < Vector128<T>.Count)
             {
                 ThrowHelper.ThrowArgumentException_DestinationTooShort();
@@ -931,6 +935,7 @@ namespace System.Runtime.Intrinsics
         public static Vector128<T> Create<T>(T[] values)
         {
             // We explicitly don't check for `null` because historically this has thrown `NullReferenceException` for perf reasons
+            ThrowHelper.ThrowForUnsupportedIntrinsicsVector128BaseType<T>();
 
             if (values.Length < Vector128<T>.Count)
             {
@@ -952,6 +957,7 @@ namespace System.Runtime.Intrinsics
         public static Vector128<T> Create<T>(T[] values, int index)
         {
             // We explicitly don't check for `null` because historically this has thrown `NullReferenceException` for perf reasons
+            ThrowHelper.ThrowForUnsupportedIntrinsicsVector128BaseType<T>();
 
             if ((index < 0) || ((values.Length - index) < Vector128<T>.Count))
             {
@@ -970,6 +976,8 @@ namespace System.Runtime.Intrinsics
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector128<T> Create<T>(ReadOnlySpan<T> values)
         {
+            ThrowHelper.ThrowForUnsupportedIntrinsicsVector128BaseType<T>();
+
             if (values.Length < Vector128<T>.Count)
             {
                 ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.values);
@@ -3362,6 +3370,8 @@ namespace System.Runtime.Intrinsics
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool TryCopyTo<T>(this Vector128<T> vector, Span<T> destination)
         {
+            ThrowHelper.ThrowForUnsupportedIntrinsicsVector128BaseType<T>();
+
             if (destination.Length < Vector128<T>.Count)
             {
                 return false;

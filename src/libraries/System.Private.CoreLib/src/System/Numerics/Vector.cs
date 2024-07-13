@@ -595,11 +595,14 @@ namespace System.Numerics
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector<T> Create<T>(ReadOnlySpan<T> values)
         {
+            ThrowHelper.ThrowForUnsupportedNumericsVectorBaseType<T>();
+
             if (values.Length < Vector<T>.Count)
             {
                 ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.values);
             }
-            return Unsafe.ReadUnaligned<Vector<T>>(ref Unsafe.As<T, byte>(ref MemoryMarshal.GetReference(values)));
+
+            return LoadUnsafe(ref MemoryMarshal.GetReference(values));
         }
 
         /// <summary>Creates a new <see cref="Vector{T}" /> instance with the first element initialized to the specified value and the remaining elements initialized to zero.</summary>
