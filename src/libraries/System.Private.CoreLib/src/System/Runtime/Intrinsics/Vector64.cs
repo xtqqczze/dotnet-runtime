@@ -560,7 +560,7 @@ namespace System.Runtime.Intrinsics
                 ThrowHelper.ThrowArgumentException_DestinationTooShort();
             }
 
-            Unsafe.WriteUnaligned(ref Unsafe.As<T, byte>(ref destination[0]), vector);
+            vector.StoreUnsafe(ref MemoryMarshal.GetArrayDataReference(destination));
         }
 
         /// <summary>Copies a <see cref="Vector64{T}" /> to a given array starting at the specified index.</summary>
@@ -587,7 +587,7 @@ namespace System.Runtime.Intrinsics
                 ThrowHelper.ThrowArgumentException_DestinationTooShort();
             }
 
-            Unsafe.WriteUnaligned(ref Unsafe.As<T, byte>(ref destination[startIndex]), vector);
+            vector.StoreUnsafe(ref MemoryMarshal.GetArrayDataReference(destination), (uint)startIndex);
         }
 
         /// <summary>Copies a <see cref="Vector64{T}" /> to a given span.</summary>
@@ -604,7 +604,7 @@ namespace System.Runtime.Intrinsics
                 ThrowHelper.ThrowArgumentException_DestinationTooShort();
             }
 
-            Unsafe.WriteUnaligned(ref Unsafe.As<T, byte>(ref MemoryMarshal.GetReference(destination)), vector);
+            vector.StoreUnsafe(ref MemoryMarshal.GetReference(destination));
         }
 
         /// <summary>Creates a new <see cref="Vector64{T}" /> instance with all elements initialized to the specified value.</summary>
@@ -725,7 +725,7 @@ namespace System.Runtime.Intrinsics
                 ThrowHelper.ThrowArgumentOutOfRange_IndexMustBeLessOrEqualException();
             }
 
-            return Unsafe.ReadUnaligned<Vector64<T>>(ref Unsafe.As<T, byte>(ref values[0]));
+            return LoadUnsafe(ref MemoryMarshal.GetArrayDataReference(values));
         }
 
         /// <summary>Creates a new <see cref="Vector64{T}" /> from a given array.</summary>
@@ -746,7 +746,7 @@ namespace System.Runtime.Intrinsics
                 ThrowHelper.ThrowArgumentOutOfRange_IndexMustBeLessOrEqualException();
             }
 
-            return Unsafe.ReadUnaligned<Vector64<T>>(ref Unsafe.As<T, byte>(ref values[index]));
+            return LoadUnsafe(ref MemoryMarshal.GetArrayDataReference(values), (uint)index);
         }
 
         /// <summary>Creates a new <see cref="Vector64{T}" /> from a given readonly span.</summary>
@@ -763,7 +763,7 @@ namespace System.Runtime.Intrinsics
                 ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.values);
             }
 
-            return Unsafe.ReadUnaligned<Vector64<T>>(ref Unsafe.As<T, byte>(ref MemoryMarshal.GetReference(values)));
+            return LoadUnsafe(ref MemoryMarshal.GetReference(values));
         }
 
         /// <summary>Creates a new <see cref="Vector64{Byte}" /> instance with each element initialized to the corresponding specified value.</summary>
@@ -3223,7 +3223,7 @@ namespace System.Runtime.Intrinsics
                 return false;
             }
 
-            Unsafe.WriteUnaligned(ref Unsafe.As<T, byte>(ref MemoryMarshal.GetReference(destination)), vector);
+            vector.StoreUnsafe(ref MemoryMarshal.GetReference(destination));
             return true;
         }
 

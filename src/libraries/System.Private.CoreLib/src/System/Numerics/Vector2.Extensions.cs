@@ -20,5 +20,19 @@ namespace System.Numerics
         /// <returns><paramref name="value" /> reinterpreted to a new <see cref="Vector4" /> with the new elements undefined.</returns>
         [Intrinsic]
         public static Vector4 AsVector4Unsafe(this Vector2 value) => value.AsVector128Unsafe().AsVector4();
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static void StoreUnsafe(in this Vector2 source, ref float destination)
+        {
+            ref byte address = ref Unsafe.As<float, byte>(ref destination);
+            Unsafe.WriteUnaligned(ref address, source);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static void StoreUnsafe(in this Vector2 source, ref float destination, nuint elementOffset)
+        {
+            ref byte address = ref Unsafe.As<float, byte>(ref Unsafe.Add(ref destination, (nint)elementOffset));
+            Unsafe.WriteUnaligned(ref address, source);
+        }
     }
 }

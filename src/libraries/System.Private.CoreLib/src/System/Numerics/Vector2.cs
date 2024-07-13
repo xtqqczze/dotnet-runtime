@@ -303,7 +303,7 @@ namespace System.Numerics
             {
                 ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.values);
             }
-            return Unsafe.ReadUnaligned<Vector2>(ref Unsafe.As<float, byte>(ref MemoryMarshal.GetReference(values)));
+            return LoadUnsafe(ref MemoryMarshal.GetReference(values));
         }
 
         /// <summary>Creates a vector with <see cref="X" /> initialized to the specified value and the remaining elements initialized to zero.</summary>
@@ -597,7 +597,7 @@ namespace System.Numerics
                 ThrowHelper.ThrowArgumentException_DestinationTooShort();
             }
 
-            Unsafe.WriteUnaligned(ref Unsafe.As<float, byte>(ref array[0]), this);
+            this.StoreUnsafe(ref MemoryMarshal.GetArrayDataReference(array));
         }
 
         /// <summary>Copies the elements of the vector to a specified array starting at a specified index position.</summary>
@@ -625,7 +625,7 @@ namespace System.Numerics
                 ThrowHelper.ThrowArgumentException_DestinationTooShort();
             }
 
-            Unsafe.WriteUnaligned(ref Unsafe.As<float, byte>(ref array[index]), this);
+            this.StoreUnsafe(ref MemoryMarshal.GetArrayDataReference(array), (uint)index);
         }
 
         /// <summary>Copies the vector to the given <see cref="Span{T}" />.The length of the destination span must be at least 2.</summary>
@@ -639,7 +639,7 @@ namespace System.Numerics
                 ThrowHelper.ThrowArgumentException_DestinationTooShort();
             }
 
-            Unsafe.WriteUnaligned(ref Unsafe.As<float, byte>(ref MemoryMarshal.GetReference(destination)), this);
+            this.StoreUnsafe(ref MemoryMarshal.GetReference(destination));
         }
 
         /// <summary>Attempts to copy the vector to the given <see cref="Span{Single}" />. The length of the destination span must be at least 2.</summary>
@@ -653,7 +653,7 @@ namespace System.Numerics
                 return false;
             }
 
-            Unsafe.WriteUnaligned(ref Unsafe.As<float, byte>(ref MemoryMarshal.GetReference(destination)), this);
+            this.StoreUnsafe(ref MemoryMarshal.GetReference(destination));
             return true;
         }
 
@@ -712,6 +712,13 @@ namespace System.Numerics
             string separator = NumberFormatInfo.GetInstance(formatProvider).NumberGroupSeparator;
 
             return $"<{X.ToString(format, formatProvider)}{separator} {Y.ToString(format, formatProvider)}>";
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static Vector2 LoadUnsafe(ref readonly float source)
+        {
+            ref readonly byte address = ref Unsafe.As<float, byte>(ref Unsafe.AsRef(in source));
+            return Unsafe.ReadUnaligned<Vector2>(in address);
         }
     }
 }

@@ -63,7 +63,7 @@ namespace System.Numerics
                 ThrowHelper.ThrowArgumentOutOfRange_IndexMustBeLessOrEqualException();
             }
 
-            this = Unsafe.ReadUnaligned<Vector<T>>(ref Unsafe.As<T, byte>(ref values[0]));
+            this = Vector.LoadUnsafe(ref MemoryMarshal.GetArrayDataReference(values));
         }
 
         /// <summary>Creates a new <see cref="Vector{T}" /> from a given array.</summary>
@@ -82,7 +82,7 @@ namespace System.Numerics
                 ThrowHelper.ThrowArgumentOutOfRange_IndexMustBeLessOrEqualException();
             }
 
-            this = Unsafe.ReadUnaligned<Vector<T>>(ref Unsafe.As<T, byte>(ref values[index]));
+            this = Vector.LoadUnsafe(ref MemoryMarshal.GetArrayDataReference(values), (uint)index);
         }
 
         /// <summary>Creates a new <see cref="Vector{T}" /> from a given readonly span.</summary>
@@ -99,7 +99,7 @@ namespace System.Numerics
                 ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.values);
             }
 
-            this = Unsafe.ReadUnaligned<Vector<T>>(ref Unsafe.As<T, byte>(ref MemoryMarshal.GetReference(values)));
+            this = Vector.LoadUnsafe(ref MemoryMarshal.GetReference(values));
         }
 
         /// <summary>Creates a new <see cref="Vector{T}" /> from a given readonly span.</summary>
@@ -117,7 +117,7 @@ namespace System.Numerics
                 ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.values);
             }
 
-            this = Unsafe.ReadUnaligned<Vector<T>>(ref MemoryMarshal.GetReference(values));
+            this = Vector.LoadUnsafe(ref MemoryMarshal.GetReference(values)).As<byte, T>();
         }
 
         /// <summary>Creates a new <see cref="Vector{T}" /> from a given span.</summary>
@@ -624,7 +624,7 @@ namespace System.Numerics
                 ThrowHelper.ThrowArgumentException_DestinationTooShort();
             }
 
-            Unsafe.WriteUnaligned(ref Unsafe.As<T, byte>(ref destination[0]), this);
+            this.StoreUnsafe(ref MemoryMarshal.GetArrayDataReference(destination));
         }
 
         /// <summary>Copies a <see cref="Vector{T}" /> to a given array starting at the specified index.</summary>
@@ -648,7 +648,7 @@ namespace System.Numerics
                 ThrowHelper.ThrowArgumentException_DestinationTooShort();
             }
 
-            Unsafe.WriteUnaligned(ref Unsafe.As<T, byte>(ref destination[startIndex]), this);
+            this.StoreUnsafe(ref MemoryMarshal.GetArrayDataReference(destination), (uint)startIndex);
         }
 
         /// <summary>Copies a <see cref="Vector{T}" /> to a given span.</summary>
@@ -664,7 +664,7 @@ namespace System.Numerics
                 ThrowHelper.ThrowArgumentException_DestinationTooShort();
             }
 
-            Unsafe.WriteUnaligned(ref MemoryMarshal.GetReference(destination), this);
+            this.As<T, byte>().StoreUnsafe(ref MemoryMarshal.GetReference(destination));
         }
 
         /// <summary>Copies a <see cref="Vector{T}" /> to a given span.</summary>
@@ -678,7 +678,7 @@ namespace System.Numerics
                 ThrowHelper.ThrowArgumentException_DestinationTooShort();
             }
 
-            Unsafe.WriteUnaligned(ref Unsafe.As<T, byte>(ref MemoryMarshal.GetReference(destination)), this);
+            this.StoreUnsafe(ref MemoryMarshal.GetReference(destination));
         }
 
         /// <summary>Returns a boolean indicating whether the given Object is equal to this vector instance.</summary>
@@ -785,7 +785,7 @@ namespace System.Numerics
                 return false;
             }
 
-            Unsafe.WriteUnaligned(ref MemoryMarshal.GetReference(destination), this);
+            this.As<T, byte>().StoreUnsafe(ref MemoryMarshal.GetReference(destination));
             return true;
         }
 
@@ -800,7 +800,7 @@ namespace System.Numerics
                 return false;
             }
 
-            Unsafe.WriteUnaligned(ref Unsafe.As<T, byte>(ref MemoryMarshal.GetReference(destination)), this);
+            this.StoreUnsafe(ref MemoryMarshal.GetReference(destination));
             return true;
         }
 

@@ -232,7 +232,7 @@ namespace System.Runtime.Intrinsics
             ThrowHelper.ThrowForUnsupportedIntrinsicsVector256BaseType<T>();
 
             Vector256<T> result = default;
-            Unsafe.WriteUnaligned(ref Unsafe.As<Vector256<T>, byte>(ref result), value);
+            value.StoreUnsafe(ref Unsafe.AsRef(in result.AsRef()));
             return result;
         }
 
@@ -248,8 +248,7 @@ namespace System.Runtime.Intrinsics
             Debug.Assert(Vector256<T>.Count >= Vector<T>.Count);
             ThrowHelper.ThrowForUnsupportedIntrinsicsVector256BaseType<T>();
 
-            ref byte address = ref Unsafe.As<Vector256<T>, byte>(ref value);
-            return Unsafe.ReadUnaligned<Vector<T>>(ref address);
+            return Vector.LoadUnsafe(in value.AsRef());
         }
 
         /// <summary>Computes the bitwise-and of two vectors.</summary>
@@ -616,7 +615,7 @@ namespace System.Runtime.Intrinsics
                 ThrowHelper.ThrowArgumentException_DestinationTooShort();
             }
 
-            Unsafe.WriteUnaligned(ref Unsafe.As<T, byte>(ref destination[0]), vector);
+            vector.StoreUnsafe(ref MemoryMarshal.GetArrayDataReference(destination));
         }
 
         /// <summary>Copies a <see cref="Vector256{T}" /> to a given array starting at the specified index.</summary>
@@ -643,7 +642,7 @@ namespace System.Runtime.Intrinsics
                 ThrowHelper.ThrowArgumentException_DestinationTooShort();
             }
 
-            Unsafe.WriteUnaligned(ref Unsafe.As<T, byte>(ref destination[startIndex]), vector);
+            vector.StoreUnsafe(ref MemoryMarshal.GetArrayDataReference(destination), (uint)startIndex);
         }
 
         /// <summary>Copies a <see cref="Vector256{T}" /> to a given span.</summary>
@@ -660,7 +659,7 @@ namespace System.Runtime.Intrinsics
                 ThrowHelper.ThrowArgumentException_DestinationTooShort();
             }
 
-            Unsafe.WriteUnaligned(ref Unsafe.As<T, byte>(ref MemoryMarshal.GetReference(destination)), vector);
+            vector.StoreUnsafe(ref MemoryMarshal.GetReference(destination));
         }
 
         /// <summary>Creates a new <see cref="Vector256{T}" /> instance with all elements initialized to the specified value.</summary>
@@ -779,7 +778,7 @@ namespace System.Runtime.Intrinsics
                 ThrowHelper.ThrowArgumentOutOfRange_IndexMustBeLessOrEqualException();
             }
 
-            return Unsafe.ReadUnaligned<Vector256<T>>(ref Unsafe.As<T, byte>(ref values[0]));
+            return LoadUnsafe(ref MemoryMarshal.GetArrayDataReference(values));
         }
 
         /// <summary>Creates a new <see cref="Vector256{T}" /> from a given array.</summary>
@@ -800,7 +799,7 @@ namespace System.Runtime.Intrinsics
                 ThrowHelper.ThrowArgumentOutOfRange_IndexMustBeLessOrEqualException();
             }
 
-            return Unsafe.ReadUnaligned<Vector256<T>>(ref Unsafe.As<T, byte>(ref values[index]));
+            return LoadUnsafe(ref MemoryMarshal.GetArrayDataReference(values), (uint)index);
         }
 
         /// <summary>Creates a new <see cref="Vector256{T}" /> from a given readonly span.</summary>
@@ -817,7 +816,7 @@ namespace System.Runtime.Intrinsics
                 ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.values);
             }
 
-            return Unsafe.ReadUnaligned<Vector256<T>>(ref Unsafe.As<T, byte>(ref MemoryMarshal.GetReference(values)));
+            return LoadUnsafe(ref MemoryMarshal.GetReference(values));
         }
 
         /// <summary>Creates a new <see cref="Vector256{Byte}" /> instance with each element initialized to the corresponding specified value.</summary>
@@ -3235,7 +3234,7 @@ namespace System.Runtime.Intrinsics
                 return false;
             }
 
-            Unsafe.WriteUnaligned(ref Unsafe.As<T, byte>(ref MemoryMarshal.GetReference(destination)), vector);
+            vector.StoreUnsafe(ref MemoryMarshal.GetReference(destination));
             return true;
         }
 
@@ -3565,6 +3564,12 @@ namespace System.Runtime.Intrinsics
         /// <exception cref="NotSupportedException">The type of <paramref name="left" /> and <paramref name="right" /> (<typeparamref name="T" />) is not supported.</exception>
         [Intrinsic]
         public static Vector256<T> Xor<T>(Vector256<T> left, Vector256<T> right) => left ^ right;
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static ref readonly T AsRef<T>(in this Vector256<T> vector)
+        {
+            return ref Unsafe.As<Vector256<T>, T>(ref Unsafe.AsRef(in vector));
+        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static T GetElementUnsafe<T>(in this Vector256<T> vector, int index)
