@@ -232,7 +232,7 @@ namespace System.Runtime.Intrinsics
             ThrowHelper.ThrowForUnsupportedIntrinsicsVector256BaseType<T>();
 
             Vector256<T> result = default;
-            value.StoreUnsafe(ref Unsafe.AsRef(in result.AsRef()));
+            value.StoreUnsafe(ref Unsafe.As<Vector256<T>, T>(ref result));
             return result;
         }
 
@@ -248,7 +248,7 @@ namespace System.Runtime.Intrinsics
             Debug.Assert(Vector256<T>.Count >= Vector<T>.Count);
             ThrowHelper.ThrowForUnsupportedIntrinsicsVector256BaseType<T>();
 
-            return Vector.LoadUnsafe(in value.AsRef());
+            return Vector.LoadUnsafe(in Unsafe.As<Vector256<T>, T>(ref value));
         }
 
         /// <summary>Computes the bitwise-and of two vectors.</summary>
@@ -3574,12 +3574,6 @@ namespace System.Runtime.Intrinsics
         /// <exception cref="NotSupportedException">The type of <paramref name="left" /> and <paramref name="right" /> (<typeparamref name="T" />) is not supported.</exception>
         [Intrinsic]
         public static Vector256<T> Xor<T>(Vector256<T> left, Vector256<T> right) => left ^ right;
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static ref readonly T AsRef<T>(in this Vector256<T> vector)
-        {
-            return ref Unsafe.As<Vector256<T>, T>(ref Unsafe.AsRef(in vector));
-        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static T GetElementUnsafe<T>(in this Vector256<T> vector, int index)

@@ -303,7 +303,7 @@ namespace System.Runtime.Intrinsics
             Debug.Assert(Vector<T>.Count >= Vector128<T>.Count);
             ThrowHelper.ThrowForUnsupportedIntrinsicsVector128BaseType<T>();
 
-            return LoadUnsafe(in value.AsRef());
+            return LoadUnsafe(in Unsafe.As<Vector<T>, T>(ref Unsafe.AsRef(in value)));
         }
 
         /// <summary>Reinterprets a <see cref="Vector2" /> as a new <see cref="Vector128{Single}" />, leaving the new elements undefined.</summary>
@@ -316,7 +316,7 @@ namespace System.Runtime.Intrinsics
             // declaration to let the upper bits be uninitialized.
 
             Unsafe.SkipInit(out Vector128<float> result);
-            value.StoreUnsafe(ref Unsafe.AsRef(in result.AsRef()));
+            value.StoreUnsafe(ref Unsafe.As<Vector128<float>, float>(ref Unsafe.AsRef(in result)));
             return result;
         }
 
@@ -330,7 +330,7 @@ namespace System.Runtime.Intrinsics
             // declaration to let the upper bits be uninitialized.
 
             Unsafe.SkipInit(out Vector128<float> result);
-            value.StoreUnsafe(ref Unsafe.AsRef(in result.AsRef()));
+            value.StoreUnsafe(ref Unsafe.As<Vector128<float>, float>(ref Unsafe.AsRef(in result)));
             return result;
         }
 
@@ -341,7 +341,7 @@ namespace System.Runtime.Intrinsics
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector2 AsVector2(this Vector128<float> value)
         {
-            return Vector2.LoadUnsafe(in value.AsRef());
+            return Vector2.LoadUnsafe(in Unsafe.As<Vector128<float>, float>(ref Unsafe.AsRef(in value)));
         }
 
         /// <summary>Reinterprets a <see cref="Vector128{Single}" /> as a new <see cref="Vector3" />.</summary>
@@ -351,7 +351,7 @@ namespace System.Runtime.Intrinsics
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector3 AsVector3(this Vector128<float> value)
         {
-            return Vector3.LoadUnsafe(in value.AsRef());
+            return Vector3.LoadUnsafe(in Unsafe.As<Vector128<float>, float>(ref Unsafe.AsRef(in value)));
         }
 
         /// <summary>Reinterprets a <see cref="Vector128{Single}" /> as a new <see cref="Vector4" />.</summary>
@@ -380,7 +380,7 @@ namespace System.Runtime.Intrinsics
             ThrowHelper.ThrowForUnsupportedIntrinsicsVector128BaseType<T>();
 
             Vector<T> result = default;
-            value.StoreUnsafe(ref Unsafe.AsRef(in result.AsRef()));
+            value.StoreUnsafe(ref Unsafe.As<Vector<T>, T>(ref Unsafe.AsRef(in result)));
             return result;
         }
 
@@ -3709,12 +3709,6 @@ namespace System.Runtime.Intrinsics
         /// <exception cref="NotSupportedException">The type of <paramref name="left" /> and <paramref name="right" /> (<typeparamref name="T" />) is not supported.</exception>
         [Intrinsic]
         public static Vector128<T> Xor<T>(Vector128<T> left, Vector128<T> right) => left ^ right;
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static ref readonly T AsRef<T>(in this Vector128<T> vector)
-        {
-            return ref Unsafe.As<Vector128<T>, T>(ref Unsafe.AsRef(in vector));
-        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static T GetElementUnsafe<T>(in this Vector128<T> vector, int index)

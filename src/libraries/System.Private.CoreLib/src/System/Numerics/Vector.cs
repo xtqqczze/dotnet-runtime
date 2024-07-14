@@ -3007,12 +3007,6 @@ namespace System.Numerics
         public static Vector<T> Xor<T>(Vector<T> left, Vector<T> right) => left ^ right;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static ref readonly T AsRef<T>(in this Vector<T> vector)
-        {
-            return ref Unsafe.As<Vector<T>, T>(ref Unsafe.AsRef(in vector));
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static T GetElementUnsafe<T>(in this Vector<T> vector, int index)
         {
             Debug.Assert((index >= 0) && (index < Vector<T>.Count));

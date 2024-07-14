@@ -232,7 +232,7 @@ namespace System.Runtime.Intrinsics
             ThrowHelper.ThrowForUnsupportedIntrinsicsVector512BaseType<T>();
 
             Vector512<T> result = default;
-            value.StoreUnsafe(ref Unsafe.AsRef(in result.AsRef()));
+            value.StoreUnsafe(ref Unsafe.As<Vector512<T>, T>(ref result));
             return result;
         }
 
@@ -248,7 +248,7 @@ namespace System.Runtime.Intrinsics
             Debug.Assert(Vector512<T>.Count >= Vector<T>.Count);
             ThrowHelper.ThrowForUnsupportedIntrinsicsVector512BaseType<T>();
 
-            return Vector.LoadUnsafe(in value.AsRef());
+            return Vector.LoadUnsafe(in Unsafe.As<Vector512<T>, T>(ref value));
         }
 
         /// <summary>Computes the bitwise-and of two vectors.</summary>
@@ -3602,12 +3602,6 @@ namespace System.Runtime.Intrinsics
         /// <exception cref="NotSupportedException">The type of <paramref name="left" /> and <paramref name="right" /> (<typeparamref name="T" />) is not supported.</exception>
         [Intrinsic]
         public static Vector512<T> Xor<T>(Vector512<T> left, Vector512<T> right) => left ^ right;
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static ref readonly T AsRef<T>(in this Vector512<T> vector)
-        {
-            return ref Unsafe.As<Vector512<T>, T>(ref Unsafe.AsRef(in vector));
-        }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static T GetElementUnsafe<T>(in this Vector512<T> vector, int index)

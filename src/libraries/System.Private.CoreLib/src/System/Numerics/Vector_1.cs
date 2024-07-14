@@ -120,7 +120,7 @@ namespace System.Numerics
                 ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.values);
             }
 
-            this = Vector.LoadUnsafe(ref MemoryMarshal.GetReference(values)).As<byte, T>();
+            this = Unsafe.ReadUnaligned<Vector<T>>(in MemoryMarshal.GetReference(values));
         }
 
         /// <summary>Creates a new <see cref="Vector{T}" /> from a given span.</summary>
@@ -669,7 +669,7 @@ namespace System.Numerics
                 ThrowHelper.ThrowArgumentException_DestinationTooShort();
             }
 
-            this.As<T, byte>().StoreUnsafe(ref MemoryMarshal.GetReference(destination));
+            Unsafe.WriteUnaligned(ref MemoryMarshal.GetReference(destination), this);
         }
 
         /// <summary>Copies a <see cref="Vector{T}" /> to a given span.</summary>
