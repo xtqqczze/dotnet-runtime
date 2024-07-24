@@ -1089,7 +1089,6 @@ namespace System.Formats.Tar
         private int FormatNumeric(long value, Span<byte> destination)
         {
             Debug.Assert(destination.Length == 12, "12 byte field expected.");
-            const int Offset = 4; // 4 bytes before the long.
 
             bool isOctalRange = value >= 0 && value <= Octal12ByteFieldMaxValue;
 
@@ -1101,8 +1100,9 @@ namespace System.Formats.Tar
             {
                 // GNU format: store negative numbers in big endian format with leading '0xff' byte.
                 //             store positive numbers in big endian format with leading '0x80' byte.
-                BinaryPrimitives.WriteUInt32BigEndian(destination, value < 0 ? 0xffffffff : 0x80000000);
-                BinaryPrimitives.WriteInt64BigEndian(destination.Slice(Offset), value);
+                Span<byte> tmp = destination.Slice(0, sizeof(uint) + sizeof(long)); // help with bounds check elimination
+                BinaryPrimitives.WriteUInt32BigEndian(tmp, value < 0 ? 0xffffffff : 0x80000000);
+                BinaryPrimitives.WriteInt64BigEndian(tmp.Slice(sizeof(uint)), value);
                 return Checksum(destination);
             }
             else

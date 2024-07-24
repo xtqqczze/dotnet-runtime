@@ -3498,11 +3498,12 @@ namespace System.Xml
                 // scan if this is whitespace
                 while (true)
                 {
-                    if (!BinaryPrimitives.TryReadUInt16LittleEndian(data, out ushort value))
+                    ReadOnlySpan<byte> tmp = data.Slice(0, sizeof(ushort)); // help with bounds check elimination
+                    if (!BinaryPrimitives.TryReadUInt16LittleEndian(tmp, out ushort value))
                         return _xmlspacePreserve ? XmlNodeType.SignificantWhitespace : XmlNodeType.Whitespace;
                     if (value > byte.MaxValue || !XmlCharType.IsWhiteSpace((char)value))
                         break;
-                    data = data.Slice(2); // we consumed one ANSI whitespace char
+                    data = data.Slice(sizeof(ushort)); // we consumed one ANSI whitespace char
                 }
             }
 
@@ -3511,9 +3512,10 @@ namespace System.Xml
                 char ch;
                 while (true)
                 {
-                    if (!BinaryPrimitives.TryReadUInt16LittleEndian(data, out ushort value))
+                    ReadOnlySpan<byte> tmp = data.Slice(0, sizeof(ushort)); // help with bounds check elimination
+                    if (!BinaryPrimitives.TryReadUInt16LittleEndian(tmp, out ushort value))
                         return XmlNodeType.Text;
-                    data = data.Slice(2); // we consumed one char (possibly a high surrogate)
+                    data = data.Slice(sizeof(ushort)); // we consumed one char (possibly a high surrogate)
                     ch = (char)value;
                     if (!XmlCharType.IsCharData(ch))
                         break;
@@ -3525,7 +3527,8 @@ namespace System.Xml
                 }
                 else
                 {
-                    if (!BinaryPrimitives.TryReadUInt16LittleEndian(data, out ushort lowSurr))
+                    ReadOnlySpan<byte> tmp = data.Slice(0, sizeof(ushort)); // help with bounds check elimination
+                    if (!BinaryPrimitives.TryReadUInt16LittleEndian(tmp, out ushort lowSurr))
                     {
                         throw CreateXmlException(SR.Xml_InvalidSurrogateMissingLowChar);
                     }
@@ -3533,7 +3536,7 @@ namespace System.Xml
                     {
                         throw XmlConvert.CreateInvalidSurrogatePairException(ch, (char)lowSurr);
                     }
-                    data = data.Slice(2); //consumed a low surrogate char
+                    data = data.Slice(sizeof(ushort)); //consumed a low surrogate char
                 }
             }
         }
