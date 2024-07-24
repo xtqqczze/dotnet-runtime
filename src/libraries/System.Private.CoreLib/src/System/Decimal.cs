@@ -627,21 +627,20 @@ namespace System
 
         internal static void GetBytes(in decimal d, Span<byte> buffer)
         {
-            Debug.Assert(buffer.Length >= 16);
-
-            BinaryPrimitives.WriteInt32LittleEndian(buffer, (int)d.Low);
-            BinaryPrimitives.WriteInt32LittleEndian(buffer.Slice(4), (int)d.Mid);
-            BinaryPrimitives.WriteInt32LittleEndian(buffer.Slice(8), (int)d.High);
-            BinaryPrimitives.WriteInt32LittleEndian(buffer.Slice(12), d._flags);
+            Span<byte> tmp = buffer.Slice(0, 16); // help with bounds check elimination
+            BinaryPrimitives.WriteInt32LittleEndian(tmp, (int)d.Low);
+            BinaryPrimitives.WriteInt32LittleEndian(tmp.Slice(4), (int)d.Mid);
+            BinaryPrimitives.WriteInt32LittleEndian(tmp.Slice(8), (int)d.High);
+            BinaryPrimitives.WriteInt32LittleEndian(tmp.Slice(12), d._flags);
         }
 
         internal static decimal ToDecimal(ReadOnlySpan<byte> span)
         {
-            Debug.Assert(span.Length >= 16);
-            int lo = BinaryPrimitives.ReadInt32LittleEndian(span);
-            int mid = BinaryPrimitives.ReadInt32LittleEndian(span.Slice(4));
-            int hi = BinaryPrimitives.ReadInt32LittleEndian(span.Slice(8));
-            int flags = BinaryPrimitives.ReadInt32LittleEndian(span.Slice(12));
+            ReadOnlySpan<byte> tmp = span.Slice(0, 16); // help with bounds check elimination
+            int lo = BinaryPrimitives.ReadInt32LittleEndian(tmp);
+            int mid = BinaryPrimitives.ReadInt32LittleEndian(tmp.Slice(4));
+            int hi = BinaryPrimitives.ReadInt32LittleEndian(tmp.Slice(8));
+            int flags = BinaryPrimitives.ReadInt32LittleEndian(tmp.Slice(12));
             return new decimal(lo, mid, hi, flags);
         }
 

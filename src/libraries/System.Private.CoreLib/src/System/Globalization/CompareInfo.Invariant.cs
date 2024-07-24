@@ -48,7 +48,8 @@ namespace System.Globalization
             for (int i = 0; i < source.Length; i++)
             {
                 // convert machine-endian to big-endian
-                BinaryPrimitives.WriteUInt16BigEndian(sortKey, (ushort)source[i]);
+                Span<byte> tmp = sortKey.Slice(0, sizeof(ushort)); // help with bounds check elimination
+                BinaryPrimitives.WriteUInt16BigEndian(tmp, (ushort)source[i]);
                 sortKey = sortKey.Slice(sizeof(ushort));
             }
         }
