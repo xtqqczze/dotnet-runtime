@@ -62,7 +62,7 @@ namespace System
         // Creates a new guid from a read-only span.
         public Guid(ReadOnlySpan<byte> b)
         {
-            if (b.Length != 16)
+            if (b.Length < 16)
             {
                 ThrowGuidArrayCtorArgumentException();
             }
@@ -79,7 +79,7 @@ namespace System
 
         public Guid(ReadOnlySpan<byte> b, bool bigEndian)
         {
-            if (b.Length != 16)
+            if (b.Length < 16)
             {
                 ThrowGuidArrayCtorArgumentException();
             }
