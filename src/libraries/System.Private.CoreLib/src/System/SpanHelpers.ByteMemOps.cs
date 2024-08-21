@@ -58,7 +58,7 @@ namespace System
             // Copy bytes which are multiples of 16 and leave the remainder for MCPY01 to handle.
             Debug.Assert(len > 16 && len <= 64);
 #if HAS_CUSTOM_BLOCKS
-            Unsafe.WriteUnaligned(ref dest, Unsafe.ReadUnaligned<Block16>(ref src));
+            Unsafe.As<byte, Block16>(ref dest) = Unsafe.As<byte, Block16>(ref src);
 #elif TARGET_64BIT
             Unsafe.WriteUnaligned(ref dest, Unsafe.ReadUnaligned<long>(ref src));
             Unsafe.WriteUnaligned(ref Unsafe.Add(ref dest, 8), Unsafe.ReadUnaligned<long>(ref Unsafe.Add(ref src, 8)));
@@ -71,7 +71,7 @@ namespace System
             if (len <= 32)
                 goto MCPY01;
 #if HAS_CUSTOM_BLOCKS
-            Unsafe.WriteUnaligned(ref Unsafe.Add(ref dest, 16), Unsafe.ReadUnaligned<Block16>(ref Unsafe.Add(ref src, 16)));
+            Unsafe.As<byte, Block16>(ref Unsafe.Add(ref dest, 16)) = Unsafe.As<byte, Block16>(ref Unsafe.Add(ref src, 16));
 #elif TARGET_64BIT
             Unsafe.WriteUnaligned(ref Unsafe.Add(ref dest, 16), Unsafe.ReadUnaligned<long>(ref Unsafe.Add(ref src, 16)));
             Unsafe.WriteUnaligned(ref Unsafe.Add(ref dest, 24), Unsafe.ReadUnaligned<long>(ref Unsafe.Add(ref src, 24)));
@@ -84,7 +84,7 @@ namespace System
             if (len <= 48)
                 goto MCPY01;
 #if HAS_CUSTOM_BLOCKS
-            Unsafe.WriteUnaligned(ref Unsafe.Add(ref dest, 32), Unsafe.ReadUnaligned<Block16>(ref Unsafe.Add(ref src, 32)));
+            Unsafe.As<byte, Block16>(ref Unsafe.Add(ref dest, 32)) = Unsafe.As<byte, Block16>(ref Unsafe.Add(ref src, 32));
 #elif TARGET_64BIT
             Unsafe.WriteUnaligned(ref Unsafe.Add(ref dest, 32), Unsafe.ReadUnaligned<long>(ref Unsafe.Add(ref src, 32)));
             Unsafe.WriteUnaligned(ref Unsafe.Add(ref dest, 40), Unsafe.ReadUnaligned<long>(ref Unsafe.Add(ref src, 40)));
@@ -99,7 +99,7 @@ namespace System
             // Unconditionally copy the last 16 bytes using destEnd and srcEnd and return.
             Debug.Assert(len > 16 && len <= 64);
 #if HAS_CUSTOM_BLOCKS
-            Unsafe.WriteUnaligned(ref Unsafe.Add(ref destEnd, -16), Unsafe.ReadUnaligned<Block16>(ref Unsafe.Add(ref srcEnd, -16)));
+            Unsafe.As<byte, Block16>(ref Unsafe.Add(ref destEnd, -16)) = Unsafe.As<byte, Block16>(ref Unsafe.Add(ref srcEnd, -16));
 #elif TARGET_64BIT
             Unsafe.WriteUnaligned(ref Unsafe.Add(ref destEnd, -16), Unsafe.ReadUnaligned<long>(ref Unsafe.Add(ref srcEnd, -16)));
             Unsafe.WriteUnaligned(ref Unsafe.Add(ref destEnd, -8), Unsafe.ReadUnaligned<long>(ref Unsafe.Add(ref srcEnd, -8)));
@@ -163,7 +163,7 @@ namespace System
                 // dest is more important to align than src because an unaligned store is more expensive
                 // than an unaligned load.
                 nuint misalignedElements = 64 - Unsafe.OpportunisticMisalignment(ref dest, 64);
-                Unsafe.WriteUnaligned(ref dest, Unsafe.ReadUnaligned<Block64>(ref src));
+                Unsafe.As<byte, Block64>(ref dest) = Unsafe.As<byte, Block64>(ref src);
                 src = ref Unsafe.Add(ref src, misalignedElements);
                 dest = ref Unsafe.Add(ref dest, misalignedElements);
                 len -= misalignedElements;
@@ -177,7 +177,7 @@ namespace System
 
         MCPY06:
 #if HAS_CUSTOM_BLOCKS
-            Unsafe.WriteUnaligned(ref dest, Unsafe.ReadUnaligned<Block64>(ref src));
+            Unsafe.As<byte, Block64>(ref dest) = Unsafe.As<byte, Block64>(ref src);
 #elif TARGET_64BIT
             Unsafe.WriteUnaligned(ref dest, Unsafe.ReadUnaligned<long>(ref src));
             Unsafe.WriteUnaligned(ref Unsafe.Add(ref dest, 8), Unsafe.ReadUnaligned<long>(ref Unsafe.Add(ref src, 8)));
@@ -215,7 +215,7 @@ namespace System
             if (len > 16)
                 goto MCPY00;
 #if HAS_CUSTOM_BLOCKS
-            Unsafe.WriteUnaligned(ref Unsafe.Add(ref destEnd, -16), Unsafe.ReadUnaligned<Block16>(ref Unsafe.Add(ref srcEnd, -16)));
+            Unsafe.As<byte, Block16>(ref Unsafe.Add(ref destEnd, -16)) = Unsafe.As<byte, Block16>(ref Unsafe.Add(ref srcEnd, -16));
 #elif TARGET_64BIT
             Unsafe.WriteUnaligned(ref Unsafe.Add(ref destEnd, -16), Unsafe.ReadUnaligned<long>(ref Unsafe.Add(ref srcEnd, -16)));
             Unsafe.WriteUnaligned(ref Unsafe.Add(ref destEnd, -8), Unsafe.ReadUnaligned<long>(ref Unsafe.Add(ref srcEnd, -8)));
@@ -265,7 +265,7 @@ namespace System
             // Clear bytes which are multiples of 16 and leave the remainder for MZER01 to handle.
             Debug.Assert(len > 16 && len <= 64);
 #if HAS_CUSTOM_BLOCKS
-            Unsafe.WriteUnaligned<Block16>(ref dest, default);
+            Unsafe.As<byte, Block16>(ref dst) = default;
 #elif TARGET_64BIT
             Unsafe.WriteUnaligned<long>(ref dest, 0);
             Unsafe.WriteUnaligned<long>(ref Unsafe.Add(ref dest, 8), 0);
@@ -278,7 +278,7 @@ namespace System
             if (len <= 32)
                 goto MZER01;
 #if HAS_CUSTOM_BLOCKS
-            Unsafe.WriteUnaligned<Block16>(ref Unsafe.Add(ref dest, 16), default);
+            Unsafe.As<byte, Block16>(ref Unsafe.Add(ref dest, 16)) = default;
 #elif TARGET_64BIT
             Unsafe.WriteUnaligned<long>(ref Unsafe.Add(ref dest, 16), 0);
             Unsafe.WriteUnaligned<long>(ref Unsafe.Add(ref dest, 24), 0);
@@ -291,7 +291,7 @@ namespace System
             if (len <= 48)
                 goto MZER01;
 #if HAS_CUSTOM_BLOCKS
-            Unsafe.WriteUnaligned<Block16>(ref Unsafe.Add(ref dest, 32), default);
+            Unsafe.As<byte, Block16>(ref Unsafe.Add(ref dest, 32)) = default;
 #elif TARGET_64BIT
             Unsafe.WriteUnaligned<long>(ref Unsafe.Add(ref dest, 32), 0);
             Unsafe.WriteUnaligned<long>(ref Unsafe.Add(ref dest, 40), 0);
@@ -306,7 +306,7 @@ namespace System
             // Unconditionally clear the last 16 bytes using destEnd and return.
             Debug.Assert(len > 16 && len <= 64);
 #if HAS_CUSTOM_BLOCKS
-            Unsafe.WriteUnaligned<Block16>(ref Unsafe.Add(ref destEnd, -16), default);
+            Unsafe.As<byte, Block16>(ref Unsafe.Add(ref dest, -16)) = default;
 #elif TARGET_64BIT
             Unsafe.WriteUnaligned<long>(ref Unsafe.Add(ref destEnd, -16), 0);
             Unsafe.WriteUnaligned<long>(ref Unsafe.Add(ref destEnd, -8), 0);
@@ -367,7 +367,7 @@ namespace System
                 // Try to opportunistically align the destination below. The input isn't pinned, so the GC
                 // is free to move the references. We're therefore assuming that reads may still be unaligned.
                 nuint misalignedElements = 64 - Unsafe.OpportunisticMisalignment(ref dest, 64);
-                Unsafe.WriteUnaligned<Block64>(ref dest, default);
+                Unsafe.As<byte, Block64>(ref dest) = default;
                 dest = ref Unsafe.Add(ref dest, misalignedElements);
                 len -= misalignedElements;
             }
@@ -379,7 +379,7 @@ namespace System
 
         MZER06:
 #if HAS_CUSTOM_BLOCKS
-            Unsafe.WriteUnaligned<Block64>(ref dest, default);
+            Unsafe.As<byte, Block64>(ref dest) = default;
 #elif TARGET_64BIT
             Unsafe.WriteUnaligned<long>(ref dest, 0);
             Unsafe.WriteUnaligned<long>(ref Unsafe.Add(ref dest, 8), 0);
