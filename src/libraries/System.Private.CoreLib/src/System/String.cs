@@ -432,7 +432,7 @@ namespace System
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void CopyTo(Span<char> destination)
         {
-            if (Length <= destination.Length)
+            if (destination.Length >= Length)
             {
                 Buffer.Memmove(ref destination._reference, ref _firstChar, (uint)Length);
             }
@@ -448,7 +448,7 @@ namespace System
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool TryCopyTo(Span<char> destination)
         {
-            if (Length <= destination.Length)
+            if (destination.Length >= Length)
             {
                 Buffer.Memmove(ref destination._reference, ref _firstChar, (uint)Length);
                 return true;
