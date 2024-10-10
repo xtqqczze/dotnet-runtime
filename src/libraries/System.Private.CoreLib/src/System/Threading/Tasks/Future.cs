@@ -524,13 +524,19 @@ namespace System.Threading.Tasks
         /// <exception cref="ArgumentOutOfRangeException">The <paramref name="options"/> argument specifies an invalid value.</exception>
         public new ConfiguredTaskAwaitable<TResult> ConfigureAwait(ConfigureAwaitOptions options)
         {
+            ThrowIfInvalidConfigureAwaitOptions(this, options);
+
+            return new ConfiguredTaskAwaitable<TResult>(this, options);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static void ThrowIfInvalidConfigureAwaitOptions(object @this, ConfigureAwaitOptions options)
+        {
             if ((options & ~(ConfigureAwaitOptions.ContinueOnCapturedContext |
                              ConfigureAwaitOptions.ForceYielding)) != 0)
             {
-                ThrowForInvalidOptions(this, options);
+                ThrowForInvalidOptions(@this, options);
             }
-
-            return new ConfiguredTaskAwaitable<TResult>(this, options);
 
 #pragma warning disable IDE0060 // 'this' taken explicitly to avoid argument shuffling by caller
             static void ThrowForInvalidOptions(object @this, ConfigureAwaitOptions options) =>
