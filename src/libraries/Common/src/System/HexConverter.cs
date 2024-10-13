@@ -290,7 +290,7 @@ namespace System
                 if (Ssse3.IsSupported)
                 {
                     output = Ssse3.MultiplyAddAdjacent(nibbles,
-                        Vector128.Create((short)0x0110).AsSByte()).AsByte();
+                        Vector128.Create((ushort)0x0110).AsSByte()).AsByte();
                 }
                 else
                 {

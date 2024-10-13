@@ -1217,7 +1217,7 @@ namespace System.Buffers
 
             Vector128<byte> bitmask = Vector128.ShuffleUnsafe(Vector128.Create(0x8040201008040201).AsByte(), highNibbles);
 
-            Vector128<byte> mask = Vector128.GreaterThan(highNibbles.AsSByte(), Vector128.Create((sbyte)0x7)).AsByte();
+            Vector128<byte> mask = Vector128.GreaterThan(highNibbles.AsSByte(), Vector128.Create((byte)0x7).AsSByte()).AsByte();
             Vector128<byte> bitsets = Vector128.ConditionalSelect(mask, row1, row0);
 
             Vector128<byte> result = Vector128.Equals(bitsets & bitmask, bitmask);
@@ -1240,7 +1240,7 @@ namespace System.Buffers
 
             Vector256<byte> bitmask = Avx2.Shuffle(Vector256.Create(0x8040201008040201).AsByte(), highNibbles);
 
-            Vector256<byte> mask = Vector256.GreaterThan(highNibbles.AsSByte(), Vector256.Create((sbyte)0x7)).AsByte();
+            Vector256<byte> mask = Vector256.GreaterThan(highNibbles.AsSByte(), Vector256.Create((byte)0x7).AsSByte()).AsByte();
             Vector256<byte> bitsets = Vector256.ConditionalSelect(mask, row1, row0);
 
             Vector256<byte> result = Vector256.Equals(bitsets & bitmask, bitmask);

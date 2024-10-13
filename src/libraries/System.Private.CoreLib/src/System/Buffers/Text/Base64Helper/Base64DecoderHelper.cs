@@ -755,8 +755,8 @@ namespace System.Buffers.Text
                 -1, -1, -1, -1,
                 -1, -1, -1, -1).AsInt32();
 
-            Vector256<sbyte> maskSlashOrUnderscore = Vector256.Create((sbyte)decoder.MaskSlashOrUnderscore);
-            Vector256<sbyte> shiftForUnderscore = Vector256.Create((sbyte)33);
+            Vector256<sbyte> maskSlashOrUnderscore = Vector256.Create(decoder.MaskSlashOrUnderscore).AsSByte();
+            Vector256<sbyte> shiftForUnderscore = Vector256.Create((byte)33).AsSByte();
             Vector256<sbyte> mergeConstant0 = Vector256.Create(0x01400140).AsSByte();
             Vector256<short> mergeConstant1 = Vector256.Create(0x00011000).AsInt16();
 

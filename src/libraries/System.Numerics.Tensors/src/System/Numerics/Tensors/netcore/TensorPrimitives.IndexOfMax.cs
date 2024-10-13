@@ -153,7 +153,7 @@ namespace System.Numerics.Tensors
                 static Vector512<T> CreateVector512T(int i) =>
                     sizeof(T) == sizeof(long) ? Vector512.Create((long)i).As<long, T>() :
                     sizeof(T) == sizeof(int) ? Vector512.Create(i).As<int, T>() :
-                    sizeof(T) == sizeof(short) ? Vector512.Create((short)i).As<short, T>() :
+                    sizeof(T) == sizeof(short) ? Vector512.Create((ushort)i).As<ushort, T>() :
                     Vector512.Create((byte)i).As<byte, T>();
 
                 ref T xRef = ref MemoryMarshal.GetReference(x);
@@ -244,7 +244,7 @@ namespace System.Numerics.Tensors
                 static Vector256<T> CreateVector256T(int i) =>
                     sizeof(T) == sizeof(long) ? Vector256.Create((long)i).As<long, T>() :
                     sizeof(T) == sizeof(int) ? Vector256.Create(i).As<int, T>() :
-                    sizeof(T) == sizeof(short) ? Vector256.Create((short)i).As<short, T>() :
+                    sizeof(T) == sizeof(short) ? Vector256.Create((ushort)i).As<ushort, T>() :
                     Vector256.Create((byte)i).As<byte, T>();
 
                 ref T xRef = ref MemoryMarshal.GetReference(x);
@@ -335,7 +335,7 @@ namespace System.Numerics.Tensors
                 static Vector128<T> CreateVector128T(int i) =>
                     sizeof(T) == sizeof(long) ? Vector128.Create((long)i).As<long, T>() :
                     sizeof(T) == sizeof(int) ? Vector128.Create(i).As<int, T>() :
-                    sizeof(T) == sizeof(short) ? Vector128.Create((short)i).As<short, T>() :
+                    sizeof(T) == sizeof(short) ? Vector128.Create((ushort)i).As<ushort, T>() :
                     Vector128.Create((byte)i).As<byte, T>();
 
                 ref T xRef = ref MemoryMarshal.GetReference(x);

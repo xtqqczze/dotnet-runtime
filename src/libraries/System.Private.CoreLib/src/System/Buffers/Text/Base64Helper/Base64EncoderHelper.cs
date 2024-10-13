@@ -254,7 +254,7 @@ namespace System.Buffers.Text
             Vector256<ushort> shiftAC = Vector256.Create(0x04000040).AsUInt16();
             Vector256<short> shiftBB = Vector256.Create(0x01000010).AsInt16();
             Vector256<byte> const51 = Vector256.Create((byte)51);
-            Vector256<sbyte> const25 = Vector256.Create((sbyte)25);
+            Vector256<sbyte> const25 = Vector256.Create((byte)25).AsSByte();
 
             byte* src = srcBytes;
             T* dest = destBytes;
@@ -467,7 +467,7 @@ namespace System.Buffers.Text
             Vector128<ushort> shiftAC = Vector128.Create(0x04000040).AsUInt16();
             Vector128<short> shiftBB = Vector128.Create(0x01000010).AsInt16();
             Vector128<byte> const51 = Vector128.Create((byte)51);
-            Vector128<sbyte> const25 = Vector128.Create((sbyte)25);
+            Vector128<sbyte> const25 = Vector128.Create((byte)25).AsSByte();
             Vector128<byte> mask8F = Vector128.Create((byte)0x8F);
 
             byte* src = srcBytes;
