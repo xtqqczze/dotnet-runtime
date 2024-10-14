@@ -663,6 +663,7 @@ namespace System.Buffers.Text
             // The JIT won't hoist these "constants", so help it
             Vector512<sbyte> vbmiLookup0 = Vector512.Create(decoder.VbmiLookup0).AsSByte();
             Vector512<sbyte> vbmiLookup1 = Vector512.Create(decoder.VbmiLookup1).AsSByte();
+            Vector512<sbyte> errorMask = Vector512.Create(sbyte.MinValue);
             Vector512<byte> vbmiPackedLanesControl = Vector512.Create(
                 0x06000102, 0x090a0405, 0x0c0d0e08, 0x16101112,
                 0x191a1415, 0x1c1d1e18, 0x26202122, 0x292a2425,
@@ -687,7 +688,7 @@ namespace System.Buffers.Text
                 // origIndex      = [...|00dddddd|00cccccc|00bbbbbb|00aaaaaa]
                 Vector512<sbyte> origIndex = Avx512Vbmi.PermuteVar64x8x2(vbmiLookup0, str, vbmiLookup1);
                 Vector512<sbyte> errorVec = (origIndex.AsInt32() | str.AsInt32()).AsSByte();
-                if (errorVec.ExtractMostSignificantBits() != 0)
+                if ((errorVec & errorMask) != Vector512<sbyte>.Zero)
                 {
                     break;
                 }
