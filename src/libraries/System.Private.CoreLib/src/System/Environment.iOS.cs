@@ -97,9 +97,9 @@ namespace System
             static string CombineSearchPath(NSSearchPathDirectory searchPath, string subdirectory)
             {
                 string? path = Interop.Sys.SearchPath(searchPath);
-                return path != null ?
-                    Path.Combine(path, subdirectory) :
-                    string.Empty;
+                return path is null ?
+                    string.Empty :
+                    Path.Combine(path, subdirectory);
             }
 
             static string CombineDocumentDirectory(string subdirectory)

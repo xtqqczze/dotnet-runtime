@@ -2150,9 +2150,9 @@ namespace System
             {
                 ThrowInvalidBase();
             }
-            return value != null ?
-                ParseNumbers.StringToInt(value.AsSpan(), fromBase, ParseNumbers.IsTight) :
-                0;
+            return value is null ?
+                0 :
+                ParseNumbers.StringToInt(value.AsSpan(), fromBase, ParseNumbers.IsTight);
         }
 
         // Parses value in base fromBase.  fromBase can only
@@ -2166,9 +2166,9 @@ namespace System
             {
                 ThrowInvalidBase();
             }
-            return value != null ?
-                (uint)ParseNumbers.StringToInt(value.AsSpan(), fromBase, ParseNumbers.TreatAsUnsigned | ParseNumbers.IsTight) :
-                0;
+            return value is null ?
+                0 :
+                (uint)ParseNumbers.StringToInt(value.AsSpan(), fromBase, ParseNumbers.TreatAsUnsigned | ParseNumbers.IsTight);
         }
 
         // Parses value in base fromBase.  fromBase can only
@@ -2181,9 +2181,9 @@ namespace System
             {
                 ThrowInvalidBase();
             }
-            return value != null ?
-                ParseNumbers.StringToLong(value.AsSpan(), fromBase, ParseNumbers.IsTight) :
-                0;
+            return value is null ?
+                0 :
+                ParseNumbers.StringToLong(value.AsSpan(), fromBase, ParseNumbers.IsTight);
         }
 
         // Parses value in base fromBase.  fromBase can only
@@ -2197,9 +2197,9 @@ namespace System
             {
                 ThrowInvalidBase();
             }
-            return value != null ?
-                (ulong)ParseNumbers.StringToLong(value.AsSpan(), fromBase, ParseNumbers.TreatAsUnsigned | ParseNumbers.IsTight) :
-                0;
+            return value is null ?
+                0 :
+                (ulong)ParseNumbers.StringToLong(value.AsSpan(), fromBase, ParseNumbers.TreatAsUnsigned | ParseNumbers.IsTight);
         }
 
         // Convert the byte value to a string in base toBase

@@ -12,9 +12,9 @@ namespace System.Globalization
 
             string? strDefault = UserDefaultLocaleName;
 
-            return strDefault != null ?
-                GetCultureByName(strDefault) :
-                InvariantCulture;
+            return strDefault is null ?
+                InvariantCulture :
+                GetCultureByName(strDefault);
         }
 
         private static unsafe CultureInfo GetUserDefaultUICulture()

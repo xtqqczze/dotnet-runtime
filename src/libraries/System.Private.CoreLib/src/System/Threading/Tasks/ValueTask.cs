@@ -539,9 +539,9 @@ namespace System.Threading.Tasks
 
         /// <summary>Returns the hash code for this instance.</summary>
         public override int GetHashCode() =>
-            _obj != null ? _obj.GetHashCode() :
-            _result != null ? _result.GetHashCode() :
-            0;
+            _obj is null ?
+                _result is null ? 0 : _result.GetHashCode() :
+                _obj.GetHashCode();
 
         /// <summary>Returns a value indicating whether this value is equal to a specified <see cref="object"/>.</summary>
         public override bool Equals([NotNullWhen(true)] object? obj) =>
@@ -550,9 +550,9 @@ namespace System.Threading.Tasks
 
         /// <summary>Returns a value indicating whether this value is equal to a specified <see cref="ValueTask{TResult}"/> value.</summary>
         public bool Equals(ValueTask<TResult> other) =>
-            _obj != null || other._obj != null ?
-                _obj == other._obj && _token == other._token :
-                EqualityComparer<TResult>.Default.Equals(_result, other._result);
+            _obj is null && other._obj is null ?
+                EqualityComparer<TResult>.Default.Equals(_result, other._result) :
+                _obj == other._obj && _token == other._token;
 
         /// <summary>Returns a value indicating whether two <see cref="ValueTask{TResult}"/> values are equal.</summary>
         public static bool operator ==(ValueTask<TResult> left, ValueTask<TResult> right) =>

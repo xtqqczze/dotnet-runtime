@@ -253,7 +253,7 @@ namespace System.Collections.Generic
                 else
                 {
                     Debug.Assert(comparer is not null);
-                    int hashCode = item != null ? comparer.GetHashCode(item) : 0;
+                    int hashCode = item is null ? 0 : comparer.GetHashCode(item);
                     int i = GetBucketRef(hashCode) - 1; // Value in _buckets is 1-based
                     while (i >= 0)
                     {
@@ -301,10 +301,9 @@ namespace System.Collections.Generic
 
                 IEqualityComparer<T>? comparer = _comparer;
                 Debug.Assert(typeof(T).IsValueType || comparer is not null);
-                int hashCode =
-                    typeof(T).IsValueType && comparer == null ? item!.GetHashCode() :
-                    item is not null ? comparer!.GetHashCode(item) :
-                    0;
+                int hashCode = typeof(T).IsValueType && comparer is null ?
+                    item!.GetHashCode() :
+                    item is null ? 0 : comparer!.GetHashCode(item);
 
                 ref int bucket = ref GetBucketRef(hashCode);
                 int i = bucket - 1; // Value in buckets is 1-based
@@ -551,7 +550,7 @@ namespace System.Collections.Generic
                     uint collisionCount = 0;
                     int last = -1;
 
-                    int hashCode = item is not null ? comparer!.GetHashCode(item) : 0;
+                    int hashCode = item is null ? 0 : comparer!.GetHashCode(item);
 
                     ref int bucket = ref set.GetBucketRef(hashCode);
                     int i = bucket - 1; // Value in buckets is 1-based
@@ -1305,7 +1304,7 @@ namespace System.Collections.Generic
                     ref Entry entry = ref entries[i];
                     if (entry.Next >= -1)
                     {
-                        entry.HashCode = entry.Value != null ? comparer.GetHashCode(entry.Value) : 0;
+                        entry.HashCode = entry.Value is null ? 0 : comparer.GetHashCode(entry.Value);
                     }
                 }
             }
@@ -1454,7 +1453,7 @@ namespace System.Collections.Generic
             else
             {
                 Debug.Assert(comparer is not null);
-                hashCode = value != null ? comparer.GetHashCode(value) : 0;
+                hashCode = value is null ? 0 : comparer.GetHashCode(value);
                 bucket = ref GetBucketRef(hashCode);
                 int i = bucket - 1; // Value in _buckets is 1-based
                 while (i >= 0)

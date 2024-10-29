@@ -65,9 +65,7 @@ namespace System.IO
                 // the parent of child, not the child. Trim off an ending directory separator if there is one,
                 // but don't mangle the root.
                 string? parentName = Path.GetDirectoryName(PathInternal.IsRoot(FullPath.AsSpan()) ? FullPath : Path.TrimEndingDirectorySeparator(FullPath));
-                return parentName != null ?
-                    new DirectoryInfo(parentName, isNormalized: true) :
-                    null;
+                return parentName is null ? null : new DirectoryInfo(parentName, isNormalized: true);
             }
         }
 

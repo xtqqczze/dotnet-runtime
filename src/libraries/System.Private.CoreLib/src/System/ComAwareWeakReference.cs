@@ -162,9 +162,9 @@ namespace System
         [MethodImpl(MethodImplOptions.NoInlining)]
         internal static void SetTarget(ref nint taggedHandle, object? target, ComInfo? comInfo)
         {
-            ComAwareWeakReference comAwareRef = comInfo != null ?
-                EnsureComAwareReference(ref taggedHandle) :
-                Unsafe.As<ComAwareWeakReference>(GCHandle.InternalGet(taggedHandle & ~HandleTagBits));
+            ComAwareWeakReference comAwareRef = comInfo is null ?
+                Unsafe.As<ComAwareWeakReference>(GCHandle.InternalGet(taggedHandle & ~HandleTagBits)) :
+                EnsureComAwareReference(ref taggedHandle);
 
             comAwareRef.SetTarget(target, comInfo);
         }

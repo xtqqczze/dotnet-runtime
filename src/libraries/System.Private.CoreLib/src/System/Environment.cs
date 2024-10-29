@@ -117,9 +117,9 @@ namespace System
         {
             // s_commandLineArgs is expected to be initialize with application command line arguments
             // during startup. GetCommandLineArgsNative fallback is used for hosted libraries.
-            return s_commandLineArgs != null ?
-                (string[])s_commandLineArgs.Clone() :
-                GetCommandLineArgsNative();
+            return s_commandLineArgs is null ?
+                GetCommandLineArgsNative() :
+                (string[])s_commandLineArgs.Clone();
         }
 #endif
 

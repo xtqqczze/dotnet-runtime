@@ -517,9 +517,9 @@ namespace System
             string? s = FormatFloat(ref vlb, value, format, info);
 
             Debug.Assert(s is null || typeof(TChar) == typeof(char));
-            bool success = s != null ?
-                TryCopyTo(s, destination, out charsWritten) :
-                vlb.TryCopyTo(destination, out charsWritten);
+            bool success = s is null ?
+                vlb.TryCopyTo(destination, out charsWritten) :
+                TryCopyTo(s, destination, out charsWritten);
 
             vlb.Dispose();
             return success;

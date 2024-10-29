@@ -170,7 +170,7 @@ namespace System
 
         public static bool operator !=(ArraySegment<T> a, ArraySegment<T> b) => !(a == b);
 
-        public static implicit operator ArraySegment<T>(T[] array) => array != null ? new ArraySegment<T>(array) : default;
+        public static implicit operator ArraySegment<T>(T[] array) => array is null ? default : new ArraySegment<T>(array);
 
         #region IList<T>
         T IList<T>.this[int index]

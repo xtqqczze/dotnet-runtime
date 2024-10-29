@@ -25,7 +25,7 @@ namespace System.Reflection
 
             Type[] delegateParameters = [typeof(object), typeof(object), typeof(object), typeof(object), typeof(object)];
 
-            string declaringTypeName = method.DeclaringType != null ? method.DeclaringType.Name + "." : string.Empty;
+            string declaringTypeName = method.DeclaringType is null ? string.Empty : method.DeclaringType.Name + ".";
             var dm = new DynamicMethod(
                 InvokeStubPrefix + declaringTypeName + method.Name,
                 returnType: typeof(object),
@@ -93,7 +93,7 @@ namespace System.Reflection
             // The first parameter is unused but supports treating the DynamicMethod as an instance method which is slightly faster than a static.
             Type[] delegateParameters = [typeof(object), typeof(Span<object>)];
 
-            string declaringTypeName = method.DeclaringType != null ? method.DeclaringType.Name + "." : string.Empty;
+            string declaringTypeName = method.DeclaringType is null ? string.Empty : method.DeclaringType.Name + ".";
             var dm = new DynamicMethod(
                 InvokeStubPrefix + declaringTypeName + method.Name,
                 returnType: typeof(object),
@@ -150,7 +150,7 @@ namespace System.Reflection
             // The first parameter is unused but supports treating the DynamicMethod as an instance method which is slightly faster than a static.
             Type[] delegateParameters = [typeof(object), typeof(object), typeof(IntPtr*)];
 
-            string declaringTypeName = method.DeclaringType != null ? method.DeclaringType.Name + "." : string.Empty;
+            string declaringTypeName = method.DeclaringType is null ? string.Empty : method.DeclaringType.Name + ".";
             var dm = new DynamicMethod(
                 InvokeStubPrefix + declaringTypeName + method.Name,
                 returnType: typeof(object),

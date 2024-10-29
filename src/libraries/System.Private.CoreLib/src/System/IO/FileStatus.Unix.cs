@@ -250,8 +250,9 @@ namespace System.IO
                 {
                     uint flags = hidden ? _fileCache.UserFlags | (uint)Interop.Sys.UserFlags.UF_HIDDEN :
                                           _fileCache.UserFlags & ~(uint)Interop.Sys.UserFlags.UF_HIDDEN;
-                    int rv = handle is not null ? Interop.Sys.FChflags(handle, flags) :
-                                                  Interop.Sys.LChflags(path!, flags);
+                    int rv = handle is null ?
+                        Interop.Sys.LChflags(path!, flags) :
+                        Interop.Sys.FChflags(handle, flags);
                     Interop.CheckIo(rv, path, asDirectory);
                 }
             }
@@ -274,8 +275,9 @@ namespace System.IO
             // Change the permissions on the file
             if (newMode != oldMode)
             {
-                int rv = handle is not null ? Interop.Sys.FChMod(handle, newMode) :
-                                              Interop.Sys.ChMod(path!, newMode);
+                int rv = handle is null ?
+                    Interop.Sys.ChMod(path!, newMode) :
+                    Interop.Sys.FChMod(handle, newMode);
                 Interop.CheckIo(rv, path, asDirectory);
             }
 
@@ -483,8 +485,9 @@ namespace System.IO
 
             // Linux does not support link permissions.
             // To have consistent cross-platform behavior we operate on the link target.
-            int rv = handle is not null ? Interop.Sys.FChMod(handle, (int)mode)
-                                        : Interop.Sys.ChMod(path!, (int)mode);
+            int rv = handle is null ?
+                Interop.Sys.ChMod(path!, (int)mode) :
+                Interop.Sys.FChMod(handle, (int)mode);
             Interop.CheckIo(rv, path);
 
             InvalidateCaches();

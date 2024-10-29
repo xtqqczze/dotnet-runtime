@@ -83,9 +83,9 @@ namespace System.Globalization
         private static string DefaultMessage => SR.Argument_CultureNotSupported;
 
         private string? FormattedInvalidCultureId =>
-            InvalidCultureId != null ?
-                string.Format(CultureInfo.InvariantCulture, "{0} (0x{0:x4})", (int)InvalidCultureId) :
-                InvalidCultureName;
+            InvalidCultureId is null ?
+                InvalidCultureName :
+                string.Format(CultureInfo.InvariantCulture, "{0} (0x{0:x4})", (int)InvalidCultureId);
 
         public override string Message
         {

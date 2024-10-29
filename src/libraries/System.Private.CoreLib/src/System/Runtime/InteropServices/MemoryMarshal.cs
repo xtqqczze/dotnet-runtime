@@ -250,8 +250,7 @@ namespace System.Runtime.InteropServices
         /// <exception cref="ArgumentException">The string is longer than <see cref="int.MaxValue"/>.</exception>
         [CLSCompliant(false)]
         public static unsafe ReadOnlySpan<char> CreateReadOnlySpanFromNullTerminated(char* value) =>
-            value != null ? new ReadOnlySpan<char>(value, string.wcslen(value)) :
-            default;
+            value is null ? default : new ReadOnlySpan<char>(value, string.wcslen(value));
 
         /// <summary>Creates a new read-only span for a null-terminated UTF-8 string.</summary>
         /// <param name="value">The pointer to the null-terminated string of bytes.</param>
@@ -260,8 +259,7 @@ namespace System.Runtime.InteropServices
         /// <exception cref="ArgumentException">The string is longer than <see cref="int.MaxValue"/>.</exception>
         [CLSCompliant(false)]
         public static unsafe ReadOnlySpan<byte> CreateReadOnlySpanFromNullTerminated(byte* value) =>
-            value != null ? new ReadOnlySpan<byte>(value, string.strlen(value)) :
-            default;
+            value is null ? default : new ReadOnlySpan<byte>(value, string.strlen(value));
 
         /// <summary>
         /// Get an array segment from the underlying memory.

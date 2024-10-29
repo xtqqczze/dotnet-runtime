@@ -155,6 +155,9 @@ namespace System.Threading
         /// Serves as a hash function for a <see cref="CancellationTokenRegistration">CancellationTokenRegistration.</see>.
         /// </summary>
         /// <returns>A hash code for the current <see cref="CancellationTokenRegistration">CancellationTokenRegistration</see> instance.</returns>
-        public override int GetHashCode() => _node != null ? _node.GetHashCode() ^ _id.GetHashCode() : _id.GetHashCode();
+        public override int GetHashCode() =>
+            _node is null ?
+                _id.GetHashCode() :
+                _node.GetHashCode() ^ _id.GetHashCode();
     }
 }

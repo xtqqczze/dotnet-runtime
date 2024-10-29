@@ -67,7 +67,7 @@ namespace System
             get
             {
                 Assembly? assembly = Assembly.GetEntryAssembly();
-                return assembly != null ? assembly.GetName().Name! : "DefaultDomain";
+                return assembly is null ? "DefaultDomain" : assembly.GetName().Name!;
             }
         }
 
@@ -144,7 +144,7 @@ namespace System
                 parameters: entry.GetParametersAsSpan().Length > 0 ? [args] : null,
                 culture: null);
 
-            return result != null ? (int)result : 0;
+            return result is null ? 0 : (int)result;
         }
 
         public int ExecuteAssemblyByName(AssemblyName assemblyName, params string?[]? args) =>

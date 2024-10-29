@@ -56,7 +56,7 @@ namespace System
 
             object? o = CreateInstance(t, bindingAttr, binder, args, culture, activationAttributes);
 
-            return o != null ? new ObjectHandle(o) : null;
+            return o is null ? null : new ObjectHandle(o);
         }
     }
 }

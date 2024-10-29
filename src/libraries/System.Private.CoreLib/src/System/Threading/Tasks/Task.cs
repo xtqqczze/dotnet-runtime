@@ -2984,8 +2984,11 @@ namespace System.Threading.Tasks
             {
                 Task? currentTask = InternalCurrent;
                 log.TaskWaitBegin(
-                    currentTask != null ? currentTask.m_taskScheduler!.Id : TaskScheduler.Default.Id, currentTask != null ? currentTask.Id : 0,
-                    this.Id, TplEventSource.TaskWaitBehavior.Synchronous, 0);
+                    currentTask is null ? TaskScheduler.Default.Id : currentTask.m_taskScheduler!.Id,
+                    currentTask is null ? 0 : currentTask.Id,
+                    this.Id,
+                    TplEventSource.TaskWaitBehavior.Synchronous,
+                    0);
             }
 
             // Alert a listening debugger that we can't make forward progress unless it slips threads.

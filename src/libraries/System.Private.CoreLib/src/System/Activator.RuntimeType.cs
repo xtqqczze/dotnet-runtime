@@ -131,7 +131,7 @@ namespace System
             // Issues IL2072 warning.
             object? o = CreateInstance(type!, bindingAttr, binder, args, culture, activationAttributes);
 
-            return o != null ? new ObjectHandle(o) : null;
+            return o is null ? null : new ObjectHandle(o);
         }
 
         [Intrinsic]

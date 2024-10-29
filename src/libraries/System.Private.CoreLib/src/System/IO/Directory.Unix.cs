@@ -30,7 +30,7 @@ namespace System.IO
             // that'll result in a unique directory name.
             string tempPath = Path.GetTempPath();
             int tempPathByteCount = Encoding.UTF8.GetByteCount(tempPath);
-            int prefixByteCount = prefix is not null ? Encoding.UTF8.GetByteCount(prefix) : 0;
+            int prefixByteCount = prefix is null ? 0 : Encoding.UTF8.GetByteCount(prefix);
             int totalByteCount = tempPathByteCount + prefixByteCount + 6 + 1;
 
             Span<byte> path = totalByteCount <= 256 ? stackalloc byte[256].Slice(0, totalByteCount) : new byte[totalByteCount];

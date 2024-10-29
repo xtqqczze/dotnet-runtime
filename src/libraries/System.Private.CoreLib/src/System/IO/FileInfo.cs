@@ -186,7 +186,7 @@ namespace System.IO
             FileSystem.ReplaceFile(
                 FullPath,
                 Path.GetFullPath(destinationFileName),
-                destinationBackupFileName != null ? Path.GetFullPath(destinationBackupFileName) : null,
+                destinationBackupFileName is null ? null : Path.GetFullPath(destinationBackupFileName),
                 ignoreMetadataErrors);
 
             return new FileInfo(destinationFileName);
