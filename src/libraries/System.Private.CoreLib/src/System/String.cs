@@ -297,7 +297,7 @@ namespace System
             string result = FastAllocateString(count);
             if (c != '\0')
             {
-                SpanHelpers.Fill(ref result._firstChar, (uint)count, c);
+                SpanHelpers.Fill(ref result._firstChar, count, c);
             }
             return result;
         }

@@ -74,7 +74,7 @@ namespace System.Runtime.InteropServices
         [CLSCompliant(false)]
         public static void Fill(void* ptr, nuint byteCount, byte value)
         {
-            SpanHelpers.Fill(ref *(byte*)ptr, byteCount, value);
+            SpanHelpers.Fill(ref *(byte*)ptr, value, byteCount);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

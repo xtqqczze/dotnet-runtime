@@ -295,7 +295,7 @@ namespace System
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public unsafe void Fill(T value)
         {
-            SpanHelpers.Fill(ref _reference, (uint)_length, value);
+            SpanHelpers.Fill(ref _reference, Length, value);
         }
 
         /// <summary>
