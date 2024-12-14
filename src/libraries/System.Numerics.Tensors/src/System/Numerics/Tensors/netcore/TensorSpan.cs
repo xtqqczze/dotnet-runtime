@@ -506,6 +506,8 @@ namespace System.Numerics.Tensors
         /// It can be used for pinning and is required to support the use of span within a fixed statement.
         /// </summary>
         [EditorBrowsable(EditorBrowsableState.Never)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        
         public ref T GetPinnableReference()
         {
             return ref _shape.FlattenedLength == 0 ? ref Unsafe.NullRef<T>() : ref _reference;
