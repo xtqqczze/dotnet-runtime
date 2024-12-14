@@ -3118,10 +3118,13 @@ namespace System.Numerics.Tensors
         public static bool SequenceEqual<T>(this scoped in TensorSpan<T> tensor, scoped in ReadOnlyTensorSpan<T> other)
             where T : IEquatable<T>?
         {
-            return tensor._shape._memoryLength == other._shape._memoryLength
+            nint tensorMemoryLength = tensor._shape._memoryLength;
+            nint otherMemoryLength = other._shape._memoryLength;
+
+            return tensorMemoryLength == otherMemoryLength
+                && MemoryMarshal.CreateReadOnlySpan(in tensor._reference, (int)tensorMemoryLength).SequenceEqual(MemoryMarshal.CreateReadOnlySpan(in other._reference, (int)otherMemoryLength))
                 && tensor.FlattenedLength == other.FlattenedLength
-                && tensor.Lengths.SequenceEqual(other.Lengths)
-                && MemoryMarshal.CreateReadOnlySpan(in tensor._reference, (int)tensor._shape._memoryLength).SequenceEqual(MemoryMarshal.CreateReadOnlySpan(in other._reference, (int)other._shape._memoryLength));
+                && tensor.Lengths.SequenceEqual(other.Lengths);
         }
 
         /// <summary>
@@ -3130,10 +3133,13 @@ namespace System.Numerics.Tensors
         public static bool SequenceEqual<T>(this scoped in ReadOnlyTensorSpan<T> tensor, scoped in ReadOnlyTensorSpan<T> other)
             where T : IEquatable<T>?
         {
-            return tensor._shape._memoryLength == other._shape._memoryLength
+            nint tensorMemoryLength = tensor._shape._memoryLength;
+            nint otherMemoryLength = other._shape._memoryLength;
+
+            return tensorMemoryLength == otherMemoryLength
+                && MemoryMarshal.CreateReadOnlySpan(in tensor._reference, (int)tensorMemoryLength).SequenceEqual(MemoryMarshal.CreateReadOnlySpan(in other._reference, (int)otherMemoryLength))
                 && tensor.FlattenedLength == other.FlattenedLength
-                && tensor.Lengths.SequenceEqual(other.Lengths)
-                && MemoryMarshal.CreateReadOnlySpan(in tensor._reference, (int)tensor._shape._memoryLength).SequenceEqual(MemoryMarshal.CreateReadOnlySpan(in other._reference, (int)other._shape._memoryLength));
+                && tensor.Lengths.SequenceEqual(other.Lengths);
         }
         #endregion
 
