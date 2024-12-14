@@ -274,7 +274,7 @@ namespace System
         [EditorBrowsable(EditorBrowsableState.Never)]
         public ref readonly T GetPinnableReference()
         {
-            return ref _length != 0 ? ref _reference : ref Unsafe.NullRef<T>();
+            return ref _length == 0 ? ref Unsafe.NullRef<T>() : ref _reference;
         }
 
         /// <summary>

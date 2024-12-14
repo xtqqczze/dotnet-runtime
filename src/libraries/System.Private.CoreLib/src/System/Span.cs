@@ -267,7 +267,7 @@ namespace System
         [EditorBrowsable(EditorBrowsableState.Never)]
         public ref T GetPinnableReference()
         {
-            return ref _length != 0 ? ref _reference : ref Unsafe.NullRef<T>();
+            return ref _length == 0 ? ref Unsafe.NullRef<T>() : ref _reference;
         }
 
         /// <summary>
@@ -311,15 +311,17 @@ namespace System
             // check, and one for the result of TryCopyTo. Since these checks are equivalent,
             // we can optimize by performing the check once ourselves then calling Memmove directly.
 
-            if ((uint)_length <= (uint)destination.Length)
-            {
-                Buffer.Memmove(ref destination._reference, ref _reference, (uint)_length);
-            }
-            else
+            if ((uint)_length > (uint)destination.Length)
             {
                 ThrowHelper.ThrowArgumentException_DestinationTooShort();
             }
+            else
+            {
+                CopyToUnsafe(destination);
+            }
         }
+
+        private void CopyToUnsafe(Span<T> destination) => Buffer.Memmove(ref destination._reference, ref _reference, (uint)_length);
 
         /// <summary>
         /// Copies the contents of this span into destination span. If the source

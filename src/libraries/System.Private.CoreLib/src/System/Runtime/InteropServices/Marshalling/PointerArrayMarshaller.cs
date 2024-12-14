@@ -195,11 +195,7 @@ namespace System.Runtime.InteropServices.Marshalling
             /// <returns>The reference that can be pinned and directly passed to unmanaged code.</returns>
             public static ref byte GetPinnableReference(T*[]? array)
             {
-                if (array is null)
-                {
-                    return ref Unsafe.NullRef<byte>();
-                }
-                return ref MemoryMarshal.GetArrayDataReference(array);
+                return ref array is null ? ref Unsafe.NullRef<byte>() : ref MemoryMarshal.GetArrayDataReference(array);
             }
         }
     }
