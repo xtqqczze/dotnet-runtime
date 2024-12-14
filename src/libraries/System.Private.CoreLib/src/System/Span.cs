@@ -311,17 +311,15 @@ namespace System
             // check, and one for the result of TryCopyTo. Since these checks are equivalent,
             // we can optimize by performing the check once ourselves then calling Memmove directly.
 
-            if ((uint)_length > (uint)destination.Length)
+            if ((uint)_length <= (uint)destination.Length)
             {
-                ThrowHelper.ThrowArgumentException_DestinationTooShort();
+                Buffer.Memmove(ref destination._reference, ref _reference, (uint)_length);
             }
             else
             {
-                CopyToUnsafe(destination);
+                ThrowHelper.ThrowArgumentException_DestinationTooShort();
             }
         }
-
-        private void CopyToUnsafe(Span<T> destination) => Buffer.Memmove(ref destination._reference, ref _reference, (uint)_length);
 
         /// <summary>
         /// Copies the contents of this span into destination span. If the source
