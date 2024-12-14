@@ -3121,7 +3121,7 @@ namespace System.Numerics.Tensors
             return tensor.FlattenedLength == other.FlattenedLength
                 && tensor._shape._memoryLength == other._shape._memoryLength
                 && tensor.Lengths.SequenceEqual(other.Lengths)
-                && MemoryMarshal.CreateReadOnlySpan(in tensor.GetPinnableReference(), (int)tensor._shape._memoryLength).SequenceEqual(MemoryMarshal.CreateReadOnlySpan(in other.GetPinnableReference(), (int)other._shape._memoryLength));
+                && MemoryMarshal.CreateReadOnlySpan(in tensor._reference, (int)tensor._shape._memoryLength).SequenceEqual(MemoryMarshal.CreateReadOnlySpan(in other._reference, (int)other._shape._memoryLength));
         }
 
         /// <summary>
@@ -3133,7 +3133,7 @@ namespace System.Numerics.Tensors
             return tensor.FlattenedLength == other.FlattenedLength
                 && tensor._shape._memoryLength == other._shape._memoryLength
                 && tensor.Lengths.SequenceEqual(other.Lengths)
-                && MemoryMarshal.CreateReadOnlySpan(in tensor.GetPinnableReference(), (int)tensor._shape._memoryLength).SequenceEqual(MemoryMarshal.CreateReadOnlySpan(in other.GetPinnableReference(), (int)other._shape._memoryLength));
+                && MemoryMarshal.CreateReadOnlySpan(in tensor._reference, (int)tensor._shape._memoryLength).SequenceEqual(MemoryMarshal.CreateReadOnlySpan(in other._reference, (int)other._shape._memoryLength));
         }
         #endregion
 
