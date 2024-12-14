@@ -508,10 +508,7 @@ namespace System.Numerics.Tensors
         [EditorBrowsable(EditorBrowsableState.Never)]
         public ref T GetPinnableReference()
         {
-            // Ensure that the native code has just one forward branch that is predicted-not-taken.
-            ref T ret = ref Unsafe.NullRef<T>();
-            if (_shape.FlattenedLength != 0) ret = ref _reference;
-            return ref ret;
+            return ref _shape.FlattenedLength != 0 ? ref _reference : ref Unsafe.NullRef<T>();
         }
 
         /// <summary>
