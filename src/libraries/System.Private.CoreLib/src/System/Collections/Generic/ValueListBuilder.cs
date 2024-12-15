@@ -103,14 +103,19 @@ namespace System.Collections.Generic
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Span<T> AppendSpan(int length)
         {
+            // We use 'nint' because it gives us a free early zero-extension to 64 bits when running on a 64-bit platform.
+            nint pos = (nint)(uint)_pos;
+
+            Debug.Assert(pos >= 0);
             Debug.Assert(length >= 0);
 
-            int pos = _pos;
-            Span<T> span = _span;
-            if ((ulong)(uint)pos + (ulong)(uint)length <= (ulong)span.Length) // same guard condition as in Span<T>.Slice on 64-bit
+            if ((uint)pos + (uint)length <= (uint)_span.Length)
             {
-                _pos = pos + length;
-                return span.Slice(pos, length);
+                Debug.Assert(pos <= _span.Length);
+
+                _pos = (int)pos + length;
+
+                return new Span<T>(ref Unsafe.Add(ref _span._reference, pos), length);
             }
             else
             {
