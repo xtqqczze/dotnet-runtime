@@ -375,7 +375,7 @@ namespace System
         {
 #if TARGET_64BIT
             // See comment in Span<T>.Slice for how this works.
-            if ((ulong)(uint)start + (ulong)(uint)length > (ulong)(uint)_length)
+            if ((ulong)(uint)start + (ulong)(uint)length > (ulong)Length)
                 ThrowHelper.ThrowArgumentOutOfRangeException();
 #else
             if ((uint)start > (uint)_length || (uint)length > (uint)(_length - start))

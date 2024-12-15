@@ -404,7 +404,7 @@ namespace System
             // of this is that if either input is negative or if the input sum overflows past Int32.MaxValue,
             // that information is captured correctly in the comparison against the backing _length field.
             // We don't use this same mechanism in a 32-bit process due to the overhead of 64-bit arithmetic.
-            if ((ulong)(uint)start + (ulong)(uint)length > (ulong)(uint)_length)
+            if ((ulong)(uint)start + (ulong)(uint)length > (ulong)Length)
                 ThrowHelper.ThrowArgumentOutOfRangeException();
 #else
             if ((uint)start > (uint)_length || (uint)length > (uint)(_length - start))

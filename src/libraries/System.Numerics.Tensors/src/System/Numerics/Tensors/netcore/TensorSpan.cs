@@ -94,7 +94,7 @@ namespace System.Numerics.Tensors
             if (Environment.Is64BitProcess)
             {
                 // See comment in Span<T>.Slice for how this works.
-                if ((ulong)(uint)start + (ulong)(uint)maxElements >= (ulong)(uint)array.Length && array.Length != 0)
+                if ((ulong)(uint)start + (ulong)(uint)maxElements >= (ulong)array.Length && array.Length != 0)
                     ThrowHelper.ThrowArgument_InvalidStridesAndLengths();
             }
             else
