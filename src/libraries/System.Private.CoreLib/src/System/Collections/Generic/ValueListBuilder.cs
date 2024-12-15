@@ -4,6 +4,7 @@
 using System.Buffers;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 namespace System.Collections.Generic
 {
@@ -115,7 +116,7 @@ namespace System.Collections.Generic
 
                 _pos = (int)pos + length;
 
-                return new Span<T>(ref Unsafe.Add(ref _span._reference, pos), length);
+                return MemoryMarshal.CreateSpan(ref Unsafe.Add(ref MemoryMarshal.GetReference(_span), pos), length);
             }
             else
             {
