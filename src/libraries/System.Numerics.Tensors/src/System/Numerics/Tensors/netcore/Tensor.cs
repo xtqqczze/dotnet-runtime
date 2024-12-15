@@ -73,7 +73,7 @@ namespace System.Numerics.Tensors
             if (Environment.Is64BitProcess)
             {
                 // See comment in Span<T>.Slice for how this works.
-                if ((ulong)(uint)maxElements >= (ulong)(uint)values.Length && values.Length != 0)
+                if ((ulong)(uint)maxElements >= (ulong)values.Length && values.Length != 0)
                     ThrowHelper.ThrowArgument_InvalidStridesAndLengths();
             }
             else

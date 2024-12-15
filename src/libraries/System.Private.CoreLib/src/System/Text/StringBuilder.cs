@@ -665,7 +665,7 @@ namespace System.Text
             // Try to fit the whole repeatCount in the current chunk
             // Use the same check as Span<T>.Slice for 64-bit so it can be folded
             // Since repeatCount can't be negative, there's no risk for it to overflow on 32 bit
-            if (((nuint)(uint)chunkLength + (nuint)(uint)repeatCount) <= (nuint)(uint)chunkChars.Length)
+            if (((nuint)(uint)chunkLength + (nuint)(uint)repeatCount) <= (nuint)chunkChars.Length)
             {
                 chunkChars.AsSpan(chunkLength, repeatCount).Fill(value);
                 m_ChunkLength += repeatCount;

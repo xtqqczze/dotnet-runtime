@@ -137,7 +137,7 @@ namespace System.Buffers
 
                 ref byte first = ref Unsafe.As<char, byte>(ref matchStart);
                 ref byte second = ref Unsafe.As<char, byte>(ref candidate.GetRawStringData());
-                nuint byteLength = (nuint)(uint)candidate.Length * 2;
+                nuint byteLength = (nuint)candidate.Length * sizeof(char);
 
                 if (TValueLength.AtLeast8CharsOrUnknown)
                 {
@@ -197,7 +197,7 @@ namespace System.Buffers
 
                 ref byte first = ref Unsafe.As<char, byte>(ref matchStart);
                 ref byte second = ref Unsafe.As<char, byte>(ref candidate.GetRawStringData());
-                nuint byteLength = (nuint)(uint)candidate.Length * 2;
+                nuint byteLength = (nuint)candidate.Length * sizeof(char);
 
                 if (TValueLength.AtLeast4Chars)
                 {

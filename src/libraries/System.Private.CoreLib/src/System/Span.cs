@@ -76,7 +76,7 @@ namespace System
                 ThrowHelper.ThrowArrayTypeMismatchException();
 #if TARGET_64BIT
             // See comment in Span<T>.Slice for how this works.
-            if ((ulong)(uint)start + (ulong)(uint)length > (ulong)(uint)array.Length)
+            if ((ulong)(uint)start + (ulong)(uint)length > (ulong)array.Length)
                 ThrowHelper.ThrowArgumentOutOfRangeException();
 #else
             if ((uint)start > (uint)array.Length || (uint)length > (uint)(array.Length - start))

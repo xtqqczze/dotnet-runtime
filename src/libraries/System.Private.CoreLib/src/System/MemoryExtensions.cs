@@ -199,7 +199,7 @@ namespace System
 
 #if TARGET_64BIT
             // See comment in Span<T>.Slice for how this works.
-            if ((ulong)(uint)start + (ulong)(uint)length > (ulong)(uint)text.Length)
+            if ((ulong)(uint)start + (ulong)(uint)length > (ulong)text.Length)
                 ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.start);
 #else
             if ((uint)start > (uint)text.Length || (uint)length > (uint)(text.Length - start))
@@ -281,7 +281,7 @@ namespace System
 
 #if TARGET_64BIT
             // See comment in Span<T>.Slice for how this works.
-            if ((ulong)(uint)start + (ulong)(uint)length > (ulong)(uint)text.Length)
+            if ((ulong)(uint)start + (ulong)(uint)length > (ulong)text.Length)
                 ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.start);
 #else
             if ((uint)start > (uint)text.Length || (uint)length > (uint)(text.Length - start))
@@ -3267,7 +3267,7 @@ namespace System
         {
             if (RuntimeHelpers.IsBitwiseEquatable<T>())
             {
-                nuint length = Math.Min((nuint)(uint)span.Length, (nuint)(uint)other.Length);
+                nuint length = Math.Min((nuint)span.Length, (nuint)other.Length);
                 nuint size = (uint)sizeof(T);
                 nuint index = SpanHelpers.CommonPrefixLength(
                     ref Unsafe.As<T, byte>(ref MemoryMarshal.GetReference(span)),
