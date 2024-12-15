@@ -47,7 +47,7 @@ namespace System.Collections.Generic
 
             // Workaround for https://github.com/dotnet/runtime/issues/72004
             Span<T> span = _span;
-            if ((uint)pos < (uint)span.Length)
+            if (pos >= 0 && pos < span.Length)
             {
                 span[pos] = item;
                 _pos = pos + 1;
@@ -63,7 +63,7 @@ namespace System.Collections.Generic
         {
             int pos = _pos;
             Span<T> span = _span;
-            if (source.Length == 1 && (uint)pos < (uint)span.Length)
+            if (source.Length == 1 && pos >= 0 && pos < span.Length)
             {
                 span[pos] = source[0];
                 _pos = pos + 1;

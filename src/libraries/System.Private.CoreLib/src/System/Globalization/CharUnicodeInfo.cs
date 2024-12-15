@@ -43,7 +43,7 @@ namespace System.Globalization
             {
                 ThrowHelper.ThrowArgumentNullException(ExceptionArgument.s);
             }
-            if ((uint)index >= (uint)s.Length)
+            if (index < 0 || index >= s.Length)
             {
                 ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.index);
             }
@@ -110,7 +110,7 @@ namespace System.Globalization
             {
                 ThrowHelper.ThrowArgumentNullException(ExceptionArgument.s);
             }
-            if ((uint)index >= (uint)s.Length)
+            if (index < 0 || index >= s.Length)
             {
                 ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.index);
             }
@@ -144,7 +144,7 @@ namespace System.Globalization
             {
                 ThrowHelper.ThrowArgumentNullException(ExceptionArgument.s);
             }
-            if ((uint)index >= (uint)s.Length)
+            if (index < 0 || index >= s.Length)
             {
                 ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.index);
             }
@@ -219,7 +219,7 @@ namespace System.Globalization
             {
                 ThrowHelper.ThrowArgumentNullException(ExceptionArgument.s);
             }
-            if ((uint)index >= (uint)s.Length)
+            if (index < 0 || index >= s.Length)
             {
                 ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.index);
             }
@@ -348,7 +348,7 @@ namespace System.Globalization
             {
                 ThrowHelper.ThrowArgumentNullException(ExceptionArgument.s);
             }
-            if ((uint)index >= (uint)s.Length)
+            if (index < 0 || index >= s.Length)
             {
                 ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.index);
             }
@@ -409,21 +409,21 @@ namespace System.Globalization
         private static int GetCodePointFromString(string s, int index)
         {
             Debug.Assert(s != null);
-            Debug.Assert((uint)index < (uint)s.Length, "index < s.Length");
+            Debug.Assert(index >= 0 && index < s.Length, "index < s.Length");
 
             int codePoint = 0;
 
             // We know the 'if' block below will always succeed, but it allows the
             // JIT to optimize the codegen of this method.
 
-            if ((uint)index < (uint)s.Length)
+            if (index >= 0 && index < s.Length)
             {
                 codePoint = s[index];
                 int temp1 = codePoint - HIGH_SURROGATE_START;
                 if ((uint)temp1 <= HIGH_SURROGATE_RANGE)
                 {
                     index++;
-                    if ((uint)index < (uint)s.Length)
+                    if (index >= 0 && index < s.Length)
                     {
                         int temp2 = s[index] - LOW_SURROGATE_START;
                         if ((uint)temp2 <= HIGH_SURROGATE_RANGE)

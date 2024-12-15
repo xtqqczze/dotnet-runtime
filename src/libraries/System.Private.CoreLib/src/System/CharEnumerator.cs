@@ -41,7 +41,7 @@ namespace System
             {
                 int index = _index;
                 string s = _str;
-                if ((uint)index >= (uint)s.Length)
+                if (index < 0 || index >= s.Length)
                 {
                     ThrowHelper.ThrowInvalidOperationException_EnumCurrent(_index);
                 }

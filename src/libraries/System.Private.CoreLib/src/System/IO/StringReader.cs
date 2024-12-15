@@ -49,7 +49,7 @@ namespace System.IO
             }
 
             int pos = _pos;
-            if ((uint)pos < (uint)s.Length)
+            if (pos >= 0 && pos < s.Length)
             {
                 return s[pos];
             }
@@ -69,7 +69,7 @@ namespace System.IO
             }
 
             int pos = _pos;
-            if ((uint)pos < (uint)s.Length)
+            if (pos >= 0 && pos < s.Length)
             {
                 _pos++;
                 return s[pos];
@@ -178,7 +178,7 @@ namespace System.IO
             }
 
             int pos = _pos;
-            if ((uint)pos >= (uint)s.Length)
+            if (pos < 0 || pos >= s.Length)
             {
                 return null;
             }
@@ -193,7 +193,7 @@ namespace System.IO
                 pos += foundLineLength + 1;
                 if (ch == '\r')
                 {
-                    if ((uint)pos < (uint)s.Length && s[pos] == '\n')
+                    if (pos >= 0 && pos < s.Length && s[pos] == '\n')
                     {
                         pos++;
                     }

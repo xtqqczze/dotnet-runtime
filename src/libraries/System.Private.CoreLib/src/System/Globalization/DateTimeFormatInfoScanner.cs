@@ -627,7 +627,7 @@ namespace System.Globalization
                 if (s.Length != 0 && char.IsAsciiDigit(s[0]))
                 {
                     int index = 1;
-                    while ((uint)index < (uint)s.Length && char.IsAsciiDigit(s[index]))
+                    while (index >= 0 && index < s.Length && char.IsAsciiDigit(s[index]))
                     {
                         // Skip other digits.
                         index++;
