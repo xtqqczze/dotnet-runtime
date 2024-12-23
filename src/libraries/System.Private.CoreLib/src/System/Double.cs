@@ -152,6 +152,100 @@ namespace System
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static double ReadBigEndian(ReadOnlySpan<byte> source)
+        {
+            return BitConverter.IsLittleEndian ?
+                BitConverter.Int64BitsToDouble(BinaryPrimitives.ReverseEndianness(MemoryMarshal.Read<long>(source))) :
+                MemoryMarshal.Read<double>(source);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static double ReadLittleEndian(ReadOnlySpan<byte> source)
+        {
+            return !BitConverter.IsLittleEndian ?
+                BitConverter.Int64BitsToDouble(BinaryPrimitives.ReverseEndianness(MemoryMarshal.Read<long>(source))) :
+                MemoryMarshal.Read<double>(source);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static bool TryReadBigEndian(out double value, ReadOnlySpan<byte> source)
+        {
+            if (BitConverter.IsLittleEndian)
+            {
+                bool success = MemoryMarshal.TryRead(source, out long tmp);
+                value = BitConverter.Int64BitsToDouble(BinaryPrimitives.ReverseEndianness(tmp));
+                return success;
+            }
+
+            return MemoryMarshal.TryRead(source, out value);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static bool TryWriteBigEndian(in double value, Span<byte> destination)
+        {
+            if (BitConverter.IsLittleEndian)
+            {
+                long tmp = BinaryPrimitives.ReverseEndianness(BitConverter.DoubleToInt64Bits(value));
+                return MemoryMarshal.TryWrite(destination, in tmp);
+            }
+
+            return MemoryMarshal.TryWrite(destination, in value);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static bool TryReadLittleEndian(out double value, ReadOnlySpan<byte> source)
+        {
+            if (!BitConverter.IsLittleEndian)
+            {
+                bool success = MemoryMarshal.TryRead(source, out long tmp);
+                value = BitConverter.Int64BitsToDouble(BinaryPrimitives.ReverseEndianness(tmp));
+                return success;
+            }
+
+            return MemoryMarshal.TryRead(source, out value);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static bool TryWriteLittleEndian(in double value, Span<byte> destination)
+        {
+            if (!BitConverter.IsLittleEndian)
+            {
+                long tmp = BinaryPrimitives.ReverseEndianness(BitConverter.DoubleToInt64Bits(value));
+                return MemoryMarshal.TryWrite(destination, in tmp);
+            }
+
+            return MemoryMarshal.TryWrite(destination, in value);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static void WriteBigEndian(in double value, Span<byte> destination)
+        {
+            if (BitConverter.IsLittleEndian)
+            {
+                long tmp = BinaryPrimitives.ReverseEndianness(BitConverter.DoubleToInt64Bits(value));
+                MemoryMarshal.Write(destination, in tmp);
+            }
+            else
+            {
+                MemoryMarshal.Write(destination, in value);
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal void WriteLittleEndian(Span<byte> destination)
+        {
+            if (!BitConverter.IsLittleEndian)
+            {
+                long tmp = BinaryPrimitives.ReverseEndianness(BitConverter.DoubleToInt64Bits(m_value));
+                MemoryMarshal.Write(destination, in tmp);
+            }
+            else
+            {
+                MemoryMarshal.Write(destination, in m_value);
+            }
+        }
+
         internal static ushort ExtractBiasedExponentFromBits(ulong bits)
         {
             return (ushort)((bits >> BiasedExponentShift) & ShiftedExponentMask);

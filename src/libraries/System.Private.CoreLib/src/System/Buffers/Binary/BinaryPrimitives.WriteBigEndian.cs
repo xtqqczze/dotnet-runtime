@@ -17,19 +17,7 @@ namespace System.Buffers.Binary
         /// <exception cref="ArgumentOutOfRangeException">
         /// <paramref name="destination" /> is too small to contain a <see cref="double" />.
         /// </exception>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void WriteDoubleBigEndian(Span<byte> destination, double value)
-        {
-            if (BitConverter.IsLittleEndian)
-            {
-                long tmp = ReverseEndianness(BitConverter.DoubleToInt64Bits(value));
-                MemoryMarshal.Write(destination, in tmp);
-            }
-            else
-            {
-                MemoryMarshal.Write(destination, in value);
-            }
-        }
+        public static void WriteDoubleBigEndian(Span<byte> destination, double value) => double.WriteBigEndian(in value, destination);
 
         /// <summary>
         /// Writes a <see cref="Half" /> into a span of bytes, as big endian.
@@ -321,17 +309,7 @@ namespace System.Buffers.Binary
         /// <see langword="true" /> if the span is large enough to contain a <see cref="double" />; otherwise, <see langword="false" />.
         /// </returns>
         /// <remarks>Writes exactly 8 bytes to the beginning of the span.</remarks>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool TryWriteDoubleBigEndian(Span<byte> destination, double value)
-        {
-            if (BitConverter.IsLittleEndian)
-            {
-                long tmp = ReverseEndianness(BitConverter.DoubleToInt64Bits(value));
-                return MemoryMarshal.TryWrite(destination, in tmp);
-            }
-
-            return MemoryMarshal.TryWrite(destination, in value);
-        }
+        public static bool TryWriteDoubleBigEndian(Span<byte> destination, double value) => double.TryWriteBigEndian(in value, destination);
 
         /// <summary>
         /// Writes a <see cref="Half" /> into a span of bytes, as big endian.

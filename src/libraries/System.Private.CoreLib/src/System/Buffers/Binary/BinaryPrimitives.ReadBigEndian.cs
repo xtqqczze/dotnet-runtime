@@ -17,13 +17,7 @@ namespace System.Buffers.Binary
         /// <exception cref="ArgumentOutOfRangeException">
         /// <paramref name="source"/> is too small to contain a <see cref="double" />.
         /// </exception>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double ReadDoubleBigEndian(ReadOnlySpan<byte> source)
-        {
-            return BitConverter.IsLittleEndian ?
-                BitConverter.Int64BitsToDouble(ReverseEndianness(MemoryMarshal.Read<long>(source))) :
-                MemoryMarshal.Read<double>(source);
-        }
+        public static double ReadDoubleBigEndian(ReadOnlySpan<byte> source) => double.ReadBigEndian(source);
 
         /// <summary>
         /// Reads a <see cref="Half" /> from the beginning of a read-only span of bytes, as big endian.
@@ -243,18 +237,7 @@ namespace System.Buffers.Binary
         /// <see langword="true" /> if the span is large enough to contain a <see cref="double" />; otherwise, <see langword="false" />.
         /// </returns>
         /// <remarks>Reads exactly 8 bytes from the beginning of the span.</remarks>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool TryReadDoubleBigEndian(ReadOnlySpan<byte> source, out double value)
-        {
-            if (BitConverter.IsLittleEndian)
-            {
-                bool success = MemoryMarshal.TryRead(source, out long tmp);
-                value = BitConverter.Int64BitsToDouble(ReverseEndianness(tmp));
-                return success;
-            }
-
-            return MemoryMarshal.TryRead(source, out value);
-        }
+        public static bool TryReadDoubleBigEndian(ReadOnlySpan<byte> source, out double value) => double.TryReadBigEndian(out value, source);
 
         /// <summary>
         /// Reads a <see cref="Half" /> from the beginning of a read-only span of bytes, as big endian.
