@@ -123,11 +123,9 @@ namespace System.Text.Encodings.Web
                     return -1;
                 }
 
-                return TryEncodeScalarAsHex(this, value, destination);
+                return TryEncodeScalarAsHex(value, destination);
 
-#pragma warning disable IDE0060 // 'this' taken explicitly to avoid argument shuffling by caller
-                static int TryEncodeScalarAsHex(object @this, Rune value, Span<byte> destination)
-#pragma warning restore IDE0060
+                static int TryEncodeScalarAsHex(Rune value, Span<byte> destination)
                 {
                     if (value.IsBmp)
                     {
@@ -174,11 +172,9 @@ namespace System.Text.Encodings.Web
                     return -1;
                 }
 
-                return TryEncodeScalarAsHex(this, value, destination);
+                return TryEncodeScalarAsHex(value, destination);
 
-#pragma warning disable IDE0060 // 'this' taken explicitly to avoid argument shuffling by caller
-                static int TryEncodeScalarAsHex(object @this, Rune value, Span<char> destination)
-#pragma warning restore IDE0060
+                static int TryEncodeScalarAsHex(Rune value, Span<char> destination)
                 {
                     if (value.IsBmp)
                     {

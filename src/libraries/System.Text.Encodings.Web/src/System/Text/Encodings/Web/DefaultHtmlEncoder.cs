@@ -88,16 +88,14 @@ namespace System.Text.Encodings.Web
                 }
                 else
                 {
-                    return TryEncodeScalarAsHex(this, (uint)value.Value, destination);
+                    return TryEncodeScalarAsHex((uint)value.Value, destination);
                 }
 
             OutOfSpace:
 
                 return -1;
 
-#pragma warning disable IDE0060 // 'this' taken explicitly to avoid argument shuffling by caller
-                static int TryEncodeScalarAsHex(object @this, uint scalarValue, Span<byte> destination)
-#pragma warning restore IDE0060
+                static int TryEncodeScalarAsHex(uint scalarValue, Span<byte> destination)
                 {
                     UnicodeDebug.AssertIsValidScalar(scalarValue);
 
@@ -154,16 +152,14 @@ namespace System.Text.Encodings.Web
                 }
                 else
                 {
-                    return TryEncodeScalarAsHex(this, (uint)value.Value, destination);
+                    return TryEncodeScalarAsHex((uint)value.Value, destination);
                 }
 
             OutOfSpace:
 
                 return -1;
 
-#pragma warning disable IDE0060 // 'this' taken explicitly to avoid argument shuffling by caller
-                static int TryEncodeScalarAsHex(object @this, uint scalarValue, Span<char> destination)
-#pragma warning restore IDE0060
+                static int TryEncodeScalarAsHex(uint scalarValue, Span<char> destination)
                 {
                     UnicodeDebug.AssertIsValidScalar(scalarValue);
 
