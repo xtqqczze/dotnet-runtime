@@ -1744,19 +1744,20 @@ namespace System.Text
 
         public override int GetMaxByteCount(int charCount)
         {
-            ArgumentOutOfRangeException.ThrowIfNegative(charCount);
+            if (charCount < 0)
+                ThrowHelper.ThrowArgumentOutOfRangeException_GetMaxByteCount(charCount);
 
             // Characters would be # of characters + 1 in case left over high surrogate is ? * max fallback
-            long byteCount = (long)charCount + 1;
+            ulong byteCount = (uint)charCount + 1;
 
             if (EncoderFallback.MaxCharCount > 1)
-                byteCount *= EncoderFallback.MaxCharCount;
+                byteCount *= (uint)EncoderFallback.MaxCharCount;
 
             // 2 bytes per char
             byteCount <<= 1;
 
-            if (byteCount > 0x7fffffff)
-                throw new ArgumentOutOfRangeException(nameof(charCount), SR.ArgumentOutOfRange_GetByteCountOverflow);
+            if (byteCount > int.MaxValue)
+                ThrowHelper.ThrowArgumentOutOfRangeException_GetMaxByteCount(charCount);
 
             return (int)byteCount;
         }

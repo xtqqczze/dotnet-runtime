@@ -384,6 +384,17 @@ namespace System
         }
 
         [DoesNotReturn]
+        internal static void ThrowArgumentOutOfRangeException_GetMaxByteCount(int charCount)
+        {
+            throw new ArgumentOutOfRangeException(
+                paramName: nameof(charCount),
+                charCount,
+                message: (charCount < 0) ?
+                    SR.Format(SR.ArgumentOutOfRange_Generic_MustBeNonNegative, nameof(charCount), charCount) :
+                    SR.ArgumentOutOfRange_GetByteCountOverflow);
+        }
+
+        [DoesNotReturn]
         internal static void ThrowEndOfFileException()
         {
             throw CreateEndOfFileException();

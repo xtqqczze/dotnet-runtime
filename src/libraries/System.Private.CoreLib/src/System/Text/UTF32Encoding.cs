@@ -32,6 +32,8 @@ namespace System.Text
             Real Unicode value = (HighSurrogate - 0xD800) * 0x400 + (LowSurrogate - 0xDC00) + 0x10000
         */
 
+        private const int MaxUtf32BytesPerChar = 4;
+
         // Used by Encoding.UTF32/BigEndianUTF32 for lazy initialization
         // The initialization code will not be run until a static member of the class is referenced
         internal static readonly UTF32Encoding s_default = new UTF32Encoding(bigEndian: false, byteOrderMark: true);
@@ -1067,19 +1069,19 @@ namespace System.Text
 
         public override int GetMaxByteCount(int charCount)
         {
-            ArgumentOutOfRangeException.ThrowIfNegative(charCount);
+            if (charCount < 0)
+                ThrowHelper.ThrowArgumentOutOfRangeException_GetMaxByteCount(charCount);
 
             // Characters would be # of characters + 1 in case left over high surrogate is ? * max fallback
-            long byteCount = (long)charCount + 1;
+            ulong byteCount = (uint)charCount + 1;
 
             if (EncoderFallback.MaxCharCount > 1)
-                byteCount *= EncoderFallback.MaxCharCount;
+                byteCount *= (uint)EncoderFallback.MaxCharCount;
 
-            // 4 bytes per char
-            byteCount *= 4;
+            byteCount *= MaxUtf32BytesPerChar;
 
-            if (byteCount > 0x7fffffff)
-                throw new ArgumentOutOfRangeException(nameof(charCount), SR.ArgumentOutOfRange_GetByteCountOverflow);
+            if (byteCount > int.MaxValue)
+                ThrowHelper.ThrowArgumentOutOfRangeException_GetMaxByteCount(charCount);
 
             return (int)byteCount;
         }

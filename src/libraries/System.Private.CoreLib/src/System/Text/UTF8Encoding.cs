@@ -793,7 +793,8 @@ namespace System.Text
 
         public override int GetMaxByteCount(int charCount)
         {
-            ArgumentOutOfRangeException.ThrowIfNegative(charCount);
+            if (charCount < 0)
+                ThrowHelper.ThrowArgumentOutOfRangeException_GetMaxByteCount(charCount);
 
             // GetMaxByteCount assumes that the caller might have a stateful Encoder instance. If the
             // Encoder instance already has a captured high surrogate, then one of two things will
@@ -808,15 +809,15 @@ namespace System.Text
             // pessimistic "max byte count" calculation: assume there's a captured surrogate and that
             // it must fall back.
 
-            long byteCount = (long)charCount + 1; // +1 to account for captured surrogate, per above
+            ulong byteCount = (uint)charCount + 1; // +1 to account for captured surrogate, per above
 
             if (EncoderFallback.MaxCharCount > 1)
-                byteCount *= EncoderFallback.MaxCharCount;
+                byteCount *= (uint)EncoderFallback.MaxCharCount;
 
             byteCount *= MaxUtf8BytesPerChar;
 
-            if (byteCount > 0x7fffffff)
-                throw new ArgumentOutOfRangeException(nameof(charCount), SR.ArgumentOutOfRange_GetByteCountOverflow);
+            if (byteCount > int.MaxValue)
+                ThrowHelper.ThrowArgumentOutOfRangeException_GetMaxByteCount(charCount);
 
             return (int)byteCount;
         }

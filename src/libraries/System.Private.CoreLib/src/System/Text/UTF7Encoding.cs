@@ -723,7 +723,8 @@ namespace System.Text
 
         public override int GetMaxByteCount(int charCount)
         {
-            ArgumentOutOfRangeException.ThrowIfNegative(charCount);
+            if (charCount < 0)
+                ThrowHelper.ThrowArgumentOutOfRangeException_GetMaxByteCount(charCount);
 
             // Suppose that every char can not be direct-encoded, we know that
             // a byte can encode 6 bits of the Unicode character.  And we will
@@ -741,11 +742,11 @@ namespace System.Text
 
             // Note that UTF7 encoded surrogates individually and isn't worried about mismatches, so all
             // code points are encodable int UTF7.
-            long byteCount = (long)charCount * 3 + 2;
+            ulong byteCount = (uint)charCount * 3uL + 2;
 
             // check for overflow
-            if (byteCount > 0x7fffffff)
-                throw new ArgumentOutOfRangeException(nameof(charCount), SR.ArgumentOutOfRange_GetByteCountOverflow);
+            if (byteCount > int.MaxValue)
+                ThrowHelper.ThrowArgumentOutOfRangeException_GetMaxByteCount(charCount);
 
             return (int)byteCount;
         }

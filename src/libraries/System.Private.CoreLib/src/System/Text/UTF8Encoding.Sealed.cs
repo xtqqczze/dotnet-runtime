@@ -80,14 +80,7 @@ namespace System.Text
 
                 if ((uint)charCount > (int.MaxValue / MaxUtf8BytesPerChar) - 1)
                 {
-                    // Move the throw out of the hot path to allow for inlining.
-                    ThrowArgumentException(charCount);
-                    static void ThrowArgumentException(int charCount)
-                    {
-                        throw new ArgumentOutOfRangeException(
-                            paramName: nameof(charCount),
-                            message: (charCount < 0) ? SR.ArgumentOutOfRange_NeedNonNegNum : SR.ArgumentOutOfRange_GetByteCountOverflow);
-                    }
+                    ThrowHelper.ThrowArgumentOutOfRangeException_GetMaxByteCount(charCount);
                 }
 
                 return (charCount * MaxUtf8BytesPerChar) + MaxUtf8BytesPerChar;
