@@ -825,7 +825,8 @@ namespace System.Text
 
         public override int GetMaxCharCount(int byteCount)
         {
-            ArgumentOutOfRangeException.ThrowIfNegative(byteCount);
+            if (byteCount < 0)
+                ThrowHelper.ThrowArgumentOutOfRangeException_GetMaxCharCount(byteCount);
 
             // GetMaxCharCount assumes that the caller might have a stateful Decoder instance. If the
             // Decoder instance already has a captured partial UTF-8 subsequence, then one of two
@@ -843,17 +844,17 @@ namespace System.Text
             // new input could cause any existing captured state to expand via fallback. So it's
             // what we'll use for any pessimistic "max char count" calculation.
 
-            long charCount = ((long)byteCount + 1); // +1 to account for captured subsequence, as above
+            ulong charCount = (uint)byteCount + 1; // +1 to account for captured subsequence, as above
 
             // Non-shortest form would fall back, so get max count from fallback.
             // So would 11... followed by 11..., so you could fall back every byte
             if (DecoderFallback.MaxCharCount > 1)
             {
-                charCount *= DecoderFallback.MaxCharCount;
+                charCount *= (uint)DecoderFallback.MaxCharCount;
             }
 
-            if (charCount > 0x7fffffff)
-                throw new ArgumentOutOfRangeException(nameof(byteCount), SR.ArgumentOutOfRange_GetCharCountOverflow);
+            if (charCount > int.MaxValue)
+                ThrowHelper.ThrowArgumentOutOfRangeException_GetMaxCharCount(byteCount);
 
             return (int)charCount;
         }

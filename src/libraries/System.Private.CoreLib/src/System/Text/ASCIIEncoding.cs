@@ -856,17 +856,18 @@ namespace System.Text
 
         public override int GetMaxCharCount(int byteCount)
         {
-            ArgumentOutOfRangeException.ThrowIfNegative(byteCount);
+            if (byteCount < 0)
+                ThrowHelper.ThrowArgumentOutOfRangeException_GetMaxCharCount(byteCount);
 
             // Just return length, SBCS stay the same length because they don't map to surrogate
-            long charCount = (long)byteCount;
+            ulong charCount = (uint)byteCount;
 
             // 1 to 1 for most characters.  Only surrogates with fallbacks have less, unknown fallbacks could be longer.
             if (DecoderFallback.MaxCharCount > 1)
-                charCount *= DecoderFallback.MaxCharCount;
+                charCount *= (uint)DecoderFallback.MaxCharCount;
 
-            if (charCount > 0x7fffffff)
-                throw new ArgumentOutOfRangeException(nameof(byteCount), SR.ArgumentOutOfRange_GetCharCountOverflow);
+            if (charCount > int.MaxValue)
+                ThrowHelper.ThrowArgumentOutOfRangeException_GetMaxCharCount(byteCount);
 
             return (int)charCount;
         }

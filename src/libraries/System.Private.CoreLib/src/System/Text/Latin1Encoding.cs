@@ -398,7 +398,7 @@ namespace System.Text
 
             if (byteCount < 0)
             {
-                ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.byteCount, ExceptionResource.ArgumentOutOfRange_NeedNonNegNum);
+                ThrowHelper.ThrowArgumentOutOfRangeException_GetMaxCharCount(byteCount);
             }
 
             return byteCount;

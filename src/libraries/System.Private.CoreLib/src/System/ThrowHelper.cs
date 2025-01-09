@@ -388,10 +388,21 @@ namespace System
         {
             throw new ArgumentOutOfRangeException(
                 paramName: nameof(charCount),
-                charCount,
+                actualValue: charCount,
                 message: (charCount < 0) ?
                     SR.Format(SR.ArgumentOutOfRange_Generic_MustBeNonNegative, nameof(charCount), charCount) :
                     SR.ArgumentOutOfRange_GetByteCountOverflow);
+        }
+
+        [DoesNotReturn]
+        internal static void ThrowArgumentOutOfRangeException_GetMaxCharCount(int byteCount)
+        {
+            throw new ArgumentOutOfRangeException(
+                paramName: nameof(byteCount),
+                actualValue: byteCount,
+                message: (byteCount < 0) ?
+                    SR.Format(SR.ArgumentOutOfRange_Generic_MustBeNonNegative, nameof(byteCount), byteCount) :
+                    SR.ArgumentOutOfRange_GetCharCountOverflow);
         }
 
         [DoesNotReturn]

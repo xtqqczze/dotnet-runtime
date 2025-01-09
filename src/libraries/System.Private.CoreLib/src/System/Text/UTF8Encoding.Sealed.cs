@@ -95,14 +95,7 @@ namespace System.Text
 
                 if ((uint)byteCount > int.MaxValue - 1)
                 {
-                    // Move the throw out of the hot path to allow for inlining.
-                    ThrowArgumentException(byteCount);
-                    static void ThrowArgumentException(int byteCount)
-                    {
-                        throw new ArgumentOutOfRangeException(
-                            paramName: nameof(byteCount),
-                            message: (byteCount < 0) ? SR.ArgumentOutOfRange_NeedNonNegNum : SR.ArgumentOutOfRange_GetCharCountOverflow);
-                    }
+                    ThrowHelper.ThrowArgumentOutOfRangeException_GetMaxCharCount(byteCount);
                 }
 
                 return byteCount + 1;

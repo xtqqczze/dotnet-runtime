@@ -1088,7 +1088,8 @@ namespace System.Text
 
         public override int GetMaxCharCount(int byteCount)
         {
-            ArgumentOutOfRangeException.ThrowIfNegative(byteCount);
+            if (byteCount < 0)
+                ThrowHelper.ThrowArgumentOutOfRangeException_GetMaxCharCount(byteCount);
 
             // A supplementary character becomes 2 surrogate characters, so 4 input bytes becomes 2 chars,
             // plus we may have 1 surrogate char left over if the decoder has 3 bytes in it already for a non-bmp char.
@@ -1106,8 +1107,8 @@ namespace System.Text
                 charCount /= 2;
             }
 
-            if (charCount > 0x7fffffff)
-                throw new ArgumentOutOfRangeException(nameof(byteCount), SR.ArgumentOutOfRange_GetCharCountOverflow);
+            if (charCount > int.MaxValue)
+                ThrowHelper.ThrowArgumentOutOfRangeException_GetMaxCharCount(byteCount);
 
             return (int)charCount;
         }

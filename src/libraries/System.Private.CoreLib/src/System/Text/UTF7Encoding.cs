@@ -753,7 +753,8 @@ namespace System.Text
 
         public override int GetMaxCharCount(int byteCount)
         {
-            ArgumentOutOfRangeException.ThrowIfNegative(byteCount);
+            if (byteCount < 0)
+                ThrowHelper.ThrowArgumentOutOfRangeException_GetMaxCharCount(byteCount);
 
             // Worst case is 1 char per byte.  Minimum 1 for left over bits in case decoder is being flushed
             // Also note that we ignore extra bits (per spec), so UTF7 doesn't have unknown in this direction.
