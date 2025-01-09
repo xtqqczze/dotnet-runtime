@@ -837,7 +837,7 @@ namespace System.Text
         public override int GetMaxByteCount(int charCount)
         {
             if (charCount < 0)
-                ThrowHelper.ThrowArgumentOutOfRangeException_GetMaxByteCount(charCount);
+                ThrowHelper.ThrowArgumentOutOfRangeException_NeedNonNegNum(ExceptionArgument.charCount);
 
             // Characters would be # of characters + 1 in case high surrogate is ? * max fallback
             ulong byteCount = (uint)charCount + 1;
@@ -848,7 +848,7 @@ namespace System.Text
             // 1 to 1 for most characters.  Only surrogates with fallbacks have less.
 
             if (byteCount > int.MaxValue)
-                ThrowHelper.ThrowArgumentOutOfRangeException_GetMaxByteCount(charCount);
+                ThrowHelper.ThrowArgumentOutOfRangeException_GetByteCountOverflow(ExceptionArgument.charCount);
 
             return (int)byteCount;
         }
@@ -857,7 +857,7 @@ namespace System.Text
         public override int GetMaxCharCount(int byteCount)
         {
             if (byteCount < 0)
-                ThrowHelper.ThrowArgumentOutOfRangeException_GetMaxCharCount(byteCount);
+                ThrowHelper.ThrowArgumentOutOfRangeException_NeedNonNegNum(ExceptionArgument.byteCount);
 
             // Just return length, SBCS stay the same length because they don't map to surrogate
             ulong charCount = (uint)byteCount;
@@ -867,7 +867,7 @@ namespace System.Text
                 charCount *= (uint)DecoderFallback.MaxCharCount;
 
             if (charCount > int.MaxValue)
-                ThrowHelper.ThrowArgumentOutOfRangeException_GetMaxCharCount(byteCount);
+                ThrowHelper.ThrowArgumentOutOfRangeException_GetCharCountOverflow(ExceptionArgument.byteCount);
 
             return (int)charCount;
         }

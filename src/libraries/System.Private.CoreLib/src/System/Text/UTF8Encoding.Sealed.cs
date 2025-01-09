@@ -80,7 +80,17 @@ namespace System.Text
 
                 if ((uint)charCount > (int.MaxValue / MaxUtf8BytesPerChar) - 1)
                 {
-                    ThrowHelper.ThrowArgumentOutOfRangeException_GetMaxByteCount(charCount);
+                    // Move the throw out of the hot path to allow for inlining.
+                    ThrowArgumentException(charCount);
+                    [MethodImpl(MethodImplOptions.NoInlining)]
+                    static void ThrowArgumentException(int charCount)
+                    {
+                        if (charCount < 0)
+                        {
+                            ThrowHelper.ThrowArgumentOutOfRangeException_NeedNonNegNum(ExceptionArgument.charCount);
+                        }
+                        ThrowHelper.ThrowArgumentOutOfRangeException_GetByteCountOverflow(ExceptionArgument.charCount);
+                    }
                 }
 
                 return (charCount * MaxUtf8BytesPerChar) + MaxUtf8BytesPerChar;
@@ -95,7 +105,17 @@ namespace System.Text
 
                 if ((uint)byteCount > int.MaxValue - 1)
                 {
-                    ThrowHelper.ThrowArgumentOutOfRangeException_GetMaxCharCount(byteCount);
+                    // Move the throw out of the hot path to allow for inlining.
+                    ThrowArgumentException(byteCount);
+                    [MethodImpl(MethodImplOptions.NoInlining)]
+                    static void ThrowArgumentException(int byteCount)
+                    {
+                        if (byteCount < 0)
+                        {
+                            ThrowHelper.ThrowArgumentOutOfRangeException_NeedNonNegNum(ExceptionArgument.byteCount);
+                        }
+                        ThrowHelper.ThrowArgumentOutOfRangeException_GetCharCountOverflow(ExceptionArgument.byteCount);
+                    }
                 }
 
                 return byteCount + 1;

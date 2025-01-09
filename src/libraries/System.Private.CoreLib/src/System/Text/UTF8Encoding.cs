@@ -794,7 +794,7 @@ namespace System.Text
         public override int GetMaxByteCount(int charCount)
         {
             if (charCount < 0)
-                ThrowHelper.ThrowArgumentOutOfRangeException_GetMaxByteCount(charCount);
+                ThrowHelper.ThrowArgumentOutOfRangeException_NeedNonNegNum(ExceptionArgument.charCount);
 
             // GetMaxByteCount assumes that the caller might have a stateful Encoder instance. If the
             // Encoder instance already has a captured high surrogate, then one of two things will
@@ -817,7 +817,7 @@ namespace System.Text
             byteCount *= MaxUtf8BytesPerChar;
 
             if (byteCount > int.MaxValue)
-                ThrowHelper.ThrowArgumentOutOfRangeException_GetMaxByteCount(charCount);
+                ThrowHelper.ThrowArgumentOutOfRangeException_GetCharCountOverflow(ExceptionArgument.charCount);
 
             return (int)byteCount;
         }
@@ -826,7 +826,7 @@ namespace System.Text
         public override int GetMaxCharCount(int byteCount)
         {
             if (byteCount < 0)
-                ThrowHelper.ThrowArgumentOutOfRangeException_GetMaxCharCount(byteCount);
+                ThrowHelper.ThrowArgumentOutOfRangeException_GetCharCountOverflow(ExceptionArgument.byteCount);
 
             // GetMaxCharCount assumes that the caller might have a stateful Decoder instance. If the
             // Decoder instance already has a captured partial UTF-8 subsequence, then one of two
@@ -854,7 +854,7 @@ namespace System.Text
             }
 
             if (charCount > int.MaxValue)
-                ThrowHelper.ThrowArgumentOutOfRangeException_GetMaxCharCount(byteCount);
+                ThrowHelper.ThrowArgumentOutOfRangeException_GetCharCountOverflow(ExceptionArgument.byteCount);
 
             return (int)charCount;
         }

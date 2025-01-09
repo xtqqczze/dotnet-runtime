@@ -384,28 +384,6 @@ namespace System
         }
 
         [DoesNotReturn]
-        internal static void ThrowArgumentOutOfRangeException_GetMaxByteCount(int charCount)
-        {
-            throw new ArgumentOutOfRangeException(
-                paramName: nameof(charCount),
-                actualValue: charCount,
-                message: (charCount < 0) ?
-                    SR.Format(SR.ArgumentOutOfRange_Generic_MustBeNonNegative, nameof(charCount), charCount) :
-                    SR.ArgumentOutOfRange_GetByteCountOverflow);
-        }
-
-        [DoesNotReturn]
-        internal static void ThrowArgumentOutOfRangeException_GetMaxCharCount(int byteCount)
-        {
-            throw new ArgumentOutOfRangeException(
-                paramName: nameof(byteCount),
-                actualValue: byteCount,
-                message: (byteCount < 0) ?
-                    SR.Format(SR.ArgumentOutOfRange_Generic_MustBeNonNegative, nameof(byteCount), byteCount) :
-                    SR.ArgumentOutOfRange_GetCharCountOverflow);
-        }
-
-        [DoesNotReturn]
         internal static void ThrowEndOfFileException()
         {
             throw CreateEndOfFileException();
@@ -658,6 +636,24 @@ namespace System
         internal static void ThrowArgumentOutOfRangeException_NeedNonNegNum(string paramName)
         {
             throw new ArgumentOutOfRangeException(paramName, SR.ArgumentOutOfRange_NeedNonNegNum);
+        }
+
+        [DoesNotReturn]
+        internal static void ThrowArgumentOutOfRangeException_NeedNonNegNum(ExceptionArgument argument)
+        {
+            throw GetArgumentOutOfRangeException(argument, ExceptionResource.ArgumentOutOfRange_NeedNonNegNum);
+        }
+
+        [DoesNotReturn]
+        internal static void ThrowArgumentOutOfRangeException_GetByteCountOverflow(ExceptionArgument argument)
+        {
+            throw GetArgumentOutOfRangeException(argument, ExceptionResource.ArgumentOutOfRange_GetByteCountOverflow);
+        }
+
+        [DoesNotReturn]
+        internal static void ThrowArgumentOutOfRangeException_GetCharCountOverflow(ExceptionArgument argument)
+        {
+            throw GetArgumentOutOfRangeException(argument, ExceptionResource.ArgumentOutOfRange_GetCharCountOverflow);
         }
 
         [DoesNotReturn]
@@ -1262,6 +1258,8 @@ namespace System
                     return SR.Argument_HasToBeArrayClass;
                 case ExceptionResource.InvalidOperation_IncompatibleComparer:
                     return SR.InvalidOperation_IncompatibleComparer;
+                case ExceptionResource.ArgumentOutOfRange_GetByteCountOverflow:
+                    return SR.ArgumentOutOfRange_GetByteCountOverflow;
                 default:
                     Debug.Fail("The enum value is not defined, please check the ExceptionResource Enum.");
                     return "";
@@ -1460,5 +1458,6 @@ namespace System
         Format_ExpectedAsciiDigit,
         Argument_HasToBeArrayClass,
         InvalidOperation_IncompatibleComparer,
+        ArgumentOutOfRange_GetByteCountOverflow,
     }
 }
