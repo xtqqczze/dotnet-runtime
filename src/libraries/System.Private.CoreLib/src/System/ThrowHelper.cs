@@ -200,6 +200,35 @@ namespace System
         }
 
         [DoesNotReturn]
+        internal static void ThrowByteCountArgumentOutOfRange_GetCharCountOverflow()
+        {
+            throw GetArgumentOutOfRangeException(ExceptionArgument.byteCount,
+                                                    ExceptionResource.ArgumentOutOfRange_GetCharCountOverflow);
+        }
+
+        [DoesNotReturn]
+        internal static void ThrowByteCountArgumentOutOfRange_NeedNonNegNum()
+        {
+            throw GetArgumentOutOfRangeException(ExceptionArgument.byteCount,
+                                                    ExceptionResource.ArgumentOutOfRange_NeedNonNegNum);
+        }
+
+        [DoesNotReturn]
+        internal static void ThrowCharCountArgumentOutOfRange_GetByteCountOverflow()
+        {
+            throw GetArgumentOutOfRangeException(ExceptionArgument.charCount,
+                                                    ExceptionResource.ArgumentOutOfRange_GetByteCountOverflow);
+        }
+
+        [DoesNotReturn]
+        internal static void ThrowCharCountArgumentOutOfRange_NeedNonNegNum()
+        {
+            throw GetArgumentOutOfRangeException(ExceptionArgument.charCount,
+                                                    ExceptionResource.ArgumentOutOfRange_NeedNonNegNum);
+        }
+
+
+        [DoesNotReturn]
         internal static void ThrowArgumentOutOfRange_Year()
         {
             throw GetArgumentOutOfRangeException(ExceptionArgument.year,
@@ -636,24 +665,6 @@ namespace System
         internal static void ThrowArgumentOutOfRangeException_NeedNonNegNum(string paramName)
         {
             throw new ArgumentOutOfRangeException(paramName, SR.ArgumentOutOfRange_NeedNonNegNum);
-        }
-
-        [DoesNotReturn]
-        internal static void ThrowArgumentOutOfRangeException_NeedNonNegNum(ExceptionArgument argument)
-        {
-            throw GetArgumentOutOfRangeException(argument, ExceptionResource.ArgumentOutOfRange_NeedNonNegNum);
-        }
-
-        [DoesNotReturn]
-        internal static void ThrowArgumentOutOfRangeException_GetByteCountOverflow(ExceptionArgument argument)
-        {
-            throw GetArgumentOutOfRangeException(argument, ExceptionResource.ArgumentOutOfRange_GetByteCountOverflow);
-        }
-
-        [DoesNotReturn]
-        internal static void ThrowArgumentOutOfRangeException_GetCharCountOverflow(ExceptionArgument argument)
-        {
-            throw GetArgumentOutOfRangeException(argument, ExceptionResource.ArgumentOutOfRange_GetCharCountOverflow);
         }
 
         [DoesNotReturn]

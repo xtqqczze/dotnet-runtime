@@ -86,9 +86,9 @@ namespace System.Text
                     {
                         if (charCount < 0)
                         {
-                            ThrowHelper.ThrowArgumentOutOfRangeException_NeedNonNegNum(ExceptionArgument.charCount);
+                            ThrowHelper.ThrowCharCountArgumentOutOfRange_NeedNonNegNum();
                         }
-                        ThrowHelper.ThrowArgumentOutOfRangeException_GetByteCountOverflow(ExceptionArgument.charCount);
+                        ThrowHelper.ThrowCharCountArgumentOutOfRange_GetByteCountOverflow();
                         throw new UnreachableException();
                     }
                 }
@@ -111,9 +111,9 @@ namespace System.Text
                     {
                         if (byteCount < 0)
                         {
-                            ThrowHelper.ThrowArgumentOutOfRangeException_NeedNonNegNum(ExceptionArgument.byteCount);
+                            ThrowHelper.ThrowByteCountArgumentOutOfRange_NeedNonNegNum();
                         }
-                        ThrowHelper.ThrowArgumentOutOfRangeException_GetCharCountOverflow(ExceptionArgument.byteCount);
+                        ThrowHelper.ThrowByteCountArgumentOutOfRange_GetCharCountOverflow();
                         throw new UnreachableException();
                     }
                 }

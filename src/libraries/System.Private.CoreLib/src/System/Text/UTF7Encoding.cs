@@ -724,7 +724,7 @@ namespace System.Text
         public override int GetMaxByteCount(int charCount)
         {
             if (charCount < 0)
-                ThrowHelper.ThrowArgumentOutOfRangeException_NeedNonNegNum(ExceptionArgument.charCount);
+                ThrowHelper.ThrowCharCountArgumentOutOfRange_NeedNonNegNum();
 
             // Suppose that every char can not be direct-encoded, we know that
             // a byte can encode 6 bits of the Unicode character.  And we will
@@ -746,7 +746,7 @@ namespace System.Text
 
             // check for overflow
             if (byteCount > int.MaxValue)
-                ThrowHelper.ThrowArgumentOutOfRangeException_GetCharCountOverflow(ExceptionArgument.charCount);
+                ThrowHelper.ThrowCharCountArgumentOutOfRange_GetByteCountOverflow();
 
             return (int)byteCount;
         }
@@ -754,7 +754,7 @@ namespace System.Text
         public override int GetMaxCharCount(int byteCount)
         {
             if (byteCount < 0)
-                ThrowHelper.ThrowArgumentOutOfRangeException_GetCharCountOverflow(ExceptionArgument.byteCount);
+                ThrowHelper.ThrowByteCountArgumentOutOfRange_NeedNonNegNum();
 
             // Worst case is 1 char per byte.  Minimum 1 for left over bits in case decoder is being flushed
             // Also note that we ignore extra bits (per spec), so UTF7 doesn't have unknown in this direction.

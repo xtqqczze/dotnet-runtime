@@ -152,7 +152,7 @@ namespace System.Text
         public override int GetMaxByteCount(int charCount)
         {
             if (charCount < 0)
-                ThrowHelper.ThrowArgumentOutOfRangeException_NeedNonNegNum(ExceptionArgument.charCount);
+                ThrowHelper.ThrowCharCountArgumentOutOfRange_NeedNonNegNum();
 
             // Characters would be # of characters + 1 in case high surrogate is ? * max fallback
             ulong byteCount = (uint)charCount + 1;
@@ -163,7 +163,7 @@ namespace System.Text
             // 1 to 1 for most characters.  Only surrogates with fallbacks have less.
 
             if (byteCount > int.MaxValue)
-                ThrowHelper.ThrowArgumentOutOfRangeException_GetByteCountOverflow(ExceptionArgument.charCount);
+                ThrowHelper.ThrowCharCountArgumentOutOfRange_GetByteCountOverflow();
 
             return (int)byteCount;
         }
@@ -398,7 +398,7 @@ namespace System.Text
 
             if (byteCount < 0)
             {
-                ThrowHelper.ThrowArgumentOutOfRangeException_NeedNonNegNum(ExceptionArgument.byteCount);
+                ThrowHelper.ThrowByteCountArgumentOutOfRange_NeedNonNegNum();
             }
 
             return byteCount;
