@@ -82,7 +82,6 @@ namespace System.Text
                 {
                     // Move the throw out of the hot path to allow for inlining.
                     ThrowArgumentException(charCount);
-                    [MethodImpl(MethodImplOptions.NoInlining)]
                     static void ThrowArgumentException(int charCount)
                     {
                         if (charCount < 0)
@@ -90,6 +89,7 @@ namespace System.Text
                             ThrowHelper.ThrowArgumentOutOfRangeException_NeedNonNegNum(ExceptionArgument.charCount);
                         }
                         ThrowHelper.ThrowArgumentOutOfRangeException_GetByteCountOverflow(ExceptionArgument.charCount);
+                        throw new UnreachableException();
                     }
                 }
 
@@ -107,7 +107,6 @@ namespace System.Text
                 {
                     // Move the throw out of the hot path to allow for inlining.
                     ThrowArgumentException(byteCount);
-                    [MethodImpl(MethodImplOptions.NoInlining)]
                     static void ThrowArgumentException(int byteCount)
                     {
                         if (byteCount < 0)
@@ -115,6 +114,7 @@ namespace System.Text
                             ThrowHelper.ThrowArgumentOutOfRangeException_NeedNonNegNum(ExceptionArgument.byteCount);
                         }
                         ThrowHelper.ThrowArgumentOutOfRangeException_GetCharCountOverflow(ExceptionArgument.byteCount);
+                        throw new UnreachableException();
                     }
                 }
 
