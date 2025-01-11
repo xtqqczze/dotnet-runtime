@@ -429,7 +429,6 @@ namespace System
         /// <summary>Copies the contents of this string into the destination span.</summary>
         /// <param name="destination">The span into which to copy this string's contents.</param>
         /// <exception cref="ArgumentException">The destination span is shorter than the source string.</exception>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void CopyTo(Span<char> destination)
         {
             if ((uint)destination.Length < (uint)Length)
@@ -443,7 +442,6 @@ namespace System
         /// <summary>Copies the contents of this string into the destination span.</summary>
         /// <param name="destination">The span into which to copy this string's contents.</param>
         /// <returns>true if the data was copied; false if the destination was too short to fit the contents of the string.</returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool TryCopyTo(Span<char> destination)
         {
             if ((uint)destination.Length < (uint)Length)
