@@ -435,7 +435,7 @@ namespace System
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void CopyTo(Span<char> destination)
         {
-            if ((uint)destination.Length < (uint)Length)
+            if ((uint)Length > (uint)destination.Length)
             {
                 ThrowHelper.ThrowArgumentException_DestinationTooShort();
             }
