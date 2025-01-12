@@ -3844,14 +3844,14 @@ namespace System
         {
             // The span argument isn't used directly in the method; rather, it'll be used by the compiler to create the handler.
             // We could validate here that span == handler._destination, but that doesn't seem necessary.
-            if (handler._success)
+            if (!handler._success)
             {
-                charsWritten = handler._pos;
-                return true;
+                charsWritten = 0;
+                return false;
             }
 
-            charsWritten = 0;
-            return false;
+            charsWritten = handler._pos;
+            return true;
         }
 
         /// <summary>Writes the specified interpolated string to the character span.</summary>
