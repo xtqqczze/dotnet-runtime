@@ -115,9 +115,9 @@ namespace System.Buffers
 
             int hashLength = _hashLength;
 
-            if (span.Length >= hashLength)
+            if (span.Length - hashLength >= 0)
             {
-                ref char end = ref Unsafe.Add(ref MemoryMarshal.GetReference(span), (uint)(span.Length - hashLength));
+                ref char end = ref Unsafe.Add(ref MemoryMarshal.GetReference(span), span.Length - hashLength);
 
                 nuint hash = 0;
                 for (uint i = 0; i < hashLength; i++)

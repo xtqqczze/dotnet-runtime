@@ -35,7 +35,7 @@ namespace System
             if ((uint)start > (uint)array.Length)
                 ThrowHelper.ThrowArgumentOutOfRangeException();
 
-            return new Span<T>(ref Unsafe.Add(ref MemoryMarshal.GetArrayDataReference(array), (nint)(uint)start /* force zero-extension */), array.Length - start);
+            return new Span<T>(ref Unsafe.Add(ref MemoryMarshal.GetArrayDataReference(array), start), array.Length - start);
         }
 
         /// <summary>
@@ -59,7 +59,7 @@ namespace System
             if ((uint)actualIndex > (uint)array.Length)
                 ThrowHelper.ThrowArgumentOutOfRangeException();
 
-            return new Span<T>(ref Unsafe.Add(ref MemoryMarshal.GetArrayDataReference(array), (nint)(uint)actualIndex /* force zero-extension */), array.Length - actualIndex);
+            return new Span<T>(ref Unsafe.Add(ref MemoryMarshal.GetArrayDataReference(array), actualIndex), array.Length - actualIndex);
         }
 
         /// <summary>
@@ -83,7 +83,7 @@ namespace System
                 ThrowHelper.ThrowArrayTypeMismatchException();
 
             (int start, int length) = range.GetOffsetAndLength(array.Length);
-            return new Span<T>(ref Unsafe.Add(ref MemoryMarshal.GetArrayDataReference(array), (nint)(uint)start /* force zero-extension */), length);
+            return new Span<T>(ref Unsafe.Add(ref MemoryMarshal.GetArrayDataReference(array), start), length);
         }
 
         /// <summary>
@@ -122,7 +122,7 @@ namespace System
             if ((uint)start > (uint)text.Length)
                 ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.start);
 
-            return new ReadOnlySpan<char>(ref Unsafe.Add(ref text.GetRawStringData(), (nint)(uint)start /* force zero-extension */), text.Length - start);
+            return new ReadOnlySpan<char>(ref Unsafe.Add(ref text.GetRawStringData(), start), text.Length - start);
         }
 
         /// <summary>Creates a new <see cref="ReadOnlySpan{Char}"/> over a portion of the target string from a specified position to the end of the string.</summary>
@@ -148,7 +148,7 @@ namespace System
                 ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.startIndex);
             }
 
-            return new ReadOnlySpan<char>(ref Unsafe.Add(ref text.GetRawStringData(), (nint)(uint)actualIndex /* force zero-extension */), text.Length - actualIndex);
+            return new ReadOnlySpan<char>(ref Unsafe.Add(ref text.GetRawStringData(), actualIndex), text.Length - actualIndex);
         }
 
         /// <summary>Creates a new <see cref="ReadOnlySpan{Char}"/> over a portion of a target string using the range start and end indexes.</summary>
@@ -174,7 +174,7 @@ namespace System
             }
 
             (int start, int length) = range.GetOffsetAndLength(text.Length);
-            return new ReadOnlySpan<char>(ref Unsafe.Add(ref text.GetRawStringData(), (nint)(uint)start /* force zero-extension */), length);
+            return new ReadOnlySpan<char>(ref Unsafe.Add(ref text.GetRawStringData(), start), length);
         }
 
         /// <summary>
@@ -206,7 +206,7 @@ namespace System
                 ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.start);
 #endif
 
-            return new ReadOnlySpan<char>(ref Unsafe.Add(ref text.GetRawStringData(), (nint)(uint)start /* force zero-extension */), length);
+            return new ReadOnlySpan<char>(ref Unsafe.Add(ref text.GetRawStringData(), start), length);
         }
 
         /// <summary>Creates a new <see cref="ReadOnlyMemory{T}"/> over the portion of the target string.</summary>
@@ -2324,14 +2324,14 @@ namespace System
             {
                 return valueLength <= spanLength &&
                 SpanHelpers.SequenceEqual(
-                    ref Unsafe.As<T, byte>(ref Unsafe.Add(ref MemoryMarshal.GetReference(span), (nint)(uint)(spanLength - valueLength) /* force zero-extension */)),
+                    ref Unsafe.As<T, byte>(ref Unsafe.Add(ref MemoryMarshal.GetReference(span), spanLength - valueLength)),
                     ref Unsafe.As<T, byte>(ref MemoryMarshal.GetReference(value)),
                     ((uint)valueLength) * (nuint)sizeof(T));  // If this multiplication overflows, the Span we got overflows the entire address range. There's no happy outcome for this api in such a case so we choose not to take the overhead of checking.
             }
 
             return valueLength <= spanLength &&
                 SpanHelpers.SequenceEqual(
-                    ref Unsafe.Add(ref MemoryMarshal.GetReference(span), (nint)(uint)(spanLength - valueLength) /* force zero-extension */),
+                    ref Unsafe.Add(ref MemoryMarshal.GetReference(span), spanLength - valueLength),
                     ref MemoryMarshal.GetReference(value),
                     valueLength);
         }

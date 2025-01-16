@@ -383,7 +383,7 @@ namespace System
             }
 #endif
 
-            slice = new ReadOnlySpan<char>(ref Unsafe.Add(ref _firstChar, (nint)(uint)startIndex /* force zero-extension */), count);
+            slice = new ReadOnlySpan<char>(ref Unsafe.Add(ref _firstChar, startIndex), count);
             return true;
         }
 
@@ -731,7 +731,7 @@ namespace System
             {
                 if ((uint)index >= (uint)_stringLength)
                     ThrowHelper.ThrowIndexOutOfRangeException();
-                return Unsafe.Add(ref _firstChar, (nint)(uint)index /* force zero-extension */);
+                return Unsafe.Add(ref _firstChar, index);
             }
         }
 
