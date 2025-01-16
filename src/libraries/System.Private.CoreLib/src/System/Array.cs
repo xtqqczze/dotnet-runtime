@@ -1122,7 +1122,7 @@ namespace System
             }
             else
             {
-                ref T first = ref Unsafe.Add(ref MemoryMarshal.GetArrayDataReference(array), (nint)(uint)startIndex);
+                ref T first = ref Unsafe.Add(ref MemoryMarshal.GetArrayDataReference(array), startIndex);
                 new Span<T>(ref first, count).Fill(value);
             }
         }
