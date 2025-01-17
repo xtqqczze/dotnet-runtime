@@ -731,7 +731,7 @@ namespace System
             {
                 if ((uint)index >= (uint)_stringLength)
                     ThrowHelper.ThrowIndexOutOfRangeException();
-                return Unsafe.Add(ref _firstChar, (nint)(uint)index /* force zero-extension */);
+                return Unsafe.Add(ref _firstChar, index);
             }
         }
 

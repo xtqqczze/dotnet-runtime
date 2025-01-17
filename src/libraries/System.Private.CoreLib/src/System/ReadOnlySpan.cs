@@ -145,7 +145,7 @@ namespace System
             {
                 if ((uint)index >= (uint)_length)
                     ThrowHelper.ThrowIndexOutOfRangeException();
-                return ref Unsafe.Add(ref _reference, (nint)(uint)index /* force zero-extension */);
+                return ref Unsafe.Add(ref _reference, index);
             }
         }
 
