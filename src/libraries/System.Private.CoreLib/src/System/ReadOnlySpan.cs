@@ -143,7 +143,7 @@ namespace System
             [NonVersionable]
             get
             {
-                if ((uint)index >= (uint)_length)
+                if ((uint)index >= (uint)Length)
                     ThrowHelper.ThrowIndexOutOfRangeException();
                 return ref Unsafe.Add(ref _reference, index);
             }

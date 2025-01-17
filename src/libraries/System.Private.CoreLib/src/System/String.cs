@@ -729,7 +729,7 @@ namespace System
             [Intrinsic]
             get
             {
-                if ((uint)index >= (uint)_stringLength)
+                if ((uint)index >= (uint)Length)
                     ThrowHelper.ThrowIndexOutOfRangeException();
                 return Unsafe.Add(ref _firstChar, index);
             }
