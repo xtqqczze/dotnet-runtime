@@ -469,21 +469,21 @@ namespace System
                 lengthToExamine -= 8;
 
                 if (uValue == searchSpace[offset])
-                    goto Found;
+                    return (int)offset;
                 if (uValue == searchSpace[offset + 1])
-                    goto Found1;
+                    return (int)(offset + 1);
                 if (uValue == searchSpace[offset + 2])
-                    goto Found2;
+                    return (int)(offset + 2);
                 if (uValue == searchSpace[offset + 3])
-                    goto Found3;
+                    return (int)(offset + 3);
                 if (uValue == searchSpace[offset + 4])
-                    goto Found4;
+                    return (int)(offset + 4);
                 if (uValue == searchSpace[offset + 5])
-                    goto Found5;
+                    return (int)(offset + 5);
                 if (uValue == searchSpace[offset + 6])
-                    goto Found6;
+                    return (int)(offset + 6);
                 if (uValue == searchSpace[offset + 7])
-                    goto Found7;
+                    return (int)(offset + 7);
 
                 offset += 8;
             }
@@ -493,13 +493,13 @@ namespace System
                 lengthToExamine -= 4;
 
                 if (uValue == searchSpace[offset])
-                    goto Found;
+                    return (int)offset;
                 if (uValue == searchSpace[offset + 1])
-                    goto Found1;
+                    return (int)(offset + 1);
                 if (uValue == searchSpace[offset + 2])
-                    goto Found2;
+                    return (int)(offset + 2);
                 if (uValue == searchSpace[offset + 3])
-                    goto Found3;
+                    return (int)(offset + 3);
 
                 offset += 4;
             }
@@ -509,7 +509,7 @@ namespace System
                 lengthToExamine -= 1;
 
                 if (uValue == searchSpace[offset])
-                    goto Found;
+                    return (int)offset;
 
                 offset += 1;
             }
@@ -736,22 +736,7 @@ namespace System
             }
 
             ThrowMustBeNullTerminatedString();
-        Found: // Workaround for https://github.com/dotnet/runtime/issues/8795
-            return (int)offset;
-        Found1:
-            return (int)(offset + 1);
-        Found2:
-            return (int)(offset + 2);
-        Found3:
-            return (int)(offset + 3);
-        Found4:
-            return (int)(offset + 4);
-        Found5:
-            return (int)(offset + 5);
-        Found6:
-            return (int)(offset + 6);
-        Found7:
-            return (int)(offset + 7);
+            return default;
         }
 
         // Optimized byte-based SequenceEquals. The "length" parameter for this one is declared a nuint rather than int as we also use it for types other than byte
@@ -1182,21 +1167,13 @@ namespace System
 
                 for (; (nint)i <= (nint)length - 4; i += 4)
                 {
-                    if (Unsafe.Add(ref first, i + 0) != Unsafe.Add(ref second, i + 0)) goto Found0;
-                    if (Unsafe.Add(ref first, i + 1) != Unsafe.Add(ref second, i + 1)) goto Found1;
-                    if (Unsafe.Add(ref first, i + 2) != Unsafe.Add(ref second, i + 2)) goto Found2;
-                    if (Unsafe.Add(ref first, i + 3) != Unsafe.Add(ref second, i + 3)) goto Found3;
+                    if (Unsafe.Add(ref first, i + 0) != Unsafe.Add(ref second, i + 0)) return i;
+                    if (Unsafe.Add(ref first, i + 1) != Unsafe.Add(ref second, i + 1)) return i + 1;
+                    if (Unsafe.Add(ref first, i + 2) != Unsafe.Add(ref second, i + 2)) return i + 2;
+                    if (Unsafe.Add(ref first, i + 3) != Unsafe.Add(ref second, i + 3)) return i + 3;
                 }
 
                 return length;
-            Found0:
-                return i;
-            Found1:
-                return i + 1;
-            Found2:
-                return i + 2;
-            Found3:
-                return i + 3;
             }
 
             Debug.Assert(length >= (uint)Vector128<byte>.Count);

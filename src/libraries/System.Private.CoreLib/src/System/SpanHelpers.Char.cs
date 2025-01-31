@@ -555,13 +555,13 @@ namespace System
             while (lengthToExamine >= 4)
             {
                 if (value == searchSpace[offset])
-                    goto Found;
+                    return (int)offset;
                 if (value == searchSpace[offset + 1])
-                    goto Found1;
+                    return (int)(offset + 1);
                 if (value == searchSpace[offset + 2])
-                    goto Found2;
+                    return (int)(offset + 2);
                 if (value == searchSpace[offset + 3])
-                    goto Found3;
+                    return (int)(offset + 3);
 
                 offset += 4;
                 lengthToExamine -= 4;
@@ -570,7 +570,7 @@ namespace System
             while (lengthToExamine > 0)
             {
                 if (value == searchSpace[offset])
-                    goto Found;
+                    return (int)offset;
 
                 offset++;
                 lengthToExamine--;
@@ -851,14 +851,7 @@ namespace System
             }
 
             ThrowMustBeNullTerminatedString();
-        Found3:
-            return (int)(offset + 3);
-        Found2:
-            return (int)(offset + 2);
-        Found1:
-            return (int)(offset + 1);
-        Found:
-            return (int)(offset);
+            return default;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
