@@ -23,9 +23,9 @@ namespace System
         // The highest order bit of _index is used to discern whether _object is a pre-pinned array.
         // (_index < 0) => _object is a pre-pinned array, so Pin() will not allocate a new GCHandle
         //       (else) => Pin() needs to allocate a new GCHandle to pin the object.
-        private readonly object? _object;
-        private readonly int _index;
-        private readonly int _length;
+        internal readonly object? _object;
+        internal readonly int _index;
+        internal readonly int _length;
 
         /// <summary>
         /// Creates a new memory over the entirety of the target array.
@@ -481,18 +481,6 @@ namespace System
             // We use RuntimeHelpers.GetHashCode instead of Object.GetHashCode because the hash
             // code is based on object identity and referential equality, not deep equality (as common with string).
             return (_object != null) ? HashCode.Combine(RuntimeHelpers.GetHashCode(_object), _index, _length) : 0;
-        }
-
-        /// <summary>Gets the state of the memory as individual fields.</summary>
-        /// <param name="start">The offset.</param>
-        /// <param name="length">The count.</param>
-        /// <returns>The object.</returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal object? GetObjectStartLength(out int start, out int length)
-        {
-            start = _index;
-            length = _length;
-            return _object;
         }
     }
 }

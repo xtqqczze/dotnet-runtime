@@ -267,67 +267,20 @@ namespace System.Runtime.InteropServices
         /// Get an array segment from the underlying memory.
         /// If unable to get the array segment, return false with a default array segment.
         /// </summary>
-        public static bool TryGetArray<T>(ReadOnlyMemory<T> memory, out ArraySegment<T> segment)
-        {
-            object? obj = memory.GetObjectStartLength(out int index, out int length);
-
-            // As an optimization, we skip the "is string?" check below if typeof(T) is not char,
-            // as Memory<T> / ROM<T> can't possibly contain a string instance in this case.
-
-            if (obj != null && !(
-                (typeof(T) == typeof(char) && obj.GetType() == typeof(string))
-                ))
-            {
-                if (RuntimeHelpers.ObjectHasComponentSize(obj))
-                {
-                    // The object has a component size, which means it's variable-length, but we already
-                    // checked above that it's not a string. The only remaining option is that it's a T[]
-                    // or a U[] which is blittable to a T[] (e.g., int[] and uint[]).
-
-                    // The array may be prepinned, so remove the high bit from the start index in the line below.
-                    // The ArraySegment<T> ctor will perform bounds checking on index & length.
-
-                    segment = new ArraySegment<T>(Unsafe.As<T[]>(obj), index & ReadOnlyMemory<T>.RemoveFlagsBitMask, length);
-                    return true;
-                }
-                else
-                {
-                    // The object isn't null, and it's not variable-length, so the only remaining option
-                    // is MemoryManager<T>. The ArraySegment<T> ctor will perform bounds checking on index & length.
-
-                    Debug.Assert(obj is MemoryManager<T>);
-                    if (Unsafe.As<MemoryManager<T>>(obj).TryGetArray(out ArraySegment<T> tempArraySegment))
-                    {
-                        segment = new ArraySegment<T>(tempArraySegment.Array!, tempArraySegment.Offset + index, length);
-                        return true;
-                    }
-                }
-            }
-
-            // If we got to this point, the object is null, or it's a string, or it's a MemoryManager<T>
-            // which isn't backed by an array. We'll quickly homogenize all zero-length Memory<T> instances
-            // to an empty array for the purposes of reporting back to our caller.
-
-            if (length == 0)
-            {
-                segment = ArraySegment<T>.Empty;
-                return true;
-            }
-
-            // Otherwise, there's *some* data, but it's not convertible to T[].
-
-            segment = default;
-            return false;
-        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool TryGetArray<T>(ReadOnlyMemory<T> memory, out ArraySegment<T> segment) =>
+            TryGetArrayCore(memory._object, memory._index, memory._length, out segment);
 
         /// <summary>
         /// Get an array segment from the underlying memory.
         /// If unable to get the array segment, return false with a default array segment.
         /// </summary>
-        internal static bool TryGetArray<T>(Memory<T> memory, out ArraySegment<T> segment)
-        {
-            object? obj = memory.GetObjectStartLength(out int index, out int length);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static bool TryGetArray<T>(Memory<T> memory, out ArraySegment<T> segment) =>
+            TryGetArrayCore(memory._object, memory._index, memory._length, out segment);
 
+        internal static bool TryGetArrayCore<T>(object? obj, int index, int length, out ArraySegment<T> segment)
+        {
             // As an optimization, we skip the "is string?" check below if typeof(T) is not char,
             // as Memory<T> / ROM<T> can't possibly contain a string instance in this case.
 
