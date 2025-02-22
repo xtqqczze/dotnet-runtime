@@ -1367,7 +1367,7 @@ namespace System
             {
                 Vector512<T> current, values = Vector512.Create(value);
                 ref T currentSearchSpace = ref searchSpace;
-                ref T oneVectorAwayFromEnd = ref Unsafe.Add(ref searchSpace, (uint)(length - Vector512<T>.Count));
+                ref T oneVectorAwayFromEnd = ref Unsafe.Add(ref searchSpace, (nint)(uint)length - Vector512<T>.Count);
 
                 // Loop until either we've finished all elements or there's less than a vector's-worth remaining.
                 do
@@ -1398,7 +1398,7 @@ namespace System
             {
                 Vector256<T> equals, values = Vector256.Create(value);
                 ref T currentSearchSpace = ref searchSpace;
-                ref T oneVectorAwayFromEnd = ref Unsafe.Add(ref searchSpace, (uint)(length - Vector256<T>.Count));
+                ref T oneVectorAwayFromEnd = ref Unsafe.Add(ref searchSpace, (nint)(uint)length - Vector256<T>.Count);
 
                 // Loop until either we've finished all elements or there's less than a vector's-worth remaining.
                 do
@@ -1428,7 +1428,7 @@ namespace System
             {
                 Vector128<T> equals, values = Vector128.Create(value);
                 ref T currentSearchSpace = ref searchSpace;
-                ref T oneVectorAwayFromEnd = ref Unsafe.Add(ref searchSpace, (uint)(length - Vector128<T>.Count));
+                ref T oneVectorAwayFromEnd = ref Unsafe.Add(ref searchSpace, (nint)(uint)length - Vector128<T>.Count);
 
                 // Loop until either we've finished all elements or there's less than a vector's-worth remaining.
                 do
@@ -2310,7 +2310,7 @@ namespace System
                 Vector512<TValue> equals, current, values0 = Vector512.Create(value0), values1 = Vector512.Create(value1),
                     values2 = Vector512.Create(value2), values3 = Vector512.Create(value3), values4 = Vector512.Create(value4);
                 ref TValue currentSearchSpace = ref searchSpace;
-                ref TValue oneVectorAwayFromEnd = ref Unsafe.Add(ref searchSpace, (uint)(length - Vector512<TValue>.Count));
+                ref TValue oneVectorAwayFromEnd = ref Unsafe.Add(ref searchSpace, (nint)(uint)length - Vector512<TValue>.Count);
 
                 // Loop until either we've finished all elements or there's less than a vector's-worth remaining.
                 do
@@ -2345,7 +2345,7 @@ namespace System
                 Vector256<TValue> equals, current, values0 = Vector256.Create(value0), values1 = Vector256.Create(value1),
                     values2 = Vector256.Create(value2), values3 = Vector256.Create(value3), values4 = Vector256.Create(value4);
                 ref TValue currentSearchSpace = ref searchSpace;
-                ref TValue oneVectorAwayFromEnd = ref Unsafe.Add(ref searchSpace, (uint)(length - Vector256<TValue>.Count));
+                ref TValue oneVectorAwayFromEnd = ref Unsafe.Add(ref searchSpace, (nint)(uint)length - Vector256<TValue>.Count);
 
                 // Loop until either we've finished all elements or there's less than a vector's-worth remaining.
                 do
@@ -2380,7 +2380,7 @@ namespace System
                 Vector128<TValue> equals, current, values0 = Vector128.Create(value0), values1 = Vector128.Create(value1),
                     values2 = Vector128.Create(value2), values3 = Vector128.Create(value3), values4 = Vector128.Create(value4);
                 ref TValue currentSearchSpace = ref searchSpace;
-                ref TValue oneVectorAwayFromEnd = ref Unsafe.Add(ref searchSpace, (uint)(length - Vector128<TValue>.Count));
+                ref TValue oneVectorAwayFromEnd = ref Unsafe.Add(ref searchSpace, (nint)(uint)length - Vector128<TValue>.Count);
 
                 // Loop until either we've finished all elements or there's less than a vector's-worth remaining.
                 do
@@ -3494,6 +3494,8 @@ namespace System
             where T : struct, IUnsignedNumber<T>, IComparisonOperators<T, T, bool>
             where TNegator : struct, INegator<T>
         {
+            Debug.Assert(length >= 0, "Expected non-negative length");
+
             // T must be a type whose comparison operator semantics match that of Vector128/256.
 
             if (!Vector128.IsHardwareAccelerated || length < Vector128<T>.Count)
@@ -3515,7 +3517,7 @@ namespace System
                 Vector128<T> inRangeVector;
 
                 ref T current = ref searchSpace;
-                ref T oneVectorAwayFromEnd = ref Unsafe.Add(ref searchSpace, (uint)(length - Vector128<T>.Count));
+                ref T oneVectorAwayFromEnd = ref Unsafe.Add(ref searchSpace, (nint)(uint)length - Vector128<T>.Count);
 
                 // Loop until either we've finished all elements or there's less than a vector's-worth remaining.
                 do
@@ -3544,7 +3546,7 @@ namespace System
                 Vector256<T> inRangeVector;
 
                 ref T current = ref searchSpace;
-                ref T oneVectorAwayFromEnd = ref Unsafe.Add(ref searchSpace, (uint)(length - Vector256<T>.Count));
+                ref T oneVectorAwayFromEnd = ref Unsafe.Add(ref searchSpace, (nint)(uint)length - Vector256<T>.Count);
 
                 // Loop until either we've finished all elements or there's less than a vector's-worth remaining.
                 do
@@ -3573,7 +3575,7 @@ namespace System
                 Vector512<T> inRangeVector;
 
                 ref T current = ref searchSpace;
-                ref T oneVectorAwayFromEnd = ref Unsafe.Add(ref searchSpace, (uint)(length - Vector512<T>.Count));
+                ref T oneVectorAwayFromEnd = ref Unsafe.Add(ref searchSpace, (nint)(uint)length - Vector512<T>.Count);
 
                 // Loop until either we've finished all elements or there's less than a vector's-worth remaining.
                 do
