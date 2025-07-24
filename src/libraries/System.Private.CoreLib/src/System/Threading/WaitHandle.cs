@@ -12,7 +12,9 @@ namespace System.Threading
     {
         internal const int MaxWaitHandles = 64;
 
-        protected static readonly IntPtr InvalidHandle = new IntPtr(-1);
+        protected static readonly IntPtr InvalidHandle = InvalidHandleValue;
+
+        private static IntPtr InvalidHandleValue => new IntPtr(-1);
 
         // IMPORTANT:
         // - Do not add or rearrange fields as the EE depends on this layout.
@@ -45,10 +47,10 @@ namespace System.Threading
         [Obsolete("WaitHandle.Handle has been deprecated. Use the SafeWaitHandle property instead.")]
         public virtual IntPtr Handle
         {
-            get => _waitHandle == null ? InvalidHandle : _waitHandle.DangerousGetHandle();
+            get => _waitHandle == null ? InvalidHandleValue : _waitHandle.DangerousGetHandle();
             set
             {
-                if (value == InvalidHandle)
+                if (value == InvalidHandleValue)
                 {
                     // This line leaks a handle.  However, it's currently
                     // not perfectly clear what the right behavior is here
@@ -72,7 +74,7 @@ namespace System.Threading
         [AllowNull]
         public SafeWaitHandle SafeWaitHandle
         {
-            get => _waitHandle ??= new SafeWaitHandle(InvalidHandle, false);
+            get => _waitHandle ??= new SafeWaitHandle(InvalidHandleValue, false);
             set => _waitHandle = value;
         }
 
