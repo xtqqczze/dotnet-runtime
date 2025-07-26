@@ -279,9 +279,14 @@ namespace System.Threading
         /// <param name="syncLock">A reference to a location containing a mutual exclusive lock. If <paramref name="syncLock"/> is null,
         /// a new object will be instantiated.</param>
         /// <returns>Initialized lock object.</returns>
-        private static object EnsureLockInitialized([NotNull] ref object? syncLock) =>
-            syncLock ??
-            Interlocked.CompareExchange(ref syncLock, new object(), null) ??
-            syncLock;
+        private static object EnsureLockInitialized([NotNull] ref object? syncLock)
+        {
+            if (syncLock is not object result)
+            {
+                object tmp = new object();
+                result = Interlocked.CompareExchange(ref syncLock, tmp, null) ?? tmp;
+            }
+            return result;
+        }
     }
 }
