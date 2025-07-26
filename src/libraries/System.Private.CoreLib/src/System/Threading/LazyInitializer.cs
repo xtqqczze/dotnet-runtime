@@ -306,13 +306,8 @@ namespace System.Threading
             {
                 return value;
             }
-            return Initialize(ref syncLock);
-
-            static object Initialize([NotNull] ref object? syncLock)
-            {
-                object value = new object();
-                return Interlocked.CompareExchange(ref syncLock, value, null) ?? value;
-            }
+            value = new object();
+            return Interlocked.CompareExchange(ref syncLock, value, null) ?? value;
         }
     }
 }
