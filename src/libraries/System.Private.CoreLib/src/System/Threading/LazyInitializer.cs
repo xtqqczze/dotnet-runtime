@@ -302,8 +302,7 @@ namespace System.Threading
         /// <returns>Initialized lock object.</returns>
         private static object EnsureLockInitialized([NotNull] ref object? syncLock)
         {
-            object? value = syncLock;
-            if (value is not null)
+            if (syncLock is object value)
             {
                 return value;
             }
