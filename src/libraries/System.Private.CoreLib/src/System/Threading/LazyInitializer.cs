@@ -47,8 +47,15 @@ namespace System.Threading
         /// if an object was not used and to then dispose of the object appropriately.
         /// </para>
         /// </remarks>
-        public static T EnsureInitialized<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor)] T>([NotNull] ref T? target) where T : class =>
-            Volatile.Read(ref target!) ?? EnsureInitializedCore(ref target);
+        public static T EnsureInitialized<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicParameterlessConstructor)] T>([NotNull] ref T? target) where T : class
+        {
+            T? value = Volatile.Read(ref target!);
+            if (value is not null)
+            {
+                return value;
+            }
+            return EnsureInitializedCore(ref target);
+        }
 
         /// <summary>
         /// Initializes a target reference type with the type's default constructor (slow path)
@@ -99,8 +106,15 @@ namespace System.Threading
         /// if an object was not used and to then dispose of the object appropriately.
         /// </para>
         /// </remarks>
-        public static T EnsureInitialized<T>([NotNull] ref T? target, Func<T> valueFactory) where T : class =>
-            Volatile.Read(ref target!) ?? EnsureInitializedCore(ref target, valueFactory);
+        public static T EnsureInitialized<T>([NotNull] ref T? target, Func<T> valueFactory) where T : class
+        {
+            T? value = Volatile.Read(ref target!);
+            if (value is not null)
+            {
+                return value;
+            }
+            return EnsureInitializedCore(ref target, valueFactory);
+        }
 
         /// <summary>
         /// Initialize the target using the given delegate (slow path).
@@ -239,8 +253,15 @@ namespace System.Threading
         /// been initialized, a new object will be instantiated.</param>
         /// <param name="valueFactory">The <see cref="Func{T}"/> invoked to initialize the reference.</param>
         /// <returns>The initialized value of type <typeparamref name="T"/>.</returns>
-        public static T EnsureInitialized<T>([NotNull] ref T? target, [NotNullIfNotNull(nameof(syncLock))] ref object? syncLock, Func<T> valueFactory) where T : class =>
-            Volatile.Read(ref target!) ?? EnsureInitializedCore(ref target, ref syncLock, valueFactory);
+        public static T EnsureInitialized<T>([NotNull] ref T? target, [NotNullIfNotNull(nameof(syncLock))] ref object? syncLock, Func<T> valueFactory) where T : class
+        {
+            T? value = Volatile.Read(ref target!);
+            if (value is not null)
+            {
+                return value;
+            }
+            return EnsureInitializedCore(ref target, ref syncLock, valueFactory);
+        }
 
         /// <summary>
         /// Ensure the target is initialized and return the value (slow path). This overload works only for reference type targets.
@@ -279,9 +300,20 @@ namespace System.Threading
         /// <param name="syncLock">A reference to a location containing a mutual exclusive lock. If <paramref name="syncLock"/> is null,
         /// a new object will be instantiated.</param>
         /// <returns>Initialized lock object.</returns>
-        private static object EnsureLockInitialized([NotNull] ref object? syncLock) =>
-            syncLock ??
-            Interlocked.CompareExchange(ref syncLock, new object(), null) ??
-            syncLock;
+        private static object EnsureLockInitialized([NotNull] ref object? syncLock)
+        {
+            object? value = syncLock;
+            if (value is not null)
+            {
+                return value;
+            }
+            return Initialize(ref syncLock);
+
+            static object Initialize([NotNull] ref object? syncLock)
+            {
+                object value = new object();
+                return Interlocked.CompareExchange(ref syncLock, value, null) ?? value;
+            }
+        }
     }
 }
