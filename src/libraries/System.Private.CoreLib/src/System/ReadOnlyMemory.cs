@@ -251,7 +251,7 @@ namespace System
 
                     int desiredLength = _length;
 
-                    Debug.Assert((int)desiredStartIndex >= 0 && lengthOfUnderlyingSpan >= 0);
+                    Debug.Assert((int)desiredStartIndex >= 0 && desiredLength >= 0 && lengthOfUnderlyingSpan >= 0);
                     if ((uint)desiredStartIndex + (uint)desiredLength > (uint)lengthOfUnderlyingSpan)
                     {
                         ThrowHelper.ThrowArgumentOutOfRangeException();
