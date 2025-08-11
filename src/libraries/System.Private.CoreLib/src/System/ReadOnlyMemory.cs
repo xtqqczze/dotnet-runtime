@@ -257,8 +257,8 @@ namespace System
                         ThrowHelper.ThrowArgumentOutOfRangeException();
                     }
 
-                    refToReturn = ref Unsafe.Add(ref refToReturn, desiredStartIndex);
                     lengthOfUnderlyingSpan = desiredLength;
+                    refToReturn = ref Unsafe.Add(ref refToReturn, desiredStartIndex);
                 }
 
                 return new ReadOnlySpan<T>(ref refToReturn, lengthOfUnderlyingSpan);

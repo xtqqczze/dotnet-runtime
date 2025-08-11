@@ -335,8 +335,8 @@ namespace System
                         ThrowHelper.ThrowArgumentOutOfRangeException();
                     }
 
-                    refToReturn = ref Unsafe.Add(ref refToReturn, desiredStartIndex);
                     lengthOfUnderlyingSpan = desiredLength;
+                    refToReturn = ref Unsafe.Add(ref refToReturn, desiredStartIndex);
                 }
 
                 return new Span<T>(ref refToReturn, lengthOfUnderlyingSpan);
