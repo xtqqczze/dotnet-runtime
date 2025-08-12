@@ -81,7 +81,6 @@ namespace System
         /// <exception cref="ArgumentOutOfRangeException">
         /// Thrown when the specified <paramref name="start"/> or end index is not in the range (&lt;0 or &gt;Length).
         /// </exception>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Memory(T[]? array, int start, int length)
         {
             if (array == null)
