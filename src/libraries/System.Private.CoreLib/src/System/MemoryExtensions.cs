@@ -33,10 +33,8 @@ namespace System
             }
             if (!typeof(T).IsValueType && array.GetType() != typeof(T[]))
                 ThrowHelper.ThrowArrayTypeMismatchException();
-            if ((uint)start > (uint)array.Length)
-                ThrowHelper.ThrowArgumentOutOfRangeException();
 
-            return new Span<T>(ref Unsafe.Add(ref MemoryMarshal.GetArrayDataReference(array), (nint)(uint)start /* force zero-extension */), array.Length - start);
+            return MemoryMarshal.GetSpan(array, start);
         }
 
         /// <summary>
@@ -56,11 +54,7 @@ namespace System
             if (!typeof(T).IsValueType && array.GetType() != typeof(T[]))
                 ThrowHelper.ThrowArrayTypeMismatchException();
 
-            int actualIndex = startIndex.GetOffset(array.Length);
-            if ((uint)actualIndex > (uint)array.Length)
-                ThrowHelper.ThrowArgumentOutOfRangeException();
-
-            return new Span<T>(ref Unsafe.Add(ref MemoryMarshal.GetArrayDataReference(array), (nint)(uint)actualIndex /* force zero-extension */), array.Length - actualIndex);
+            return MemoryMarshal.GetSpan(array, startIndex.GetOffset(array.Length));
         }
 
         /// <summary>
@@ -84,7 +78,7 @@ namespace System
                 ThrowHelper.ThrowArrayTypeMismatchException();
 
             (int start, int length) = range.GetOffsetAndLength(array.Length);
-            return new Span<T>(ref Unsafe.Add(ref MemoryMarshal.GetArrayDataReference(array), (nint)(uint)start /* force zero-extension */), length);
+            return MemoryMarshal.GetSpan(array, start, length);
         }
 
         /// <summary>
@@ -123,7 +117,7 @@ namespace System
             if ((uint)start > (uint)text.Length)
                 ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.start);
 
-            return new ReadOnlySpan<char>(ref Unsafe.Add(ref text.GetRawStringData(), (nint)(uint)start /* force zero-extension */), text.Length - start);
+            return MemoryMarshal.GetSpan(text, start);
         }
 
         /// <summary>Creates a new <see cref="ReadOnlySpan{Char}"/> over a portion of the target string from a specified position to the end of the string.</summary>
@@ -149,7 +143,7 @@ namespace System
                 ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.startIndex);
             }
 
-            return new ReadOnlySpan<char>(ref Unsafe.Add(ref text.GetRawStringData(), (nint)(uint)actualIndex /* force zero-extension */), text.Length - actualIndex);
+            return MemoryMarshal.GetSpan(text, actualIndex);
         }
 
         /// <summary>Creates a new <see cref="ReadOnlySpan{Char}"/> over a portion of a target string using the range start and end indexes.</summary>
@@ -175,7 +169,7 @@ namespace System
             }
 
             (int start, int length) = range.GetOffsetAndLength(text.Length);
-            return new ReadOnlySpan<char>(ref Unsafe.Add(ref text.GetRawStringData(), (nint)(uint)start /* force zero-extension */), length);
+            return MemoryMarshal.GetSpan(text, start, length);
         }
 
         /// <summary>
@@ -207,7 +201,7 @@ namespace System
                 ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.start);
 #endif
 
-            return new ReadOnlySpan<char>(ref Unsafe.Add(ref text.GetRawStringData(), (nint)(uint)start /* force zero-extension */), length);
+            return MemoryMarshal.GetSpan(text, start, length);
         }
 
         /// <summary>Creates a new <see cref="ReadOnlyMemory{T}"/> over the portion of the target string.</summary>

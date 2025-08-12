@@ -293,7 +293,7 @@ namespace System
             }
 
             string result = FastAllocateString(length);
-            Span<char> resultSpan = new Span<char>(ref result._firstChar, result.Length);
+            Span<char> resultSpan = MemoryMarshal.GetSpan(result);
 
             str0.CopyTo(resultSpan);
             str1.CopyTo(resultSpan.Slice(str0.Length));
@@ -310,7 +310,7 @@ namespace System
             }
 
             string result = FastAllocateString(length);
-            Span<char> resultSpan = new Span<char>(ref result._firstChar, result.Length);
+            Span<char> resultSpan = MemoryMarshal.GetSpan(result);
 
             str0.CopyTo(resultSpan);
             resultSpan = resultSpan.Slice(str0.Length);
@@ -332,7 +332,7 @@ namespace System
             }
 
             string result = FastAllocateString(length);
-            Span<char> resultSpan = new Span<char>(ref result._firstChar, result.Length);
+            Span<char> resultSpan = MemoryMarshal.GetSpan(result);
 
             str0.CopyTo(resultSpan);
             resultSpan = resultSpan.Slice(str0.Length);
@@ -357,7 +357,7 @@ namespace System
             }
 
             string result = FastAllocateString(length);
-            Span<char> resultSpan = new Span<char>(ref result._firstChar, result.Length);
+            Span<char> resultSpan = MemoryMarshal.GetSpan(result);
 
             str0.CopyTo(resultSpan);
             resultSpan = resultSpan.Slice(str0.Length);
@@ -1417,7 +1417,7 @@ namespace System
                 ThrowHelper.ThrowOutOfMemoryException_StringTooLong();
             string dst = FastAllocateString((int)dstLength);
 
-            Span<char> dstSpan = new Span<char>(ref dst._firstChar, dst.Length);
+            Span<char> dstSpan = MemoryMarshal.GetSpan(dst);
 
             int thisIdx = 0;
             int dstIdx = 0;

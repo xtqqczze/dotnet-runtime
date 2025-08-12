@@ -1946,7 +1946,7 @@ namespace System
                     int length = GetMultipleEnumsFlagsFormatResultLength(resultLength, foundItemsCount);
 
                     result = string.FastAllocateString(length);
-                    WriteMultipleFoundFlagsNames(names, foundItems, new Span<char>(ref result.GetRawStringData(), result.Length));
+                    WriteMultipleFoundFlagsNames(names, foundItems, MemoryMarshal.GetSpan(result));
                 }
             }
 

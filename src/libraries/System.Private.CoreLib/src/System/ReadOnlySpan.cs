@@ -43,11 +43,10 @@ namespace System
             if (array == null)
             {
                 this = default;
-                return; // returns default
+                return;
             }
 
-            _reference = ref MemoryMarshal.GetArrayDataReference(array);
-            _length = array.Length;
+            this = MemoryMarshal.GetSpan(array);
         }
 
         /// <summary>
@@ -69,19 +68,10 @@ namespace System
                 if (start != 0 || length != 0)
                     ThrowHelper.ThrowArgumentOutOfRangeException();
                 this = default;
-                return; // returns default
+                return;
             }
-#if TARGET_64BIT
-            // See comment in Span<T>.Slice for how this works.
-            if ((ulong)(uint)start + (ulong)(uint)length > (ulong)(uint)array.Length)
-                ThrowHelper.ThrowArgumentOutOfRangeException();
-#else
-            if ((uint)start > (uint)array.Length || (uint)length > (uint)(array.Length - start))
-                ThrowHelper.ThrowArgumentOutOfRangeException();
-#endif
 
-            _reference = ref Unsafe.Add(ref MemoryMarshal.GetArrayDataReference(array), (nint)(uint)start /* force zero-extension */);
-            _length = length;
+            this = MemoryMarshal.GetSpan(array, start, length);
         }
 
         /// <summary>

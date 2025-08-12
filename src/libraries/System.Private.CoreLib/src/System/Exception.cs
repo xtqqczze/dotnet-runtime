@@ -6,6 +6,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
 using System.Text;
 
@@ -149,7 +150,7 @@ namespace System
 
             // Create the string
             string result = string.FastAllocateString(length);
-            Span<char> resultSpan = new Span<char>(ref result.GetRawStringData(), result.Length);
+            Span<char> resultSpan = MemoryMarshal.GetSpan(result);
 
             // Fill it in
             Write(className, ref resultSpan);

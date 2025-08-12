@@ -349,7 +349,7 @@ namespace System
             ArgumentNullException.ThrowIfNull(values);
             // this can't use AsSpan due to array covariance
             // forcing it like this is safe due to everything being in the array already
-            Shuffle(new Span<T>(ref MemoryMarshal.GetArrayDataReference(values), values.Length));
+            Shuffle(MemoryMarshal.GetSpan(values));
         }
 
         /// <summary>
@@ -399,7 +399,7 @@ namespace System
             }
 
             string destination = string.FastAllocateString(length);
-            GetItems(choices, new Span<char>(ref destination.GetRawStringData(), destination.Length));
+            GetItems(choices, MemoryMarshal.GetSpan(destination));
             return destination;
         }
 

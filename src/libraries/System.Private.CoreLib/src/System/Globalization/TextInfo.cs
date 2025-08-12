@@ -326,7 +326,7 @@ namespace System.Globalization
                         string result = string.FastAllocateString(source.Length); // changing case uses simple folding: doesn't change UTF-16 code unit count
 
                         // copy existing known-good data into the result
-                        Span<char> resultSpan = new Span<char>(ref result.GetRawStringData(), result.Length);
+                        Span<char> resultSpan = MemoryMarshal.GetSpan(result);
                         source.AsSpan(0, (int)currIdx).CopyTo(resultSpan);
 
                         // and re-run the fast span-based logic over the remainder of the data
@@ -345,7 +345,7 @@ namespace System.Globalization
                     if (currIdx > 0)
                     {
                         // copy existing known-good data into the result
-                        Span<char> resultSpan = new Span<char>(ref result.GetRawStringData(), result.Length);
+                        Span<char> resultSpan = MemoryMarshal.GetSpan(result);
                         source.AsSpan(0, (int)currIdx).CopyTo(resultSpan);
                     }
 

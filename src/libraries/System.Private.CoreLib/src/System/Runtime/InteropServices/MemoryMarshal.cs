@@ -614,5 +614,65 @@ namespace System.Runtime.InteropServices
             // Before using _index, check if _index < 0, then 'and' it with RemoveFlagsBitMask
             return new Memory<T>((object)array, start | (1 << 31), length);
         }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static Span<T> GetSpan<T>(T[] array)
+        {
+            return new Span<T>(ref GetArrayDataReference(array), array.Length);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static Span<T> GetSpan<T>(T[] array, int start)
+        {
+            if ((uint)start > (uint)array.Length)
+                ThrowHelper.ThrowArgumentOutOfRangeException();
+
+            return new Span<T>(ref Unsafe.Add(ref GetArrayDataReference(array), (nint)(uint)start), array.Length - start);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static Span<T> GetSpan<T>(T[] array, int start, int length)
+        {
+#if TARGET_64BIT
+            // See comment in Span<T>.Slice for how this works.
+            if ((ulong)(uint)start + (ulong)(uint)length > (ulong)(uint)array.Length)
+                ThrowHelper.ThrowArgumentOutOfRangeException();
+#else
+            if ((uint)start > (uint)array.Length || (uint)length > (uint)(array.Length - start))
+                ThrowHelper.ThrowArgumentOutOfRangeException();
+#endif
+
+            return new Span<T>(ref Unsafe.Add(ref GetArrayDataReference(array), (nint)(uint)start), length);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static Span<char> GetSpan(string text)
+        {
+            return new Span<char>(ref text.GetRawStringData(), text.Length);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static Span<char> GetSpan(string text, int start)
+        {
+            if ((uint)start > (uint)text.Length)
+                ThrowHelper.ThrowArgumentOutOfRangeException();
+
+            return new Span<char>(ref Unsafe.Add(ref text.GetRawStringData(), (nint)(uint)start), text.Length - start);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static Span<char> GetSpan(string text, int start, int length)
+        {
+#if TARGET_64BIT
+            // See comment in Span<T>.Slice for how this works.
+            if ((ulong)(uint)start + (ulong)(uint)length > (ulong)(uint)text.Length)
+                ThrowHelper.ThrowArgumentOutOfRangeException();
+#else
+            if ((uint)start > (uint)text.Length || (uint)length > (uint)(text.Length - start))
+                ThrowHelper.ThrowArgumentOutOfRangeException();
+#endif
+
+            return new Span<char>(ref Unsafe.Add(ref text.GetRawStringData(), (nint)(uint)start), length);
+        }
     }
 }

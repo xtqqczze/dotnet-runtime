@@ -1336,7 +1336,7 @@ namespace System
                         return (result >= 0) ? (index + result) : ~(index + ~result);
 
                         static int GenericBinarySearch<T>(Array array, int adjustedIndex, int length, object value) where T : struct, IComparable<T>
-                            => UnsafeArrayAsSpan<T>(array, adjustedIndex, length).BinarySearch(Unsafe.As<byte, T>(ref value.GetRawData()));
+                            => MemoryMarshal.GetSpan(Unsafe.As<T[]>(array), adjustedIndex, length).BinarySearch(Unsafe.As<byte, T>(ref value.GetRawData()));
                     }
                 }
             }
@@ -1509,8 +1509,7 @@ namespace System
             }
             else
             {
-                ref T first = ref Unsafe.Add(ref MemoryMarshal.GetArrayDataReference(array), (nint)(uint)startIndex);
-                new Span<T>(ref first, count).Fill(value);
+                MemoryMarshal.GetSpan(array, startIndex, count).Fill(value);
             }
         }
 
@@ -1832,7 +1831,7 @@ namespace System
                     return (result >= 0 ? startIndex : lb) + result;
 
                     static int GenericIndexOf<T>(Array array, object value, int adjustedIndex, int length) where T : struct, IEquatable<T>
-                        => UnsafeArrayAsSpan<T>(array, adjustedIndex, length).IndexOf(Unsafe.As<byte, T>(ref value.GetRawData()));
+                        => MemoryMarshal.GetSpan(Unsafe.As<T[]>(array), adjustedIndex, length).IndexOf(Unsafe.As<byte, T>(ref value.GetRawData()));
                 }
             }
 
@@ -2059,7 +2058,7 @@ namespace System
                     return (result >= 0 ? endIndex : lb) + result;
 
                     static int GenericLastIndexOf<T>(Array array, object value, int adjustedIndex, int length) where T : struct, IEquatable<T>
-                        => UnsafeArrayAsSpan<T>(array, adjustedIndex, length).LastIndexOf(Unsafe.As<byte, T>(ref value.GetRawData()));
+                        => MemoryMarshal.GetSpan(Unsafe.As<T[]>(array), adjustedIndex, length).LastIndexOf(Unsafe.As<byte, T>(ref value.GetRawData()));
                 }
             }
 
@@ -2231,22 +2230,22 @@ namespace System
                 case CorElementType.ELEMENT_TYPE_I1:
                 case CorElementType.ELEMENT_TYPE_U1:
                 case CorElementType.ELEMENT_TYPE_BOOLEAN:
-                    UnsafeArrayAsSpan<byte>(array, adjustedIndex, length).Reverse();
+                    GenericReverse<byte>(array, adjustedIndex, length);
                     return;
                 case CorElementType.ELEMENT_TYPE_I2:
                 case CorElementType.ELEMENT_TYPE_U2:
                 case CorElementType.ELEMENT_TYPE_CHAR:
-                    UnsafeArrayAsSpan<short>(array, adjustedIndex, length).Reverse();
+                    GenericReverse<short>(array, adjustedIndex, length);
                     return;
                 case CorElementType.ELEMENT_TYPE_I4:
                 case CorElementType.ELEMENT_TYPE_U4:
                 case CorElementType.ELEMENT_TYPE_R4:
-                    UnsafeArrayAsSpan<int>(array, adjustedIndex, length).Reverse();
+                    GenericReverse<int>(array, adjustedIndex, length);
                     return;
                 case CorElementType.ELEMENT_TYPE_I8:
                 case CorElementType.ELEMENT_TYPE_U8:
                 case CorElementType.ELEMENT_TYPE_R8:
-                    UnsafeArrayAsSpan<long>(array, adjustedIndex, length).Reverse();
+                    GenericReverse<long>(array, adjustedIndex, length);
                     return;
                 case CorElementType.ELEMENT_TYPE_I:
                 case CorElementType.ELEMENT_TYPE_U:
@@ -2256,7 +2255,7 @@ namespace System
                 case CorElementType.ELEMENT_TYPE_OBJECT:
                 case CorElementType.ELEMENT_TYPE_ARRAY:
                 case CorElementType.ELEMENT_TYPE_SZARRAY:
-                    UnsafeArrayAsSpan<object>(array, adjustedIndex, length).Reverse();
+                    GenericReverse<object>(array, adjustedIndex, length);
                     return;
             }
 
@@ -2270,6 +2269,9 @@ namespace System
                 i++;
                 j--;
             }
+
+            static void GenericReverse<T>(Array array, int adjustedIndex, int length)
+                => MemoryMarshal.GetSpan(Unsafe.As<T[]>(array), adjustedIndex, length).Reverse();
         }
 
         public static void Reverse<T>(T[] array)
@@ -2472,10 +2474,10 @@ namespace System
 
                     static void GenericSort<T>(Array keys, Array? items, int adjustedIndex, int length) where T : struct
                     {
-                        Span<T> keysSpan = UnsafeArrayAsSpan<T>(keys, adjustedIndex, length);
+                        Span<T> keysSpan = MemoryMarshal.GetSpan(Unsafe.As<T[]>(keys), adjustedIndex, length);
                         if (items != null)
                         {
-                            keysSpan.Sort<T, T>(UnsafeArrayAsSpan<T>(items, adjustedIndex, length));
+                            keysSpan.Sort<T, T>(MemoryMarshal.GetSpan(Unsafe.As<T[]>(items), adjustedIndex, length));
                         }
                         else
                         {
@@ -2495,8 +2497,9 @@ namespace System
 
             if (array.Length > 1)
             {
-                var span = new Span<T>(ref MemoryMarshal.GetArrayDataReference(array), array.Length);
-                ArraySortHelper<T>.Default.Sort(span, null);
+                ArraySortHelper<T>.Default.Sort(
+                    MemoryMarshal.GetSpan(array),
+                    null);
             }
         }
 
@@ -2544,8 +2547,9 @@ namespace System
 
             if (length > 1)
             {
-                var span = new Span<T>(ref Unsafe.Add(ref MemoryMarshal.GetArrayDataReference(array), index), length);
-                ArraySortHelper<T>.Default.Sort(span, comparer);
+                ArraySortHelper<T>.Default.Sort(
+                    MemoryMarshal.GetSpan(array, index, length),
+                    comparer);
             }
         }
 
@@ -2568,9 +2572,10 @@ namespace System
                     return;
                 }
 
-                var spanKeys = new Span<TKey>(ref Unsafe.Add(ref MemoryMarshal.GetArrayDataReference(keys), index), length);
-                var spanItems = new Span<TValue>(ref Unsafe.Add(ref MemoryMarshal.GetArrayDataReference(items), index), length);
-                ArraySortHelper<TKey, TValue>.Default.Sort(spanKeys, spanItems, comparer);
+                ArraySortHelper<TKey, TValue>.Default.Sort(
+                    MemoryMarshal.GetSpan(keys, index, length),
+                    MemoryMarshal.GetSpan(items, index, length),
+                    comparer);
             }
         }
 
@@ -2586,8 +2591,9 @@ namespace System
                 ThrowHelper.ThrowArgumentNullException(ExceptionArgument.comparison);
             }
 
-            var span = new Span<T>(ref MemoryMarshal.GetArrayDataReference(array), array.Length);
-            ArraySortHelper<T>.Sort(span, comparison);
+            ArraySortHelper<T>.Sort(
+                MemoryMarshal.GetSpan(array),
+                comparison);
         }
 
         public static bool TrueForAll<T>(T[] array, Predicate<T> match)
@@ -3055,9 +3061,6 @@ namespace System
                 }
             }
         }
-
-        private static Span<T> UnsafeArrayAsSpan<T>(Array array, int adjustedIndex, int length) =>
-            new Span<T>(ref Unsafe.As<byte, T>(ref MemoryMarshal.GetArrayDataReference(array)), array.Length).Slice(adjustedIndex, length);
 
         public IEnumerator GetEnumerator()
         {

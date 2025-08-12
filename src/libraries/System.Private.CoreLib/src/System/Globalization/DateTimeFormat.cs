@@ -930,14 +930,14 @@ namespace System
                     if (IsTimeOnlySpecialCase(dateTime, dtfi))
                     {
                         string str = string.FastAllocateString(FormatSLength);
-                        TryFormatS(dateTime, new Span<char>(ref str.GetRawStringData(), str.Length), out int charsWritten);
+                        TryFormatS(dateTime, MemoryMarshal.GetSpan(str), out int charsWritten);
                         Debug.Assert(charsWritten == FormatSLength);
                         return str;
                     }
                     else if (ReferenceEquals(dtfi, DateTimeFormatInfo.InvariantInfo))
                     {
                         string str = string.FastAllocateString(FormatInvariantGMinLength);
-                        TryFormatInvariantG(dateTime, offset, new Span<char>(ref str.GetRawStringData(), str.Length), out int charsWritten);
+                        TryFormatInvariantG(dateTime, offset, MemoryMarshal.GetSpan(str), out int charsWritten);
                         Debug.Assert(charsWritten == FormatInvariantGMinLength);
                         return str;
                     }
@@ -956,7 +956,7 @@ namespace System
                     else if (ReferenceEquals(dtfi, DateTimeFormatInfo.InvariantInfo))
                     {
                         string str = string.FastAllocateString(FormatInvariantGMaxLength);
-                        TryFormatInvariantG(dateTime, offset, new Span<char>(ref str.GetRawStringData(), str.Length), out int charsWritten);
+                        TryFormatInvariantG(dateTime, offset, MemoryMarshal.GetSpan(str), out int charsWritten);
                         Debug.Assert(charsWritten == FormatInvariantGMaxLength);
                         return str;
                     }
@@ -982,21 +982,21 @@ namespace System
                     // RFC1123 format
                     case 'r' or 'R':
                         str = string.FastAllocateString(FormatRLength);
-                        TryFormatR(dateTime, offset, new Span<char>(ref str.GetRawStringData(), str.Length), out charsWritten);
+                        TryFormatR(dateTime, offset, MemoryMarshal.GetSpan(str), out charsWritten);
                         Debug.Assert(charsWritten == str.Length);
                         return str;
 
                     // Sortable format
                     case 's':
                         str = string.FastAllocateString(FormatSLength);
-                        TryFormatS(dateTime, new Span<char>(ref str.GetRawStringData(), str.Length), out charsWritten);
+                        TryFormatS(dateTime, MemoryMarshal.GetSpan(str), out charsWritten);
                         Debug.Assert(charsWritten == str.Length);
                         return str;
 
                     // Universal time in sortable format
                     case 'u':
                         str = string.FastAllocateString(FormatuLength);
-                        TryFormatu(dateTime, offset, new Span<char>(ref str.GetRawStringData(), str.Length), out charsWritten);
+                        TryFormatu(dateTime, offset, MemoryMarshal.GetSpan(str), out charsWritten);
                         Debug.Assert(charsWritten == str.Length);
                         return str;
 

@@ -369,7 +369,7 @@ namespace System.Text
 
             AssertInvariants();
             string result = string.FastAllocateString(length);
-            CopyTo(startIndex, new Span<char>(ref result.GetRawStringData(), result.Length), result.Length);
+            CopyTo(startIndex, MemoryMarshal.GetSpan(result), result.Length);
             return result;
         }
 

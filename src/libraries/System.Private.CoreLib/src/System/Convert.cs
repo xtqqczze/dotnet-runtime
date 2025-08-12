@@ -2359,7 +2359,7 @@ namespace System
 
             if (Vector128.IsHardwareAccelerated && !insertLineBreaks && bytes.Length >= Base64VectorizationLengthThreshold)
             {
-                ToBase64CharsLargeNoLineBreaks(bytes, new Span<char>(ref result.GetRawStringData(), result.Length), result.Length);
+                ToBase64CharsLargeNoLineBreaks(bytes, MemoryMarshal.GetSpan(result), result.Length);
             }
             else
             {

@@ -54,7 +54,7 @@ namespace System.Globalization
             }
 
             string result = string.FastAllocateString(s.Length);
-            var destination = new Span<char>(ref result.GetRawStringData(), result.Length);
+            Span<char> destination = MemoryMarshal.GetSpan(result);
             ReadOnlySpan<char> src = s;
             src.Slice(0, i).CopyTo(destination);
             ToLower(src.Slice(i), destination.Slice(i));
@@ -100,7 +100,7 @@ namespace System.Globalization
             }
 
             string result = string.FastAllocateString(s.Length);
-            var destination = new Span<char>(ref result.GetRawStringData(), result.Length);
+            Span<char> destination = MemoryMarshal.GetSpan(result);
             ReadOnlySpan<char> src = s;
             src.Slice(0, i).CopyTo(destination);
             ToUpper(src.Slice(i), destination.Slice(i));

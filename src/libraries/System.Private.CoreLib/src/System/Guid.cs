@@ -1235,7 +1235,7 @@ namespace System
 
             string guidString = string.FastAllocateString(guidSize);
 
-            bool result = TryFormatCore(new Span<char>(ref guidString.GetRawStringData(), guidString.Length), out int bytesWritten, format);
+            bool result = TryFormatCore(MemoryMarshal.GetSpan(guidString), out int bytesWritten, format);
             Debug.Assert(result && bytesWritten == guidString.Length, "Formatting guid should have succeeded.");
 
             return guidString;

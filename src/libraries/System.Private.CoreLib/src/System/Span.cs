@@ -48,8 +48,7 @@ namespace System
             if (!typeof(T).IsValueType && array.GetType() != typeof(T[]))
                 ThrowHelper.ThrowArrayTypeMismatchException();
 
-            _reference = ref MemoryMarshal.GetArrayDataReference(array);
-            _length = array.Length;
+            this = MemoryMarshal.GetSpan(array);
         }
 
         /// <summary>
@@ -76,17 +75,8 @@ namespace System
             }
             if (!typeof(T).IsValueType && array.GetType() != typeof(T[]))
                 ThrowHelper.ThrowArrayTypeMismatchException();
-#if TARGET_64BIT
-            // See comment in Span<T>.Slice for how this works.
-            if ((ulong)(uint)start + (ulong)(uint)length > (ulong)(uint)array.Length)
-                ThrowHelper.ThrowArgumentOutOfRangeException();
-#else
-            if ((uint)start > (uint)array.Length || (uint)length > (uint)(array.Length - start))
-                ThrowHelper.ThrowArgumentOutOfRangeException();
-#endif
 
-            _reference = ref Unsafe.Add(ref MemoryMarshal.GetArrayDataReference(array), (nint)(uint)start /* force zero-extension */);
-            _length = length;
+            this = MemoryMarshal.GetSpan(array, start, length);
         }
 
         /// <summary>

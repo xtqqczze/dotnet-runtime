@@ -813,7 +813,7 @@ namespace System
 
             string result = string.FastAllocateString(length * 3 - 1);
 
-            var dst = new Span<char>(ref result.GetRawStringData(), result.Length);
+            var dst = MemoryMarshal.GetSpan(result);
             var src = new ReadOnlySpan<byte>(value, startIndex, length);
             int i = 0;
             int j = 0;

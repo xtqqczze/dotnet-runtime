@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
+using System.Runtime.InteropServices;
 using System.Runtime.Intrinsics;
 using System.Runtime.Intrinsics.Arm;
 using System.Runtime.Intrinsics.X86;
@@ -87,7 +88,7 @@ namespace System.Buffers
                 if (ignoreCase && value.AsSpan().ContainsAnyExcept(s_allAsciiExceptLowercase))
                 {
                     string upperCase = string.FastAllocateString(value.Length);
-                    int charsWritten = Ordinal.ToUpperOrdinal(value, new Span<char>(ref upperCase.GetRawStringData(), upperCase.Length));
+                    int charsWritten = Ordinal.ToUpperOrdinal(value, MemoryMarshal.GetSpan(upperCase));
                     Debug.Assert(charsWritten == upperCase.Length);
                     value = upperCase;
                 }
