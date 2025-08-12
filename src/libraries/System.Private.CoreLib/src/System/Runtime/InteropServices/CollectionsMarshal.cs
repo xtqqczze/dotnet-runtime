@@ -36,7 +36,7 @@ namespace System.Runtime.InteropServices
                 }
 
                 Debug.Assert(typeof(T[]) == list._items.GetType(), "Implementation depends on List<T> always using a T[] and not U[] where U : T.");
-                span = MemoryMarshal.GetSpan(items, size);
+                span = MemoryMarshal.GetSpan(items, 0, size);
             }
 
             return span;
