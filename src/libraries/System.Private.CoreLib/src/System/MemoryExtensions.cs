@@ -198,16 +198,10 @@ namespace System
                 return default;
             }
 
-#if TARGET_64BIT
-            // See comment in Span<T>.Slice for how this works.
-            if ((ulong)(uint)start + (ulong)(uint)length > (ulong)(uint)text.Length)
+            if (!text.AsSpan().TrySlice(start, length, out ReadOnlySpan<char> span))
                 ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.start);
-#else
-            if ((uint)start > (uint)text.Length || (uint)length > (uint)(text.Length - start))
-                ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.start);
-#endif
 
-            return new ReadOnlySpan<char>(ref Unsafe.Add(ref text.GetRawStringData(), (nint)(uint)start /* force zero-extension */), length);
+            return span;
         }
 
         /// <summary>Creates a new <see cref="ReadOnlyMemory{T}"/> over the portion of the target string.</summary>
@@ -280,14 +274,8 @@ namespace System
                 return default;
             }
 
-#if TARGET_64BIT
-            // See comment in Span<T>.Slice for how this works.
-            if ((ulong)(uint)start + (ulong)(uint)length > (ulong)(uint)text.Length)
+            if (!text.AsSpan().TrySlice(start, length, out _))
                 ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.start);
-#else
-            if ((uint)start > (uint)text.Length || (uint)length > (uint)(text.Length - start))
-                ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.start);
-#endif
 
             return new ReadOnlyMemory<char>(text, start, length);
         }

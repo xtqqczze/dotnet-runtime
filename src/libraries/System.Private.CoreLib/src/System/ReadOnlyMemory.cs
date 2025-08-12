@@ -71,14 +71,8 @@ namespace System
                 this = default;
                 return; // returns default
             }
-#if TARGET_64BIT
-            // See comment in Span<T>.Slice for how this works.
-            if ((ulong)(uint)start + (ulong)(uint)length > (ulong)(uint)array.Length)
+            if (!array.AsSpan().TrySlice(start, length, out _))
                 ThrowHelper.ThrowArgumentOutOfRangeException();
-#else
-            if ((uint)start > (uint)array.Length || (uint)length > (uint)(array.Length - start))
-                ThrowHelper.ThrowArgumentOutOfRangeException();
-#endif
 
             _object = array;
             _index = start;

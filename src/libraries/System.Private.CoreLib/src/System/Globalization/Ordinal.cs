@@ -306,7 +306,7 @@ namespace System.Globalization
                 ThrowHelper.ThrowArgumentNullException(ExceptionArgument.value);
             }
 
-            if (!source.TryGetSpan(startIndex, count, out ReadOnlySpan<char> sourceSpan))
+            if (!source.AsSpan().TrySlice(startIndex, count, out ReadOnlySpan<char> sourceSpan))
             {
                 // Bounds check failed - figure out exactly what went wrong so that we can
                 // surface the correct argument exception.
@@ -630,7 +630,7 @@ namespace System.Globalization
                 LastIndexOf(source, value, startIndex, count);
             }
 
-            if (!source.TryGetSpan(startIndex, count, out ReadOnlySpan<char> sourceSpan))
+            if (!source.AsSpan().TrySlice(startIndex, count, out ReadOnlySpan<char> sourceSpan))
             {
                 // Bounds check failed - figure out exactly what went wrong so that we can
                 // surface the correct argument exception.

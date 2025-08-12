@@ -326,7 +326,7 @@ namespace System.Globalization
                     goto BoundsCheckError;
                 }
             }
-            else if (!string1.TryGetSpan(offset1, length1, out span1))
+            else if (!string1.AsSpan().TrySlice(offset1, length1, out span1))
             {
                 goto BoundsCheckError;
             }
@@ -338,7 +338,7 @@ namespace System.Globalization
                     goto BoundsCheckError;
                 }
             }
-            else if (!string2.TryGetSpan(offset2, length2, out span2))
+            else if (!string2.AsSpan().TrySlice(offset2, length2, out span2))
             {
                 goto BoundsCheckError;
             }
@@ -870,7 +870,7 @@ namespace System.Globalization
                 ThrowHelper.ThrowArgumentNullException(ExceptionArgument.source);
             }
 
-            if (!source.TryGetSpan(startIndex, count, out ReadOnlySpan<char> sourceSpan))
+            if (!source.AsSpan().TrySlice(startIndex, count, out ReadOnlySpan<char> sourceSpan))
             {
                 // Bounds check failed - figure out exactly what went wrong so that we can
                 // surface the correct argument exception.
@@ -904,7 +904,7 @@ namespace System.Globalization
                 ThrowHelper.ThrowArgumentNullException(ExceptionArgument.value);
             }
 
-            if (!source.TryGetSpan(startIndex, count, out ReadOnlySpan<char> sourceSpan))
+            if (!source.AsSpan().TrySlice(startIndex, count, out ReadOnlySpan<char> sourceSpan))
             {
                 // Bounds check failed - figure out exactly what went wrong so that we can
                 // surface the correct argument exception.
@@ -1228,7 +1228,7 @@ namespace System.Globalization
 
             startIndex = startIndex - count + 1; // this will be the actual index where we begin our search
 
-            if (!source.TryGetSpan(startIndex, count, out ReadOnlySpan<char> sourceSpan))
+            if (!source.AsSpan().TrySlice(startIndex, count, out ReadOnlySpan<char> sourceSpan))
             {
                 ThrowHelper.ThrowCountArgumentOutOfRange_ArgumentOutOfRange_Count();
             }
@@ -1288,7 +1288,7 @@ namespace System.Globalization
 
             startIndex = startIndex - count + 1; // this will be the actual index where we begin our search
 
-            if (!source.TryGetSpan(startIndex, count, out ReadOnlySpan<char> sourceSpan))
+            if (!source.AsSpan().TrySlice(startIndex, count, out ReadOnlySpan<char> sourceSpan))
             {
                 ThrowHelper.ThrowCountArgumentOutOfRange_ArgumentOutOfRange_Count();
             }
