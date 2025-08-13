@@ -204,9 +204,7 @@ namespace System
             // `new Random()`. If it was created with a seed, changing which members we call and how many
             // times may result in a visible difference in the sequence of output items. Similarly if it's
             // a derived instance, which overrides get called and when is observable.
-            ImplBase impl = _impl;
-            if ((impl is null || impl.GetType() == typeof(XoshiroImpl)) &&
-                choices.Length <= 256)
+            if ((_impl is null or XoshiroImpl) && choices.Length <= 256)
             {
                 // Get stack space to store random bytes. This size was chosen to balance between
                 // stack consumed and number of random calls required.

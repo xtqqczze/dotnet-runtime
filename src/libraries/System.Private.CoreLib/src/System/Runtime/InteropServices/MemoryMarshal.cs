@@ -274,9 +274,7 @@ namespace System.Runtime.InteropServices
             // As an optimization, we skip the "is string?" check below if typeof(T) is not char,
             // as Memory<T> / ROM<T> can't possibly contain a string instance in this case.
 
-            if (obj != null && !(
-                (typeof(T) == typeof(char) && obj.GetType() == typeof(string))
-                ))
+            if (obj is not null && !(typeof(T) == typeof(char) && obj is string))
             {
                 if (RuntimeHelpers.ObjectHasComponentSize(obj))
                 {
@@ -286,6 +284,9 @@ namespace System.Runtime.InteropServices
 
                     // The array may be prepinned, so remove the high bit from the start index in the line below.
                     // The ArraySegment<T> ctor will perform bounds checking on index & length.
+
+                    // 'tmpObject is T[]' below also handles things like int[] <-> uint[] being convertible
+                    Debug.Assert(obj is T[]);
 
                     segment = new ArraySegment<T>(Unsafe.As<T[]>(obj), index & ReadOnlyMemory<T>.RemoveFlagsBitMask, length);
                     return true;

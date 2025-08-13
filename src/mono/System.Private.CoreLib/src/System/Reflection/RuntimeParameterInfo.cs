@@ -205,7 +205,7 @@ namespace System.Reflection
         {
             // Prioritize metadata constant over custom attribute constant
             object? defaultValue = DefaultValueImpl;
-            if (defaultValue != null && (defaultValue.GetType() == typeof(DBNull) || defaultValue.GetType() == typeof(Missing)))
+            if (defaultValue is not null && (defaultValue is DBNull || defaultValue is Missing))
             {
                 // If default value is not specified in metadata, look for it in custom attributes
                 // The resolution of default value is done by following these rules:
@@ -383,10 +383,10 @@ namespace System.Reflection
             get
             {
                 object? defaultValue = DefaultValue;
-                if (defaultValue == null)
+                if (defaultValue is null)
                     return true;
 
-                if (defaultValue.GetType() == typeof(DBNull) || defaultValue.GetType() == typeof(Missing))
+                if (defaultValue is DBNull || defaultValue is Missing)
                     return false;
 
                 return true;

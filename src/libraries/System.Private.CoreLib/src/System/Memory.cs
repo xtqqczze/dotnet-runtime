@@ -280,12 +280,12 @@ namespace System
                 object? tmpObject = _object;
                 if (tmpObject != null)
                 {
-                    if (typeof(T) == typeof(char) && tmpObject.GetType() == typeof(string))
+                    if (typeof(T) == typeof(char) && tmpObject is string s)
                     {
                         // Special-case string since it's the most common for ROM<char>.
 
-                        refToReturn = ref Unsafe.As<char, T>(ref ((string)tmpObject).GetRawStringData());
-                        lengthOfUnderlyingSpan = Unsafe.As<string>(tmpObject).Length;
+                        refToReturn = ref Unsafe.As<char, T>(ref s.GetRawStringData());
+                        lengthOfUnderlyingSpan = s.Length;
                     }
                     else if (RuntimeHelpers.ObjectHasComponentSize(tmpObject))
                     {

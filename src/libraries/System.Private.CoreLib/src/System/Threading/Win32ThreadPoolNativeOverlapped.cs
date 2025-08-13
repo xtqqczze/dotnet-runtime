@@ -129,8 +129,9 @@ namespace System.Threading
             //
             if (pinData != null)
             {
-                if (pinData is object[] objArray && objArray.GetType() == typeof(object[]))
+                if (pinData.GetType() == typeof(object[]))
                 {
+                    object[] objArray = (object[])pinData;
                     if (data._pinnedData == null || data._pinnedData.Length < objArray.Length)
                         Array.Resize(ref data._pinnedData, objArray.Length);
 

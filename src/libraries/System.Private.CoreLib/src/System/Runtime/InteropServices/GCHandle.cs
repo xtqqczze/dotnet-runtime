@@ -133,9 +133,9 @@ namespace System.Runtime.InteropServices
                 // Unsafe.AsPointer calls are safe since object is pinned.
                 if (RuntimeHelpers.ObjectHasComponentSize(target))
                 {
-                    if (target.GetType() == typeof(string))
+                    if (target is string s)
                     {
-                        return (IntPtr)Unsafe.AsPointer(ref Unsafe.As<string>(target).GetRawStringData());
+                        return (IntPtr)Unsafe.AsPointer(ref s.GetRawStringData());
                     }
 
                     Debug.Assert(target is Array);
