@@ -4936,17 +4936,22 @@ namespace System.Threading.Tasks
                 ThrowHelper.ThrowArgumentNullException(ExceptionArgument.tasks);
             }
 
-            ReadOnlySpan<Task> span;
+            List<Task> list;
             if (tasks.GetType() == typeof(List<Task>)) // avoid accidentally bypassing a derived type's reimplementation of IEnumerable<T>
             {
-                span = CollectionsMarshal.AsSpan((List<Task>)tasks);
+                list = (List<Task>)tasks;
+            }
+            else if (tasks is Task[] array)
+            {
+                WaitAllCore(array, Timeout.Infinite, cancellationToken);
+                return;
             }
             else
             {
-                span = tasks is Task[] array ? array : CollectionsMarshal.AsSpan(new List<Task>(tasks));
+                list = new List<Task>(tasks);
             }
 
-            WaitAllCore(span, Timeout.Infinite, cancellationToken);
+            WaitAllCore(CollectionsMarshal.AsSpan(list), Timeout.Infinite, cancellationToken);
         }
 
         // Separated out to allow it to be optimized (caller is marked NoOptimization for VS parallel debugger
@@ -5938,36 +5943,36 @@ namespace System.Threading.Tasks
                 ThrowHelper.ThrowArgumentNullException(ExceptionArgument.tasks);
             }
 
+            ReadOnlySpan<Task> span;
             if (tasks.GetType() == typeof(List<Task>)) // avoid accidentally bypassing a derived type's reimplementation of IEnumerable<T>
             {
-                return WhenAll(CollectionsMarshal.AsSpan((List<Task>)tasks));
+                span = CollectionsMarshal.AsSpan((List<Task>)tasks);
             }
-
-            int capacity = 0;
-            if (tasks is ICollection<Task> taskCollection)
+            else if (tasks is Task[] taskArray)
             {
-                if (tasks is Task[] taskArray)
+                span = (ReadOnlySpan<Task>)taskArray;
+            }
+            else
+            {
+                int capacity = (tasks as ICollection<Task>)?.Count ?? 0;
+
+                // Buffer the tasks into a temporary span. Small sets of tasks are common,
+                // so for <= 8 we stack allocate.
+                ValueListBuilder<Task> builder = capacity is > 8 ?
+                    new ValueListBuilder<Task>(capacity) :
+                    new ValueListBuilder<Task>([null, null, null, null, null, null, null, null]);
+                foreach (Task task in tasks)
                 {
-                    return WhenAll((ReadOnlySpan<Task>)taskArray);
+                    builder.Append(task);
                 }
 
-                capacity = taskCollection.Count;
+                Task t = WhenAll(builder.AsSpan());
+
+                builder.Dispose();
+                return t;
             }
 
-            // Buffer the tasks into a temporary span. Small sets of tasks are common,
-            // so for <= 8 we stack allocate.
-            ValueListBuilder<Task> builder = capacity is > 8 ?
-                new ValueListBuilder<Task>(capacity) :
-                new ValueListBuilder<Task>([null, null, null, null, null, null, null, null]);
-            foreach (Task task in tasks)
-            {
-                builder.Append(task);
-            }
-
-            Task t = WhenAll(builder.AsSpan());
-
-            builder.Dispose();
-            return t;
+            return WhenAll(span);
         }
 
         /// <summary>
@@ -6746,6 +6751,7 @@ namespace System.Threading.Tasks
                 {
                     return WhenAnyCore((ReadOnlySpan<TTask>)CollectionsMarshal.AsSpan(Unsafe.As<List<TTask>>(tasks)));
                 }
+
                 if (tasks is TTask[] tasksAsArray)
                 {
                     return WhenAnyCore((ReadOnlySpan<TTask>)tasksAsArray);
