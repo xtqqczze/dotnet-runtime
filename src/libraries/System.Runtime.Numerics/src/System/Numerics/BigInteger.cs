@@ -3942,32 +3942,7 @@ namespace System.Numerics
         /// <inheritdoc cref="INumber{TSelf}.Clamp(TSelf, TSelf, TSelf)" />
         public static BigInteger Clamp(BigInteger value, BigInteger min, BigInteger max)
         {
-            value.AssertValid();
-
-            min.AssertValid();
-            max.AssertValid();
-
-            if (min > max)
-            {
-                ThrowMinMaxException(min, max);
-            }
-
-            if (value < min)
-            {
-                return min;
-            }
-            else if (value > max)
-            {
-                return max;
-            }
-
-            return value;
-
-            [DoesNotReturn]
-            static void ThrowMinMaxException<T>(T min, T max)
-            {
-                throw new ArgumentException(SR.Format(SR.Argument_MinMaxValue, min, max));
-            }
+            return Min(Max(value, min), max);
         }
 
         /// <inheritdoc cref="INumber{TSelf}.CopySign(TSelf, TSelf)" />
