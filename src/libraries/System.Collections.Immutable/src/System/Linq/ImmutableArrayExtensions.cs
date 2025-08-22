@@ -187,12 +187,42 @@ namespace System.Linq
         /// <typeparam name="TBase">The type of element contained by the collection.</typeparam>
         public static bool SequenceEqual<TDerived, TBase>(this ImmutableArray<TBase> immutableArray, IEnumerable<TDerived> items, IEqualityComparer<TBase>? comparer = null) where TDerived : TBase
         {
+            immutableArray.ThrowNullRefIfNotInitialized();
             Requires.NotNull(items, nameof(items));
+
+            if (items is ICollection<TSource> itemsCol)
+            {
+                if (items.TryGetSpan(out ReadOnlySpan<TSource> itemsSpan))
+                {
+                    return immutableArray.array!.SequenceEqual(itemsSpan, comparer);
+                }
+
+                if (immutableArray.array!.Length != itemsCol.Count)
+                {
+                    return false;
+                }
+
+                if (itemsCol is IList<TSource> itemsList)
+                {
+                    comparer ??= EqualityComparer<TSource>.Default;
+
+                    int count = immutableArray.array!.Length;
+                    for (int i = 0; i < count; i++)
+                    {
+                        if (!comparer.Equals(immutableArray.array![i], itemsList[i]))
+                        {
+                            return false;
+                        }
+                    }
+
+                    return true;
+                }
+            }
 
             comparer ??= EqualityComparer<TBase>.Default;
 
             int i = 0;
-            int n = immutableArray.Length;
+            int n = immutableArray.array!.Length;
             foreach (TDerived item in items)
             {
                 if (i == n)
@@ -200,7 +230,7 @@ namespace System.Linq
                     return false;
                 }
 
-                if (!comparer.Equals(immutableArray[i], item))
+                if (!comparer.Equals(immutableArray.array![i], item))
                 {
                     return false;
                 }
