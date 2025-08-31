@@ -83,7 +83,7 @@ namespace System.Text
                 ThrowHelper.ThrowArgumentNullException(ExceptionArgument.chars, ExceptionResource.ArgumentNull_Array);
             }
 
-            if ((index | count) < 0)
+            if (index < 0 || count < 0)
             {
                 ThrowHelper.ThrowArgumentOutOfRangeException((index < 0) ? ExceptionArgument.index : ExceptionArgument.count, ExceptionResource.ArgumentOutOfRange_NeedNonNegNum);
             }
@@ -215,7 +215,7 @@ namespace System.Text
                     resource: ExceptionResource.ArgumentNull_Array);
             }
 
-            if ((charIndex | charCount) < 0)
+            if (charIndex < 0 || charCount < 0)
             {
                 ThrowHelper.ThrowArgumentOutOfRangeException(
                     argument: (charIndex < 0) ? ExceptionArgument.charIndex : ExceptionArgument.charCount,
@@ -263,7 +263,7 @@ namespace System.Text
                     resource: ExceptionResource.ArgumentNull_Array);
             }
 
-            if ((charIndex | charCount) < 0)
+            if (charIndex < 0 || charCount < 0)
             {
                 ThrowHelper.ThrowArgumentOutOfRangeException(
                     argument: (charIndex < 0) ? ExceptionArgument.charIndex : ExceptionArgument.charCount,
@@ -301,7 +301,7 @@ namespace System.Text
                     resource: ExceptionResource.ArgumentNull_Array);
             }
 
-            if ((charCount | byteCount) < 0)
+            if (charCount < 0 || byteCount < 0)
             {
                 ThrowHelper.ThrowArgumentOutOfRangeException(
                     argument: (charCount < 0) ? ExceptionArgument.charCount : ExceptionArgument.byteCount,
@@ -443,7 +443,7 @@ namespace System.Text
                 ThrowHelper.ThrowArgumentNullException(ExceptionArgument.bytes, ExceptionResource.ArgumentNull_Array);
             }
 
-            if ((index | count) < 0)
+            if (index < 0 || count < 0)
             {
                 ThrowHelper.ThrowArgumentOutOfRangeException((index < 0) ? ExceptionArgument.index : ExceptionArgument.count, ExceptionResource.ArgumentOutOfRange_NeedNonNegNum);
             }
@@ -554,7 +554,7 @@ namespace System.Text
                     resource: ExceptionResource.ArgumentNull_Array);
             }
 
-            if ((byteIndex | byteCount) < 0)
+            if (byteIndex < 0 || byteCount < 0)
             {
                 ThrowHelper.ThrowArgumentOutOfRangeException(
                     argument: (byteIndex < 0) ? ExceptionArgument.byteIndex : ExceptionArgument.byteCount,
@@ -592,7 +592,7 @@ namespace System.Text
                     resource: ExceptionResource.ArgumentNull_Array);
             }
 
-            if ((byteCount | charCount) < 0)
+            if (byteCount < 0 || charCount < 0)
             {
                 ThrowHelper.ThrowArgumentOutOfRangeException(
                     argument: (byteCount < 0) ? ExceptionArgument.byteCount : ExceptionArgument.charCount,
@@ -731,7 +731,7 @@ namespace System.Text
                 ThrowHelper.ThrowArgumentNullException(ExceptionArgument.bytes, ExceptionResource.ArgumentNull_Array);
             }
 
-            if ((byteIndex | byteCount) < 0)
+            if (byteIndex < 0 || byteCount < 0)
             {
                 ThrowHelper.ThrowArgumentOutOfRangeException(
                     argument: (byteIndex < 0) ? ExceptionArgument.byteIndex : ExceptionArgument.byteCount,

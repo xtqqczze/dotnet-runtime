@@ -865,7 +865,7 @@ namespace System.Xml
             int minute = ToInt32D2(chars, offset + 14);
             int second = ToInt32D2(chars, offset + 17);
 
-            if ((year | month | day | hour | minute | second) < 0)
+            if (year < 0 || month < 0 || day < 0 || hour < 0 || minute < 0 || second < 0)
                 return false;
 
             DateTimeKind kind = DateTimeKind.Unspecified;
@@ -913,7 +913,7 @@ namespace System.Xml
                     isLocal = true;
                     hourDelta = ToInt32D2(chars, offset);
                     minuteDelta = ToInt32D2(chars, offset + 3);
-                    if ((hourDelta | minuteDelta) < 0)
+                    if (hourDelta < 0 || minuteDelta < 0)
                         return false;
                     if (ch == '+')
                     {
