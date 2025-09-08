@@ -168,7 +168,7 @@ namespace System
         public bool IsEmpty
         {
             [NonVersionable]
-            get => _length == 0;
+            get => Length == 0;
         }
 
         /// <summary>
