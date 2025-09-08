@@ -1278,42 +1278,40 @@ namespace System
             if (firstIndex < 0)
                 return this;
 
-            nint remainingLength = Length - firstIndex;
+            nint copyLength = firstIndex;
+            nint remainingLength = Length - copyLength;
             string result = FastAllocateString(Length);
-
-            int copyLength = firstIndex;
 
             // Copy the characters already proven not to match.
             if (copyLength > 0)
             {
-                Buffer.Memmove(ref result._firstChar, ref _firstChar, (uint)copyLength);
+                Buffer.Memmove(ref result._firstChar, ref _firstChar, (nuint)copyLength);
             }
 
             // Copy the remaining characters, doing the replacement as we go.
-            ref ushort pSrc = ref Unsafe.Add(ref GetRawStringDataAsUInt16(), (uint)copyLength);
-            ref ushort pDst = ref Unsafe.Add(ref result.GetRawStringDataAsUInt16(), (uint)copyLength);
+            ref ushort pSrc = ref Unsafe.Add(ref GetRawStringDataAsUInt16(), copyLength);
+            ref ushort pDst = ref Unsafe.Add(ref result.GetRawStringDataAsUInt16(), copyLength);
 
             // If the string is long enough for vectorization to kick in, we'd like to
             // process the remaining elements vectorized too.
             // Thus we adjust the pointers so that at least one full vector from the end can be processed.
-            nint length = Length;
-            if (Vector512.IsHardwareAccelerated && length >= Vector512<ushort>.Count)
+            if (Vector512.IsHardwareAccelerated && Length >= Vector512<ushort>.Count)
             {
-                nint adjust = (length - remainingLength) & (Vector512<ushort>.Count - 1);
+                nint adjust = copyLength & (Vector512<ushort>.Count - 1);
                 pSrc = ref Unsafe.Subtract(ref pSrc, adjust);
                 pDst = ref Unsafe.Subtract(ref pDst, adjust);
                 remainingLength += adjust;
             }
-            else if (Vector256.IsHardwareAccelerated && length >= Vector256<ushort>.Count)
+            else if (Vector256.IsHardwareAccelerated && Length >= Vector256<ushort>.Count)
             {
-                nint adjust = (length - remainingLength) & (Vector256<ushort>.Count - 1);
+                nint adjust = copyLength & (Vector256<ushort>.Count - 1);
                 pSrc = ref Unsafe.Subtract(ref pSrc, adjust);
                 pDst = ref Unsafe.Subtract(ref pDst, adjust);
                 remainingLength += adjust;
             }
-            else if (Vector128.IsHardwareAccelerated && length >= Vector128<ushort>.Count)
+            else if (Vector128.IsHardwareAccelerated && Length >= Vector128<ushort>.Count)
             {
-                nint adjust = (length - remainingLength) & (Vector128<ushort>.Count - 1);
+                nint adjust = copyLength & (Vector128<ushort>.Count - 1);
                 pSrc = ref Unsafe.Subtract(ref pSrc, adjust);
                 pDst = ref Unsafe.Subtract(ref pDst, adjust);
                 remainingLength += adjust;
