@@ -3057,59 +3057,59 @@ namespace System
             return -1;
         }
 
-        public static void Replace<T>(ref T src, ref T dst, T oldValue, T newValue, nuint length) where T : IEquatable<T>?
+        public static void Replace<T>(ref T src, ref T dst, T oldValue, T newValue, nint length) where T : IEquatable<T>?
         {
             if (default(T) is not null || oldValue is not null)
             {
                 Debug.Assert(oldValue is not null);
 
-                for (nuint idx = 0; idx < length; ++idx)
+                for (nint i = 0; i < length; i++)
                 {
-                    T original = Unsafe.Add(ref src, idx);
-                    Unsafe.Add(ref dst, idx) = oldValue.Equals(original) ? newValue : original;
+                    T original = Unsafe.Add(ref src, i);
+                    Unsafe.Add(ref dst, i) = oldValue.Equals(original) ? newValue : original;
                 }
             }
             else
             {
-                for (nuint idx = 0; idx < length; ++idx)
+                for (nint i = 0; i < length; i++)
                 {
-                    T original = Unsafe.Add(ref src, idx);
-                    Unsafe.Add(ref dst, idx) = original is null ? newValue : original;
+                    T original = Unsafe.Add(ref src, i);
+                    Unsafe.Add(ref dst, i) = original is null ? newValue : original;
                 }
             }
         }
 
-        public static void ReplaceValueType<T>(ref T src, ref T dst, T oldValue, T newValue, nuint length) where T : struct
+        public static void ReplaceValueType<T>(ref T src, ref T dst, T oldValue, T newValue, nint length) where T : struct
         {
-            if (!Vector128.IsHardwareAccelerated || length < (uint)Vector128<T>.Count)
+            if (!Vector128.IsHardwareAccelerated || length < Vector128<T>.Count)
             {
-                for (nuint idx = 0; idx < length; ++idx)
+                for (nint i = 0; i < length; i++)
                 {
-                    T original = Unsafe.Add(ref src, idx);
-                    Unsafe.Add(ref dst, idx) = EqualityComparer<T>.Default.Equals(original, oldValue) ? newValue : original;
+                    T original = Unsafe.Add(ref src, i);
+                    Unsafe.Add(ref dst, i) = EqualityComparer<T>.Default.Equals(original, oldValue) ? newValue : original;
                 }
             }
             else
             {
                 Debug.Assert(Vector128.IsHardwareAccelerated && Vector128<T>.IsSupported, "Vector128 is not HW-accelerated or not supported");
 
-                nuint idx = 0;
+                nint idx = 0;
 
-                if (!Vector256.IsHardwareAccelerated || length < (uint)Vector256<T>.Count)
+                if (!Vector256.IsHardwareAccelerated || length < Vector256<T>.Count)
                 {
-                    nuint lastVectorIndex = length - (uint)Vector128<T>.Count;
+                    nint lastVectorIndex = length - Vector128<T>.Count;
                     Vector128<T> oldValues = Vector128.Create(oldValue);
                     Vector128<T> newValues = Vector128.Create(newValue);
                     Vector128<T> original, mask, result;
 
                     do
                     {
-                        original = Vector128.LoadUnsafe(ref src, idx);
+                        original = Vector128.LoadUnsafe(ref src, (nuint)idx);
                         mask = Vector128.Equals(oldValues, original);
                         result = Vector128.ConditionalSelect(mask, newValues, original);
-                        result.StoreUnsafe(ref dst, idx);
+                        result.StoreUnsafe(ref dst, (nuint)idx);
 
-                        idx += (uint)Vector128<T>.Count;
+                        idx += Vector128<T>.Count;
                     }
                     while (idx < lastVectorIndex);
 
@@ -3118,58 +3118,58 @@ namespace System
                     // elements available, we read a vector from the very end, perform the replace and write to the
                     // the resulting vector at the very end.
                     // Thus we can eliminate the scalar processing of the remaining elements.
-                    original = Vector128.LoadUnsafe(ref src, lastVectorIndex);
+                    original = Vector128.LoadUnsafe(ref src, (nuint)lastVectorIndex);
                     mask = Vector128.Equals(oldValues, original);
                     result = Vector128.ConditionalSelect(mask, newValues, original);
-                    result.StoreUnsafe(ref dst, lastVectorIndex);
+                    result.StoreUnsafe(ref dst, (nuint)lastVectorIndex);
                 }
-                else if (!Vector512.IsHardwareAccelerated || length < (uint)Vector512<T>.Count)
+                else if (!Vector512.IsHardwareAccelerated || length < Vector512<T>.Count)
                 {
-                    nuint lastVectorIndex = length - (uint)Vector256<T>.Count;
+                    nint lastVectorIndex = length - Vector256<T>.Count;
                     Vector256<T> oldValues = Vector256.Create(oldValue);
                     Vector256<T> newValues = Vector256.Create(newValue);
                     Vector256<T> original, mask, result;
 
                     do
                     {
-                        original = Vector256.LoadUnsafe(ref src, idx);
+                        original = Vector256.LoadUnsafe(ref src, (nuint)idx);
                         mask = Vector256.Equals(oldValues, original);
                         result = Vector256.ConditionalSelect(mask, newValues, original);
-                        result.StoreUnsafe(ref dst, idx);
+                        result.StoreUnsafe(ref dst, (nuint)idx);
 
-                        idx += (uint)Vector256<T>.Count;
+                        idx += Vector256<T>.Count;
                     }
                     while (idx < lastVectorIndex);
 
-                    original = Vector256.LoadUnsafe(ref src, lastVectorIndex);
+                    original = Vector256.LoadUnsafe(ref src, (nuint)lastVectorIndex);
                     mask = Vector256.Equals(oldValues, original);
                     result = Vector256.ConditionalSelect(mask, newValues, original);
-                    result.StoreUnsafe(ref dst, lastVectorIndex);
+                    result.StoreUnsafe(ref dst, (nuint)lastVectorIndex);
                 }
                 else
                 {
                     Debug.Assert(Vector512.IsHardwareAccelerated && Vector512<T>.IsSupported, "Vector512 is not HW-accelerated or not supported");
 
-                    nuint lastVectorIndex = length - (uint)Vector512<T>.Count;
+                    nint lastVectorIndex = length - Vector512<T>.Count;
                     Vector512<T> oldValues = Vector512.Create(oldValue);
                     Vector512<T> newValues = Vector512.Create(newValue);
                     Vector512<T> original, mask, result;
 
                     do
                     {
-                        original = Vector512.LoadUnsafe(ref src, idx);
+                        original = Vector512.LoadUnsafe(ref src, (nuint)idx);
                         mask = Vector512.Equals(oldValues, original);
                         result = Vector512.ConditionalSelect(mask, newValues, original);
-                        result.StoreUnsafe(ref dst, idx);
+                        result.StoreUnsafe(ref dst, (nuint)idx);
 
-                        idx += (uint)Vector512<T>.Count;
+                        idx += Vector512<T>.Count;
                     }
                     while (idx < lastVectorIndex);
 
-                    original = Vector512.LoadUnsafe(ref src, lastVectorIndex);
+                    original = Vector512.LoadUnsafe(ref src, (nuint)lastVectorIndex);
                     mask = Vector512.Equals(oldValues, original);
                     result = Vector512.ConditionalSelect(mask, newValues, original);
-                    result.StoreUnsafe(ref dst, lastVectorIndex);
+                    result.StoreUnsafe(ref dst, (nuint)lastVectorIndex);
                 }
             }
         }

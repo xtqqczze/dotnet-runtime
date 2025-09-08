@@ -1278,7 +1278,7 @@ namespace System
             if (firstIndex < 0)
                 return this;
 
-            nuint remainingLength = (uint)(Length - firstIndex);
+            nint remainingLength = Length - firstIndex;
             string result = FastAllocateString(Length);
 
             int copyLength = firstIndex;
@@ -1296,24 +1296,24 @@ namespace System
             // If the string is long enough for vectorization to kick in, we'd like to
             // process the remaining elements vectorized too.
             // Thus we adjust the pointers so that at least one full vector from the end can be processed.
-            nuint length = (uint)Length;
-            if (Vector512.IsHardwareAccelerated && length >= (uint)Vector512<ushort>.Count)
+            nint length = Length;
+            if (Vector512.IsHardwareAccelerated && length >= Vector512<ushort>.Count)
             {
-                nuint adjust = (length - remainingLength) & ((uint)Vector512<ushort>.Count - 1);
+                nint adjust = (length - remainingLength) & (Vector512<ushort>.Count - 1);
                 pSrc = ref Unsafe.Subtract(ref pSrc, adjust);
                 pDst = ref Unsafe.Subtract(ref pDst, adjust);
                 remainingLength += adjust;
             }
-            else if (Vector256.IsHardwareAccelerated && length >= (uint)Vector256<ushort>.Count)
+            else if (Vector256.IsHardwareAccelerated && length >= Vector256<ushort>.Count)
             {
-                nuint adjust = (length - remainingLength) & ((uint)Vector256<ushort>.Count - 1);
+                nint adjust = (length - remainingLength) & (Vector256<ushort>.Count - 1);
                 pSrc = ref Unsafe.Subtract(ref pSrc, adjust);
                 pDst = ref Unsafe.Subtract(ref pDst, adjust);
                 remainingLength += adjust;
             }
-            else if (Vector128.IsHardwareAccelerated && length >= (uint)Vector128<ushort>.Count)
+            else if (Vector128.IsHardwareAccelerated && length >= Vector128<ushort>.Count)
             {
-                nuint adjust = (length - remainingLength) & ((uint)Vector128<ushort>.Count - 1);
+                nint adjust = (length - remainingLength) & (Vector128<ushort>.Count - 1);
                 pSrc = ref Unsafe.Subtract(ref pSrc, adjust);
                 pDst = ref Unsafe.Subtract(ref pDst, adjust);
                 remainingLength += adjust;
