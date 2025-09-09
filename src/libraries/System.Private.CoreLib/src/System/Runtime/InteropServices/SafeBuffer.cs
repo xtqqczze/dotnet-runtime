@@ -234,9 +234,10 @@ namespace System.Runtime.InteropServices
             if (_numBytes == Uninitialized)
                 throw NotInitialized();
 
-            uint alignedSizeofT = AlignedSizeOf<T>();
+            uint length = (uint)buffer.Length;
+            nuint alignedSizeofT = AlignedSizeOf<T>();
             byte* ptr = (byte*)handle + byteOffset;
-            SpaceCheck(ptr, checked((nuint)(alignedSizeofT * buffer.Length)));
+            SpaceCheck(ptr, checked(length * alignedSizeofT));
 
             bool mustCallRelease = false;
             try
@@ -244,9 +245,9 @@ namespace System.Runtime.InteropServices
                 DangerousAddRef(ref mustCallRelease);
 
                 ref T structure = ref MemoryMarshal.GetReference(buffer);
-                for (int i = 0; i < buffer.Length; i++)
+                for (nint i = 0; i < buffer.Length; i++)
                 {
-                    Unsafe.Add(ref structure, (nint)(uint)i) = Unsafe.ReadUnaligned<T>(ptr + alignedSizeofT * (uint)i);
+                    Unsafe.Add(ref structure, i) = Unsafe.ReadUnaligned<T>(ptr + (nuint)i * alignedSizeofT);
                 }
             }
             finally
@@ -323,9 +324,10 @@ namespace System.Runtime.InteropServices
             if (_numBytes == Uninitialized)
                 throw NotInitialized();
 
-            uint alignedSizeofT = AlignedSizeOf<T>();
+            uint length = (uint)data.Length;
+            nuint alignedSizeofT = AlignedSizeOf<T>();
             byte* ptr = (byte*)handle + byteOffset;
-            SpaceCheck(ptr, checked((nuint)(alignedSizeofT * data.Length)));
+            SpaceCheck(ptr, checked(length * alignedSizeofT));
 
             bool mustCallRelease = false;
             try
@@ -333,9 +335,9 @@ namespace System.Runtime.InteropServices
                 DangerousAddRef(ref mustCallRelease);
 
                 ref T structure = ref MemoryMarshal.GetReference(data);
-                for (int i = 0; i < data.Length; i++)
+                for (nint i = 0; i < data.Length; i++)
                 {
-                    Unsafe.WriteUnaligned(ptr + alignedSizeofT * (uint)i, Unsafe.Add(ref structure, (nint)(uint)i));
+                    Unsafe.WriteUnaligned(ptr + (nuint)i * alignedSizeofT, Unsafe.Add(ref structure, i));
                 }
             }
             finally
