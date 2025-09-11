@@ -567,6 +567,7 @@ namespace System.Collections.Generic
         /// <summary>
         ///  Removes all items from the <see cref="PriorityQueue{TElement, TPriority}"/>.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Clear()
         {
             if (RuntimeHelpers.IsReferenceOrContainsReferences<(TElement, TPriority)>())

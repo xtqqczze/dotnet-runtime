@@ -386,6 +386,7 @@ namespace System.Collections.Generic
         object ICollection.SyncRoot => this;
 
         // Removes all entries from this sorted list.
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Clear()
         {
             // clear does not change the capacity

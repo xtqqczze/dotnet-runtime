@@ -68,6 +68,7 @@ namespace System.Collections.Generic
         object ICollection.SyncRoot => this;
 
         // Removes all Objects from the Stack.
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Clear()
         {
             if (RuntimeHelpers.IsReferenceOrContainsReferences<T>())

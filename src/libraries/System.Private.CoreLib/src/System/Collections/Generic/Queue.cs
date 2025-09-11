@@ -65,6 +65,7 @@ namespace System.Collections.Generic
         object ICollection.SyncRoot => this;
 
         // Removes all Objects from the queue.
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Clear()
         {
             if (_size != 0)
