@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 
 namespace System.Collections.Immutable
 {
@@ -68,6 +69,7 @@ namespace System.Collections.Immutable
         /// </summary>
         /// <typeparam name="T">Specifies the type of data in the stack to be cleared.</typeparam>
         /// <param name="stack">The stack to clear.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static void ClearFastWhenEmpty<T>(this Stack<T> stack)
         {
             if (stack.Count > 0)
