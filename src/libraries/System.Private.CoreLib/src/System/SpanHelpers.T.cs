@@ -3057,36 +3057,42 @@ namespace System
             return -1;
         }
 
-        public static void Replace<T>(ref T src, ref T dst, T oldValue, T newValue, nuint length) where T : IEquatable<T>?
+        public static void Replace<T>(ref T src, ref T dst, T oldValue, T newValue, int length) where T : IEquatable<T>?
         {
             if (default(T) is not null || oldValue is not null)
             {
                 Debug.Assert(oldValue is not null);
 
-                for (nuint idx = 0; idx < length; ++idx)
+                for (int i = length; i != 0; i--)
                 {
-                    T original = Unsafe.Add(ref src, idx);
-                    Unsafe.Add(ref dst, idx) = oldValue.Equals(original) ? newValue : original;
+                    T original = src;
+                    src = ref Unsafe.Add(ref src, 1);
+                    dst = oldValue.Equals(original) ? newValue : original;
+                    dst = ref Unsafe.Add(ref dst, 1);
                 }
             }
             else
             {
-                for (nuint idx = 0; idx < length; ++idx)
+                for (int i = length; i != 0; i--)
                 {
-                    T original = Unsafe.Add(ref src, idx);
-                    Unsafe.Add(ref dst, idx) = original is null ? newValue : original;
+                    T original = src;
+                    src = ref Unsafe.Add(ref src, 1);
+                    dst = original is null ? newValue : original;
+                    dst = ref Unsafe.Add(ref dst, 1);
                 }
             }
         }
 
-        public static void ReplaceValueType<T>(ref T src, ref T dst, T oldValue, T newValue, nuint length) where T : struct
+        public static void ReplaceValueType<T>(ref T src, ref T dst, T oldValue, T newValue, int length) where T : struct
         {
-            if (!Vector128.IsHardwareAccelerated || length < (uint)Vector128<T>.Count)
+            if (!Vector128.IsHardwareAccelerated || length < Vector128<T>.Count)
             {
-                for (nuint idx = 0; idx < length; ++idx)
+                for (int i = length; i != 0; i--)
                 {
-                    T original = Unsafe.Add(ref src, idx);
-                    Unsafe.Add(ref dst, idx) = EqualityComparer<T>.Default.Equals(original, oldValue) ? newValue : original;
+                    T original = src;
+                    src = ref Unsafe.Add(ref src, 1);
+                    dst = EqualityComparer<T>.Default.Equals(original, oldValue) ? newValue : original;
+                    dst = ref Unsafe.Add(ref dst, 1);
                 }
             }
             else
@@ -3095,9 +3101,9 @@ namespace System
 
                 nuint idx = 0;
 
-                if (!Vector256.IsHardwareAccelerated || length < (uint)Vector256<T>.Count)
+                if (!Vector256.IsHardwareAccelerated || length < Vector256<T>.Count)
                 {
-                    nuint lastVectorIndex = length - (uint)Vector128<T>.Count;
+                    nuint lastVectorIndex = (uint)(length - Vector128<T>.Count);
                     Vector128<T> oldValues = Vector128.Create(oldValue);
                     Vector128<T> newValues = Vector128.Create(newValue);
                     Vector128<T> original, mask, result;
@@ -3123,9 +3129,9 @@ namespace System
                     result = Vector128.ConditionalSelect(mask, newValues, original);
                     result.StoreUnsafe(ref dst, lastVectorIndex);
                 }
-                else if (!Vector512.IsHardwareAccelerated || length < (uint)Vector512<T>.Count)
+                else if (!Vector512.IsHardwareAccelerated || length < Vector512<T>.Count)
                 {
-                    nuint lastVectorIndex = length - (uint)Vector256<T>.Count;
+                    nuint lastVectorIndex = (uint)(length - Vector256<T>.Count);
                     Vector256<T> oldValues = Vector256.Create(oldValue);
                     Vector256<T> newValues = Vector256.Create(newValue);
                     Vector256<T> original, mask, result;
@@ -3150,7 +3156,7 @@ namespace System
                 {
                     Debug.Assert(Vector512.IsHardwareAccelerated && Vector512<T>.IsSupported, "Vector512 is not HW-accelerated or not supported");
 
-                    nuint lastVectorIndex = length - (uint)Vector512<T>.Count;
+                    nuint lastVectorIndex = (uint)(length - Vector512<T>.Count);
                     Vector512<T> oldValues = Vector512.Create(oldValue);
                     Vector512<T> newValues = Vector512.Create(newValue);
                     Vector512<T> original, mask, result;

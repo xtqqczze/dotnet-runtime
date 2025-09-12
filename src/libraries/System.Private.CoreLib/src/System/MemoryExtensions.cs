@@ -4420,8 +4420,6 @@ namespace System
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static unsafe void Replace<T>(this Span<T> span, T oldValue, T newValue) where T : IEquatable<T>?
         {
-            uint length = (uint)span.Length;
-
             if (RuntimeHelpers.IsBitwiseEquatable<T>())
             {
                 if (sizeof(T) == sizeof(byte))
@@ -4432,7 +4430,7 @@ namespace System
                         ref src,
                         Unsafe.BitCast<T, byte>(oldValue),
                         Unsafe.BitCast<T, byte>(newValue),
-                        length);
+                        span.Length);
                     return;
                 }
                 else if (sizeof(T) == sizeof(ushort))
@@ -4444,7 +4442,7 @@ namespace System
                         ref src,
                         Unsafe.BitCast<T, ushort>(oldValue),
                         Unsafe.BitCast<T, ushort>(newValue),
-                        length);
+                        span.Length);
                     return;
                 }
                 else if (sizeof(T) == sizeof(int))
@@ -4455,7 +4453,7 @@ namespace System
                         ref src,
                         Unsafe.BitCast<T, int>(oldValue),
                         Unsafe.BitCast<T, int>(newValue),
-                        length);
+                        span.Length);
                     return;
                 }
                 else if (sizeof(T) == sizeof(long))
@@ -4466,13 +4464,13 @@ namespace System
                         ref src,
                         Unsafe.BitCast<T, long>(oldValue),
                         Unsafe.BitCast<T, long>(newValue),
-                        length);
+                        span.Length);
                     return;
                 }
             }
 
             ref T src2 = ref MemoryMarshal.GetReference(span);
-            SpanHelpers.Replace(ref src2, ref src2, oldValue, newValue, length);
+            SpanHelpers.Replace(ref src2, ref src2, oldValue, newValue, span.Length);
         }
 
         /// <summary>
@@ -4498,7 +4496,7 @@ namespace System
                             ref src,
                             Unsafe.BitCast<T, byte>(oldValue),
                             Unsafe.BitCast<T, byte>(newValue),
-                            (uint)span.Length);
+                            span.Length);
                         return;
                     }
                     else if (sizeof(T) == sizeof(ushort))
@@ -4510,7 +4508,7 @@ namespace System
                             ref src,
                             Unsafe.BitCast<T, ushort>(oldValue),
                             Unsafe.BitCast<T, ushort>(newValue),
-                            (uint)span.Length);
+                            span.Length);
                         return;
                     }
                     else if (sizeof(T) == sizeof(int))
@@ -4521,7 +4519,7 @@ namespace System
                             ref src,
                             Unsafe.BitCast<T, int>(oldValue),
                             Unsafe.BitCast<T, int>(newValue),
-                            (uint)span.Length);
+                            span.Length);
                         return;
                     }
                     else if (sizeof(T) == sizeof(long))
@@ -4532,7 +4530,7 @@ namespace System
                             ref src,
                             Unsafe.BitCast<T, long>(oldValue),
                             Unsafe.BitCast<T, long>(newValue),
-                            (uint)span.Length);
+                            span.Length);
                         return;
                     }
                 }
@@ -4579,13 +4577,12 @@ namespace System
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static unsafe void Replace<T>(this ReadOnlySpan<T> source, Span<T> destination, T oldValue, T newValue) where T : IEquatable<T>?
         {
-            uint length = (uint)source.Length;
-            if (length == 0)
+            if (source.Length == 0)
             {
                 return;
             }
 
-            if (length > (uint)destination.Length)
+            if (source.Length > destination.Length)
             {
                 ThrowHelper.ThrowArgumentException_DestinationTooShort();
             }
@@ -4610,7 +4607,7 @@ namespace System
                         ref Unsafe.As<T, byte>(ref dst),
                         Unsafe.BitCast<T, byte>(oldValue),
                         Unsafe.BitCast<T, byte>(newValue),
-                        length);
+                        source.Length);
                     return;
                 }
                 else if (sizeof(T) == sizeof(ushort))
@@ -4621,7 +4618,7 @@ namespace System
                         ref Unsafe.As<T, ushort>(ref dst),
                         Unsafe.BitCast<T, ushort>(oldValue),
                         Unsafe.BitCast<T, ushort>(newValue),
-                        length);
+                        source.Length);
                     return;
                 }
                 else if (sizeof(T) == sizeof(int))
@@ -4631,7 +4628,7 @@ namespace System
                         ref Unsafe.As<T, int>(ref dst),
                         Unsafe.BitCast<T, int>(oldValue),
                         Unsafe.BitCast<T, int>(newValue),
-                        length);
+                        source.Length);
                     return;
                 }
                 else if (sizeof(T) == sizeof(long))
@@ -4641,12 +4638,12 @@ namespace System
                         ref Unsafe.As<T, long>(ref dst),
                         Unsafe.BitCast<T, long>(oldValue),
                         Unsafe.BitCast<T, long>(newValue),
-                        length);
+                        source.Length);
                     return;
                 }
             }
 
-            SpanHelpers.Replace(ref src, ref dst, oldValue, newValue, length);
+            SpanHelpers.Replace(ref src, ref dst, oldValue, newValue, source.Length);
         }
 
         /// <summary>
@@ -4663,13 +4660,12 @@ namespace System
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static unsafe void Replace<T>(this ReadOnlySpan<T> source, Span<T> destination, T oldValue, T newValue, IEqualityComparer<T>? comparer = null)
         {
-            uint length = (uint)source.Length;
-            if (length == 0)
+            if (source.Length == 0)
             {
                 return;
             }
 
-            if (length > (uint)destination.Length)
+            if (source.Length > destination.Length)
             {
                 ThrowHelper.ThrowArgumentException_DestinationTooShort();
             }
@@ -4696,7 +4692,7 @@ namespace System
                             ref Unsafe.As<T, byte>(ref dst),
                             Unsafe.BitCast<T, byte>(oldValue),
                             Unsafe.BitCast<T, byte>(newValue),
-                            length);
+                            source.Length);
                         return;
                     }
                     else if (sizeof(T) == sizeof(ushort))
@@ -4707,7 +4703,7 @@ namespace System
                             ref Unsafe.As<T, ushort>(ref dst),
                             Unsafe.BitCast<T, ushort>(oldValue),
                             Unsafe.BitCast<T, ushort>(newValue),
-                            length);
+                            source.Length);
                         return;
                     }
                     else if (sizeof(T) == sizeof(int))
@@ -4717,7 +4713,7 @@ namespace System
                             ref Unsafe.As<T, int>(ref dst),
                             Unsafe.BitCast<T, int>(oldValue),
                             Unsafe.BitCast<T, int>(newValue),
-                            length);
+                            source.Length);
                         return;
                     }
                     else if (sizeof(T) == sizeof(long))
@@ -4727,7 +4723,7 @@ namespace System
                             ref Unsafe.As<T, long>(ref dst),
                             Unsafe.BitCast<T, long>(oldValue),
                             Unsafe.BitCast<T, long>(newValue),
-                            length);
+                            source.Length);
                         return;
                     }
                 }
