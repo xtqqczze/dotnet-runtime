@@ -273,7 +273,6 @@ namespace System
             if (valueTailLength == 0)
                 return LastIndexOfValueType(ref Unsafe.As<char, short>(ref searchSpace), (short)value, searchSpaceLength); // for single-char values use plain LastIndexOf
 
-            int offset = 0;
             char valueHead = value;
             int searchSpaceMinusValueTailLength = searchSpaceLength - valueTailLength;
             if (Vector128.IsHardwareAccelerated && searchSpaceMinusValueTailLength >= Vector128<ushort>.Count)
@@ -281,12 +280,13 @@ namespace System
                 goto SEARCH_TWO_CHARS;
             }
 
+            int i = 0;
             ref byte valueTail = ref Unsafe.As<char, byte>(ref Unsafe.Add(ref value, 1));
 
             while (true)
             {
-                Debug.Assert(0 <= offset && offset <= searchSpaceLength); // Ensures no deceptive underflows in the computation of "remainingSearchSpaceLength".
-                int remainingSearchSpaceLength = searchSpaceLength - offset - valueTailLength;
+                Debug.Assert(0 <= i && i <= searchSpaceLength); // Ensures no deceptive underflows in the computation of "remainingSearchSpaceLength".
+                int remainingSearchSpaceLength = searchSpaceLength - i - valueTailLength;
                 if (remainingSearchSpaceLength <= 0)
                     break;  // The unsearched portion is now shorter than the sequence we're looking for. So it can't be there.
 
@@ -303,7 +303,7 @@ namespace System
                     return relativeIndex; // The tail matched. Return a successful find.
                 }
 
-                offset += remainingSearchSpaceLength - relativeIndex;
+                i += remainingSearchSpaceLength - relativeIndex;
             }
             return -1;
 
@@ -312,7 +312,7 @@ namespace System
         SEARCH_TWO_CHARS:
             if (Vector512.IsHardwareAccelerated && searchSpaceMinusValueTailLength >= Vector512<ushort>.Count)
             {
-                offset = searchSpaceMinusValueTailLength - Vector512<ushort>.Count;
+                nint offset = searchSpaceMinusValueTailLength - Vector512<ushort>.Count;
 
                 // Find the last unique (which is not equal to ch1) char
                 // the algorithm is fine if both are equal, just a little bit less efficient
@@ -338,17 +338,18 @@ namespace System
                         do
                         {
                             // unlike IndexOf, here we use LZCNT to process matches starting from the end
-                            int bitPos = 62 - BitOperations.LeadingZeroCount(mask);
-                            int charPos = (int)((uint)bitPos / 2);
+                            // we use natve-sized integers because it gives us a free early zero-extension on X64.
+                            nint bitPos = 62 - (nint)BitOperations.LeadingZeroCount(mask);
+                            nint charPos = (nint)((nuint)bitPos / 2);
 
                             if (valueLength == 2 || // we already matched two chars
                                 SequenceEqual(
                                     ref Unsafe.As<char, byte>(ref Unsafe.Add(ref searchSpace, offset + charPos)),
                                     ref Unsafe.As<char, byte>(ref value), (nuint)(uint)valueLength * 2))
                             {
-                                return charPos + offset;
+                                return (int)(offset + charPos);
                             }
-                            mask &= ~(ulong)((ulong)0b11 << bitPos); // clear two highest set bits.
+                            mask &= ~(ulong)((ulong)0b11 << (int)bitPos); // clear two highest set bits.
                         } while (mask != 0);
                     }
 
@@ -362,7 +363,7 @@ namespace System
             }
             else if (Vector256.IsHardwareAccelerated && searchSpaceMinusValueTailLength >= Vector256<ushort>.Count)
             {
-                offset = searchSpaceMinusValueTailLength - Vector256<ushort>.Count;
+                nint offset = searchSpaceMinusValueTailLength - Vector256<ushort>.Count;
 
                 // Find the last unique (which is not equal to ch1) char
                 // the algorithm is fine if both are equal, just a little bit less efficient
@@ -388,17 +389,18 @@ namespace System
                         do
                         {
                             // unlike IndexOf, here we use LZCNT to process matches starting from the end
-                            int bitPos = 30 - BitOperations.LeadingZeroCount(mask);
-                            int charPos = (int)((uint)bitPos / 2);
+                            // we use natve-sized integers because it gives us a free early zero-extension on X64.
+                            nint bitPos = 30 - (nint)BitOperations.LeadingZeroCount(mask);
+                            nint charPos = (nint)((nuint)bitPos / 2);
 
                             if (valueLength == 2 || // we already matched two chars
                                 SequenceEqual(
                                     ref Unsafe.As<char, byte>(ref Unsafe.Add(ref searchSpace, offset + charPos)),
                                     ref Unsafe.As<char, byte>(ref value), (nuint)(uint)valueLength * 2))
                             {
-                                return charPos + offset;
+                                return (int)(offset + charPos);
                             }
-                            mask &= ~(uint)(0b11 << bitPos); // clear two highest set bits.
+                            mask &= ~(uint)(0b11 << (int)bitPos); // clear two highest set bits.
                         } while (mask != 0);
                     }
 
@@ -412,7 +414,7 @@ namespace System
             }
             else // 128bit vector path (SSE2 or AdvSimd)
             {
-                offset = searchSpaceMinusValueTailLength - Vector128<ushort>.Count;
+                nint offset = searchSpaceMinusValueTailLength - Vector128<ushort>.Count;
 
                 // Find the last unique (which is not equal to ch1) char
                 // the algorithm is fine if both are equal, just a little bit less efficient
@@ -438,17 +440,18 @@ namespace System
                         do
                         {
                             // unlike IndexOf, here we use LZCNT to process matches starting from the end
-                            int bitPos = 30 - BitOperations.LeadingZeroCount(mask);
-                            int charPos = (int)((uint)bitPos / 2);
+                            // we use natve-sized integers because it gives us a free early zero-extension on X64.
+                            nint bitPos = 30 - (nint)BitOperations.LeadingZeroCount(mask);
+                            nint charPos = (nint)((nuint)bitPos / 2);
 
                             if (valueLength == 2 || // we already matched two chars
                                 SequenceEqual(
                                     ref Unsafe.As<char, byte>(ref Unsafe.Add(ref searchSpace, offset + charPos)),
                                     ref Unsafe.As<char, byte>(ref value), (nuint)(uint)valueLength * 2))
                             {
-                                return charPos + offset;
+                                return (int)(offset + charPos);
                             }
-                            mask &= ~(uint)(0b11 << bitPos); // clear two the highest set bits.
+                            mask &= ~(uint)(0b11 << (int)bitPos); // clear two the highest set bits.
                         } while (mask != 0);
                     }
 

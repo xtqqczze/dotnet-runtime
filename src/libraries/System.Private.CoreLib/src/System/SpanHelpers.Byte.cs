@@ -261,7 +261,6 @@ namespace System
             if (valueTailLength == 0)
                 return LastIndexOfValueType(ref searchSpace, value, searchSpaceLength); // for single-byte values use plain LastIndexOf
 
-            int offset = 0;
             byte valueHead = value;
             int searchSpaceMinusValueTailLength = searchSpaceLength - valueTailLength;
             if (Vector128.IsHardwareAccelerated && searchSpaceMinusValueTailLength >= Vector128<byte>.Count)
@@ -269,12 +268,13 @@ namespace System
                 goto SEARCH_TWO_BYTES;
             }
 
+            int i = 0;
             ref byte valueTail = ref Unsafe.Add(ref value, 1);
 
             while (true)
             {
-                Debug.Assert(0 <= offset && offset <= searchSpaceLength); // Ensures no deceptive underflows in the computation of "remainingSearchSpaceLength".
-                int remainingSearchSpaceLength = searchSpaceLength - offset - valueTailLength;
+                Debug.Assert(0 <= i && i <= searchSpaceLength); // Ensures no deceptive underflows in the computation of "remainingSearchSpaceLength".
+                int remainingSearchSpaceLength = searchSpaceLength - i - valueTailLength;
                 if (remainingSearchSpaceLength <= 0)
                     break;  // The unsearched portion is now shorter than the sequence we're looking for. So it can't be there.
 
@@ -289,7 +289,7 @@ namespace System
                         ref valueTail, (nuint)(uint)valueTailLength)) // The (nuint)-cast is necessary to pick the correct overload
                     return relativeIndex;  // The tail matched. Return a successful find.
 
-                offset += remainingSearchSpaceLength - relativeIndex;
+                i += remainingSearchSpaceLength - relativeIndex;
             }
             return -1;
 
@@ -298,7 +298,7 @@ namespace System
         SEARCH_TWO_BYTES:
             if (Vector512.IsHardwareAccelerated && searchSpaceMinusValueTailLength >= Vector512<byte>.Count)
             {
-                offset = searchSpaceMinusValueTailLength - Vector512<byte>.Count;
+                nint offset = searchSpaceMinusValueTailLength - Vector512<byte>.Count;
 
                 // Find the last unique (which is not equal to ch1) byte
                 // the algorithm is fine if both are equal, just a little bit less efficient
@@ -322,16 +322,17 @@ namespace System
                         do
                         {
                             // unlike IndexOf, here we use LZCNT to process matches starting from the end
-                            int highestSetBitIndex = 63 - BitOperations.LeadingZeroCount(mask);
+                            // we use natve-sized integers because it gives us a free early zero-extension on X64.
+                            nint highestSetBitIndex = 63 - (nint)BitOperations.LeadingZeroCount(mask);
                             if (valueLength == 2 || // we already matched two bytes
                                 SequenceEqual(
                                     ref Unsafe.Add(ref searchSpace, offset + highestSetBitIndex),
                                     ref value, (nuint)(uint)valueLength)) // The (nuint)-cast is necessary to pick the correct overload
                             {
-                                return highestSetBitIndex + offset;
+                                return (int)(offset + highestSetBitIndex);
                             }
                             // Clear the highest set bit.
-                            mask = BitOperations.FlipBit(mask, highestSetBitIndex);
+                            mask = BitOperations.FlipBit(mask, (int)highestSetBitIndex);
                         } while (mask != 0);
                     }
 
@@ -345,7 +346,7 @@ namespace System
             }
             else if (Vector256.IsHardwareAccelerated && searchSpaceMinusValueTailLength >= Vector256<byte>.Count)
             {
-                offset = searchSpaceMinusValueTailLength - Vector256<byte>.Count;
+                nint offset = searchSpaceMinusValueTailLength - Vector256<byte>.Count;
 
                 // Find the last unique (which is not equal to ch1) byte
                 // the algorithm is fine if both are equal, just a little bit less efficient
@@ -369,16 +370,17 @@ namespace System
                         do
                         {
                             // unlike IndexOf, here we use LZCNT to process matches starting from the end
-                            int highestSetBitIndex = 31 - BitOperations.LeadingZeroCount(mask);
+                            // we use natve-sized integers because it gives us a free early zero-extension on X64.
+                            nint highestSetBitIndex = 31 - (nint)BitOperations.LeadingZeroCount(mask);
                             if (valueLength == 2 || // we already matched two bytes
                                 SequenceEqual(
                                     ref Unsafe.Add(ref searchSpace, offset + highestSetBitIndex),
                                     ref value, (nuint)(uint)valueLength)) // The (nuint)-cast is necessary to pick the correct overload
                             {
-                                return highestSetBitIndex + offset;
+                                return (int)(offset + highestSetBitIndex);
                             }
                             // Clear the highest set bit.
-                            mask = BitOperations.FlipBit(mask, highestSetBitIndex);
+                            mask = BitOperations.FlipBit(mask, (int)highestSetBitIndex);
                         } while (mask != 0);
                     }
 
@@ -392,7 +394,7 @@ namespace System
             }
             else // 128bit vector path (SSE2 or AdvSimd)
             {
-                offset = searchSpaceMinusValueTailLength - Vector128<byte>.Count;
+                nint offset = searchSpaceMinusValueTailLength - Vector128<byte>.Count;
 
                 // Find the last unique (which is not equal to ch1) byte
                 // the algorithm is fine if both are equal, just a little bit less efficient
@@ -418,16 +420,17 @@ namespace System
                         do
                         {
                             // unlike IndexOf, here we use LZCNT to process matches starting from the end
-                            int highestSetBitIndex = 31 - BitOperations.LeadingZeroCount(mask);
+                            // we use natve-sized integers because it gives us a free early zero-extension on X64.
+                            nint highestSetBitIndex = 31 - (nint)BitOperations.LeadingZeroCount(mask);
                             if (valueLength == 2 || // we already matched two bytes
                                 SequenceEqual(
                                     ref Unsafe.Add(ref searchSpace, offset + highestSetBitIndex),
                                     ref value, (nuint)(uint)valueLength)) // The (nuint)-cast is necessary to pick the correct overload
                             {
-                                return highestSetBitIndex + offset;
+                                return (int)(offset + highestSetBitIndex);
                             }
                             // Clear the highest set bit.
-                            mask = BitOperations.FlipBit(mask, highestSetBitIndex);
+                            mask = BitOperations.FlipBit(mask, (int)highestSetBitIndex);
                         } while (mask != 0);
                     }
 
