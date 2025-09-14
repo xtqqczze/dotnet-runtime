@@ -110,7 +110,8 @@ namespace System.Collections.Generic
 
             int pos = _pos;
             Span<T> span = _span;
-            if ((ulong)(uint)pos + (ulong)(uint)length <= (ulong)(uint)span.Length) // same guard condition as in Span<T>.Slice on 64-bit
+            // Use the same check as Span<T>.Slice so it can be folded
+            if ((uint)pos <= (uint)span.Length && (uint)length <= (uint)(span.Length - pos))
             {
                 _pos = pos + length;
                 return span.Slice(pos, length);
