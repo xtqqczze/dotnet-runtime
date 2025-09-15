@@ -150,7 +150,7 @@ namespace System
             [NonVersionable]
             get
             {
-                if ((uint)index >= (uint)_length)
+                if ((uint)index >= (uint)Length)
                     ThrowHelper.ThrowIndexOutOfRangeException();
                 return ref Unsafe.Add(ref _reference, (nint)(uint)index /* force zero-extension */);
             }
@@ -328,9 +328,9 @@ namespace System
             // check, and one for the result of TryCopyTo. Since these checks are equivalent,
             // we can optimize by performing the check once ourselves then calling Memmove directly.
 
-            if ((uint)_length <= (uint)destination.Length)
+            if ((uint)Length <= (uint)destination.Length)
             {
-                Buffer.Memmove(ref destination._reference, ref _reference, (uint)_length);
+                Buffer.Memmove(ref destination._reference, ref _reference, (uint)Length);
             }
             else
             {
@@ -349,9 +349,9 @@ namespace System
         public bool TryCopyTo(Span<T> destination)
         {
             bool retVal = false;
-            if ((uint)_length <= (uint)destination.Length)
+            if ((uint)Length <= (uint)destination.Length)
             {
-                Buffer.Memmove(ref destination._reference, ref _reference, (uint)_length);
+                Buffer.Memmove(ref destination._reference, ref _reference, (uint)Length);
                 retVal = true;
             }
             return retVal;
@@ -394,10 +394,10 @@ namespace System
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Span<T> Slice(int start)
         {
-            if ((uint)start > (uint)_length)
+            if ((uint)start > (uint)Length)
                 ThrowHelper.ThrowArgumentOutOfRangeException();
 
-            return new Span<T>(ref Unsafe.Add(ref _reference, (nint)(uint)start /* force zero-extension */), _length - start);
+            return new Span<T>(ref Unsafe.Add(ref _reference, (nint)(uint)start /* force zero-extension */), Length - start);
         }
 
         /// <summary>
@@ -416,12 +416,12 @@ namespace System
             // without loss of fidelity. The cast to uint before the cast to ulong ensures that the
             // extension from 32- to 64-bit is zero-extending rather than sign-extending. The end result
             // of this is that if either input is negative or if the input sum overflows past Int32.MaxValue,
-            // that information is captured correctly in the comparison against the backing _length field.
+            // that information is captured correctly in the comparison against the Length property.
             // We don't use this same mechanism in a 32-bit process due to the overhead of 64-bit arithmetic.
-            if ((ulong)(uint)start + (ulong)(uint)length > (ulong)(uint)_length)
+            if ((ulong)(uint)start + (ulong)(uint)length > (ulong)(uint)Length)
                 ThrowHelper.ThrowArgumentOutOfRangeException();
 #else
-            if ((uint)start > (uint)_length || (uint)length > (uint)(_length - start))
+            if ((uint)start > (uint)Length || (uint)length > (uint)(Length - start))
                 ThrowHelper.ThrowArgumentOutOfRangeException();
 #endif
 
