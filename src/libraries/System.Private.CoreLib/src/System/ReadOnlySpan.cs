@@ -145,7 +145,7 @@ namespace System
             [NonVersionable]
             get
             {
-                if ((uint)index >= (uint)_length)
+                if ((uint)index >= (uint)Length)
                     ThrowHelper.ThrowIndexOutOfRangeException();
                 return ref Unsafe.Add(ref _reference, (nint)(uint)index /* force zero-extension */);
             }
@@ -310,9 +310,9 @@ namespace System
             // check, and one for the result of TryCopyTo. Since these checks are equivalent,
             // we can optimize by performing the check once ourselves then calling Memmove directly.
 
-            if ((uint)_length <= (uint)destination.Length)
+            if ((uint)Length <= (uint)destination.Length)
             {
-                Buffer.Memmove(ref destination._reference, ref _reference, (uint)_length);
+                Buffer.Memmove(ref destination._reference, ref _reference, (uint)Length);
             }
             else
             {
@@ -331,9 +331,9 @@ namespace System
         public bool TryCopyTo(Span<T> destination)
         {
             bool retVal = false;
-            if ((uint)_length <= (uint)destination.Length)
+            if ((uint)Length <= (uint)destination.Length)
             {
-                Buffer.Memmove(ref destination._reference, ref _reference, (uint)_length);
+                Buffer.Memmove(ref destination._reference, ref _reference, (uint)Length);
                 retVal = true;
             }
             return retVal;
@@ -370,10 +370,10 @@ namespace System
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ReadOnlySpan<T> Slice(int start)
         {
-            if ((uint)start > (uint)_length)
+            if ((uint)start > (uint)Length)
                 ThrowHelper.ThrowArgumentOutOfRangeException();
 
-            return new ReadOnlySpan<T>(ref Unsafe.Add(ref _reference, (nint)(uint)start /* force zero-extension */), _length - start);
+            return new ReadOnlySpan<T>(ref Unsafe.Add(ref _reference, (nint)(uint)start /* force zero-extension */), Length - start);
         }
 
         /// <summary>
@@ -389,10 +389,10 @@ namespace System
         {
 #if TARGET_64BIT
             // See comment in Span<T>.Slice for how this works.
-            if ((ulong)(uint)start + (ulong)(uint)length > (ulong)(uint)_length)
+            if ((ulong)(uint)start + (ulong)(uint)length > (ulong)(uint)Length)
                 ThrowHelper.ThrowArgumentOutOfRangeException();
 #else
-            if ((uint)start > (uint)_length || (uint)length > (uint)(_length - start))
+            if ((uint)start > (uint)Length || (uint)length > (uint)(Length - start))
                 ThrowHelper.ThrowArgumentOutOfRangeException();
 #endif
 
@@ -406,11 +406,11 @@ namespace System
         /// </summary>
         public T[] ToArray()
         {
-            if (_length == 0)
+            if (Length == 0)
                 return Array.Empty<T>();
 
-            var destination = new T[_length];
-            Buffer.Memmove(ref MemoryMarshal.GetArrayDataReference(destination), ref _reference, (uint)_length);
+            var destination = new T[Length];
+            Buffer.Memmove(ref MemoryMarshal.GetArrayDataReference(destination), ref _reference, (uint)Length);
             return destination;
         }
     }
