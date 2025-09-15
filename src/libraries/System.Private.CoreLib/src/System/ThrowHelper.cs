@@ -372,6 +372,12 @@ namespace System
         }
 
         [DoesNotReturn]
+        internal static void ThrowArgumentOutOfRangeException_StartIndexLargerThanLength()
+        {
+            throw new ArgumentOutOfRangeException(GetArgumentName(ExceptionArgument.startIndex), SR.ArgumentOutOfRange_StartIndexLargerThanLength);
+        }
+
+        [DoesNotReturn]
         internal static void ThrowEndOfFileException()
         {
             throw CreateEndOfFileException();
