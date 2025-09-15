@@ -2221,30 +2221,31 @@ namespace System
                 return this;
             }
 
-            int length = Length - startIndex;
-            if (length == 0)
+            if (startIndex == Length)
             {
                 return Empty;
             }
 
             if ((uint)startIndex > (uint)Length)
             {
-                ThrowSubstringArgumentOutOfRange(startIndex, length);
+                ThrowArgumentOutOfRange(startIndex);
             }
 
-            return InternalSubString(startIndex, length);
+            return InternalSubString(startIndex, Length - startIndex);
+
+            void ThrowArgumentOutOfRange(int startIndex)
+            {
+                ArgumentOutOfRangeException.ThrowIfNegative(startIndex);
+
+                throw new ArgumentOutOfRangeException(nameof(startIndex), SR.ArgumentOutOfRange_StartIndexLargerThanLength);
+            }
         }
 
         public string Substring(int startIndex, int length)
         {
-#if TARGET_64BIT
-            // See comment in Span<T>.Slice for how this works.
-            if ((ulong)(uint)startIndex + (ulong)(uint)length > (ulong)(uint)Length)
-#else
-            if ((uint)startIndex > (uint)Length || (uint)length > (uint)(Length - startIndex))
-#endif
+            if ((uint)startIndex > (uint)Length)
             {
-                ThrowSubstringArgumentOutOfRange(startIndex, length);
+                ThrowArgumentOutOfRange(startIndex, length);
             }
 
             if (length == 0)
@@ -2254,26 +2255,29 @@ namespace System
 
             if (length == Length)
             {
-                Debug.Assert(startIndex == 0);
                 return this;
             }
 
-            return InternalSubString(startIndex, length);
-        }
-
-        [DoesNotReturn]
-        private void ThrowSubstringArgumentOutOfRange(int startIndex, int length)
-        {
-            ArgumentOutOfRangeException.ThrowIfNegative(startIndex);
-
-            if (startIndex > Length)
+            if ((uint)length > (uint)(Length - startIndex))
             {
-                throw new ArgumentOutOfRangeException(nameof(startIndex), SR.ArgumentOutOfRange_StartIndexLargerThanLength);
+                ThrowArgumentOutOfRange(startIndex, length);
             }
 
-            ArgumentOutOfRangeException.ThrowIfNegative(length);
+            return InternalSubString(startIndex, length);
 
-            throw new ArgumentOutOfRangeException(nameof(length), SR.ArgumentOutOfRange_IndexLength);
+            void ThrowArgumentOutOfRange(int startIndex, int length)
+            {
+                ArgumentOutOfRangeException.ThrowIfNegative(startIndex);
+
+                if (startIndex > Length)
+                {
+                    throw new ArgumentOutOfRangeException(nameof(startIndex), SR.ArgumentOutOfRange_StartIndexLargerThanLength);
+                }
+
+                ArgumentOutOfRangeException.ThrowIfNegative(length);
+
+                throw new ArgumentOutOfRangeException(nameof(length), SR.ArgumentOutOfRange_IndexLength);
+            }
         }
 
         private string InternalSubString(int startIndex, int length)
