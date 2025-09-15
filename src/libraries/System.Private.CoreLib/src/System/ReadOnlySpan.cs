@@ -412,9 +412,7 @@ namespace System
                 return [];
             }
 
-            var destination = new T[Length];
-            CopyTo(destination);
-            return destination;
+            return Array.Create(this);
         }
     }
 }
