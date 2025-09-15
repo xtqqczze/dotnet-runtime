@@ -3,6 +3,7 @@
 
 using System.Diagnostics;
 using System.Numerics;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 namespace System
@@ -35,8 +36,10 @@ namespace System
             /// <summary>Create a copy of <see cref="Values"/>.</summary>
             public unsafe TResult[] CloneValues<TResult>() where TResult : struct
             {
-                Debug.Assert(sizeof(TStorage) == sizeof(TResult));
-                return MemoryMarshal.Cast<TStorage, TResult>(Values).ToArray();
+                TStorage[] storage = Values;
+                TResult[] result = new TResult[storage.Length];
+                Unsafe.BitCast<ReadOnlySpan<TStorage>, ReadOnlySpan<TResult>>(storage).CopyTo(result);
+                return result;
             }
         }
     }
