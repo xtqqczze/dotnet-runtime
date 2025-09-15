@@ -1446,6 +1446,13 @@ namespace System
             this.CopyTo(array, iindex);
         }
 
+        internal static T[] Create<T>(ReadOnlySpan<T> span)
+        {
+            T[] array = new T[(nint)span.Length];
+            Buffer.Memmove(ref MemoryMarshal.GetArrayDataReference(array), ref MemoryMarshal.GetReference(span), (nuint)span.Length);
+            return array;
+        }
+
         private static class EmptyArray<T>
         {
 #pragma warning disable CA1825, IDE0300 // this is the implementation of Array.Empty<T>()

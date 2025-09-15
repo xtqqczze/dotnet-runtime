@@ -408,10 +408,7 @@ namespace System
         {
             if (_length == 0)
                 return Array.Empty<T>();
-
-            var destination = new T[_length];
-            Buffer.Memmove(ref MemoryMarshal.GetArrayDataReference(destination), ref _reference, (uint)_length);
-            return destination;
+            return Array.Create(this);
         }
     }
 }

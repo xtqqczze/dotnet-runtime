@@ -433,15 +433,11 @@ namespace System
         /// allocates, so should generally be avoided, however it is sometimes
         /// necessary to bridge the gap with APIs written in terms of arrays.
         /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public T[] ToArray()
         {
             if (_length == 0)
                 return Array.Empty<T>();
-
-            var destination = new T[_length];
-            Buffer.Memmove(ref MemoryMarshal.GetArrayDataReference(destination), ref _reference, (uint)_length);
-            return destination;
+            return Array.Create(this);
         }
     }
 }
