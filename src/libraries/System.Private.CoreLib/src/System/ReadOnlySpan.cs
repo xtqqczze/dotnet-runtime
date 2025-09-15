@@ -412,8 +412,8 @@ namespace System
                 return [];
             }
 
-            var destination = new T[Length];
-            CopyTo(destination);
+            T[] destination = new T[Length];
+            Buffer.Memmove(ref MemoryMarshal.GetArrayDataReference(destination), ref _reference, (nuint)Length);
             return destination;
         }
     }
