@@ -44,9 +44,8 @@ namespace System
             if (!typeof(T).IsValueType && array.GetType() != typeof(T[]))
                 ThrowHelper.ThrowArrayTypeMismatchException();
 
+            (_index, _length) = (0, array.Length);
             _object = array;
-            _index = 0;
-            _length = array.Length;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -64,9 +63,8 @@ namespace System
             if ((uint)start > (uint)array.Length)
                 ThrowHelper.ThrowArgumentOutOfRangeException();
 
+            (_index, _length) = (start, array.Length - start);
             _object = array;
-            _index = start;
-            _length = array.Length - start;
         }
 
         /// <summary>
@@ -102,9 +100,8 @@ namespace System
                 ThrowHelper.ThrowArgumentOutOfRangeException();
 #endif
 
+            (_index, _length) = (start, length);
             _object = array;
-            _index = start;
-            _length = length;
         }
 
         /// <summary>
@@ -125,9 +122,8 @@ namespace System
             if (length < 0)
                 ThrowHelper.ThrowArgumentOutOfRangeException();
 
+            (_index, _length) = (0, length);
             _object = manager;
-            _index = 0;
-            _length = length;
         }
 
         /// <summary>
@@ -149,9 +145,8 @@ namespace System
             if (length < 0 || start < 0)
                 ThrowHelper.ThrowArgumentOutOfRangeException();
 
+            (_index, _length) = (start, length);
             _object = manager;
-            _index = start;
-            _length = length;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -165,9 +160,8 @@ namespace System
                 || (obj is T[])
                 || (obj is MemoryManager<T>));
 
+            (_index, _length) = (start, length);
             _object = obj;
-            _index = start;
-            _length = length;
         }
 
         /// <summary>
@@ -207,11 +201,14 @@ namespace System
         /// </summary>
         public override string ToString()
         {
+            (int selfIndex, int selfLength) = (_index, _length);
+
             if (typeof(T) == typeof(char))
             {
-                return (_object is string str) ? str.Substring(_index, _length) : Span.ToString();
+                return (_object is string str) ? str.Substring(selfIndex, selfLength) : Span.ToString();
             }
-            return $"System.Memory<{typeof(T).Name}>[{_length}]";
+
+            return $"System.Memory<{typeof(T).Name}>[{selfLength}]";
         }
 
         /// <summary>
@@ -224,13 +221,15 @@ namespace System
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Memory<T> Slice(int start)
         {
-            if ((uint)start > (uint)_length)
+            (int selfIndex, int selfLength) = (_index, _length);
+
+            if ((uint)start > (uint)selfLength)
             {
                 ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.start);
             }
 
             // It is expected for _index + start to be negative if the memory is already pre-pinned.
-            return new Memory<T>(_object, _index + start, _length - start);
+            return new Memory<T>(_object, selfIndex + start, selfLength - start);
         }
 
         /// <summary>
@@ -244,17 +243,19 @@ namespace System
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Memory<T> Slice(int start, int length)
         {
+            (int selfIndex, int selfLength) = (_index, _length);
+
 #if TARGET_64BIT
             // See comment in Span<T>.Slice for how this works.
-            if ((ulong)(uint)start + (ulong)(uint)length > (ulong)(uint)_length)
+            if ((ulong)(uint)start + (ulong)(uint)length > (ulong)(uint)selfLength)
                 ThrowHelper.ThrowArgumentOutOfRangeException();
 #else
-            if ((uint)start > (uint)_length || (uint)length > (uint)(_length - start))
+            if ((uint)start > (uint)selfLength || (uint)length > (uint)(selfLength - start))
                 ThrowHelper.ThrowArgumentOutOfRangeException();
 #endif
 
             // It is expected for _index + start to be negative if the memory is already pre-pinned.
-            return new Memory<T>(_object, _index + start, length);
+            return new Memory<T>(_object, selfIndex + start, length);
         }
 
         /// <summary>
@@ -272,22 +273,24 @@ namespace System
                 // in which case that's the dangerous operation performed by the dev, and we're just following
                 // suit here to make it work as best as possible.
 
-                ref T refToReturn = ref Unsafe.NullRef<T>();
-                int lengthOfUnderlyingSpan = 0;
+                ref T reference = ref Unsafe.NullRef<T>();
+                int length = 0;
 
                 // Copy this field into a local so that it can't change out from under us mid-operation.
 
-                object? tmpObject = _object;
-                if (tmpObject != null)
+                object? selfObject = _object;
+                if (selfObject != null)
                 {
-                    if (typeof(T) == typeof(char) && tmpObject.GetType() == typeof(string))
+                    int lengthOfUnderlyingSpan;
+
+                    if (typeof(T) == typeof(char) && selfObject.GetType() == typeof(string))
                     {
                         // Special-case string since it's the most common for ROM<char>.
 
-                        refToReturn = ref Unsafe.As<char, T>(ref ((string)tmpObject).GetRawStringData());
-                        lengthOfUnderlyingSpan = Unsafe.As<string>(tmpObject).Length;
+                        reference = ref Unsafe.As<char, T>(ref ((string)selfObject).GetRawStringData());
+                        lengthOfUnderlyingSpan = Unsafe.As<string>(selfObject).Length;
                     }
-                    else if (RuntimeHelpers.ObjectHasComponentSize(tmpObject))
+                    else if (RuntimeHelpers.ObjectHasComponentSize(selfObject))
                     {
                         // We know the object is not null, it's not a string, and it is variable-length. The only
                         // remaining option is for it to be a T[] (or a U[] which is blittable to T[], like int[]
@@ -298,11 +301,11 @@ namespace System
                         // It's always possible for somebody to use private reflection to bypass these checks, but
                         // preventing type safety violations due to misuse of reflection is out of scope of this logic.
 
-                        // 'tmpObject is T[]' below also handles things like int[] <-> uint[] being convertible
-                        Debug.Assert(tmpObject is T[]);
+                        // 'selfObject is T[]' below also handles things like int[] <-> uint[] being convertible
+                        Debug.Assert(selfObject is T[]);
 
-                        refToReturn = ref MemoryMarshal.GetArrayDataReference(Unsafe.As<T[]>(tmpObject));
-                        lengthOfUnderlyingSpan = Unsafe.As<T[]>(tmpObject).Length;
+                        reference = ref MemoryMarshal.GetArrayDataReference(Unsafe.As<T[]>(selfObject));
+                        lengthOfUnderlyingSpan = Unsafe.As<T[]>(selfObject).Length;
                     }
                     else
                     {
@@ -312,9 +315,9 @@ namespace System
                         // T are blittable (e.g., MemoryManager<int> to MemoryManager<uint>), since there exists no
                         // constructor or other public API which would allow such a conversion.
 
-                        Debug.Assert(tmpObject is MemoryManager<T>);
-                        Span<T> memoryManagerSpan = Unsafe.As<MemoryManager<T>>(tmpObject).GetSpan();
-                        refToReturn = ref MemoryMarshal.GetReference(memoryManagerSpan);
+                        Debug.Assert(selfObject is MemoryManager<T>);
+                        Span<T> memoryManagerSpan = Unsafe.As<MemoryManager<T>>(selfObject).GetSpan();
+                        reference = ref MemoryMarshal.GetReference(memoryManagerSpan);
                         lengthOfUnderlyingSpan = memoryManagerSpan.Length;
                     }
 
@@ -324,29 +327,25 @@ namespace System
                     // least to be in-bounds when compared with the original Memory<T> instance, so using the span won't
                     // AV the process.
 
-                    // We use 'nuint' because it gives us a free early zero-extension to 64 bits when running on a 64-bit platform.
-                    nuint desiredStartIndex = (uint)_index & (uint)ReadOnlyMemory<T>.RemoveFlagsBitMask;
+                    (int selfIndex, int selfLength) = (_index, _length);
 
-                    int desiredLength = _length;
+                    int desiredStartIndex = selfIndex & ReadOnlyMemory<T>.RemoveFlagsBitMask;
 
-#if TARGET_64BIT
-                    // See comment in Span<T>.Slice for how this works.
-                    if ((ulong)desiredStartIndex + (ulong)(uint)desiredLength > (ulong)(uint)lengthOfUnderlyingSpan)
+                    // Overflow cannot occur here because of the following invariants:
+                    // - desiredStartIndex >= 0; as the high order bit of _index has been reset by RemoveFlagsBitMask
+                    // - selfLength >= 0; as it is assigned from the _length field which is validated as non-negative by all public constructors
+                    // - lengthOfUnderlyingSpan >= 0; as it is assigned from the object's Length property which cannot be negative
+
+                    if (selfLength > lengthOfUnderlyingSpan - desiredStartIndex)
                     {
                         ThrowHelper.ThrowArgumentOutOfRangeException();
                     }
-#else
-                    if ((uint)desiredStartIndex > (uint)lengthOfUnderlyingSpan || (uint)desiredLength > (uint)lengthOfUnderlyingSpan - (uint)desiredStartIndex)
-                    {
-                        ThrowHelper.ThrowArgumentOutOfRangeException();
-                    }
-#endif
 
-                    refToReturn = ref Unsafe.Add(ref refToReturn, desiredStartIndex);
-                    lengthOfUnderlyingSpan = desiredLength;
+                    reference = ref Unsafe.Add(ref reference, desiredStartIndex);
+                    length = selfLength;
                 }
 
-                return new Span<T>(ref refToReturn, lengthOfUnderlyingSpan);
+                return new Span<T>(ref reference, length);
             }
         }
 
@@ -392,40 +391,40 @@ namespace System
             // is torn. This is ok since the caller is expecting to use raw pointers,
             // and we're not required to keep this as safe as the other Span-based APIs.
 
-            object? tmpObject = _object;
-            if (tmpObject != null)
+            Memory<T> self = this;
+            if (self._object != null)
             {
-                if (typeof(T) == typeof(char) && tmpObject is string s)
+                if (typeof(T) == typeof(char) && self._object is string s)
                 {
                     // Unsafe.AsPointer is safe since the handle pins it
-                    GCHandle handle = GCHandle.Alloc(tmpObject, GCHandleType.Pinned);
-                    ref char stringData = ref Unsafe.Add(ref s.GetRawStringData(), _index);
+                    GCHandle handle = GCHandle.Alloc(self._object, GCHandleType.Pinned);
+                    ref char stringData = ref Unsafe.Add(ref s.GetRawStringData(), self._index);
                     return new MemoryHandle(Unsafe.AsPointer(ref stringData), handle);
                 }
-                else if (RuntimeHelpers.ObjectHasComponentSize(tmpObject))
+                else if (RuntimeHelpers.ObjectHasComponentSize(self._object))
                 {
-                    // 'tmpObject is T[]' below also handles things like int[] <-> uint[] being convertible
-                    Debug.Assert(tmpObject is T[]);
+                    // 'self._object is T[]' below also handles things like int[] <-> uint[] being convertible
+                    Debug.Assert(self._object is T[]);
 
                     // Array is already pre-pinned
-                    if (_index < 0)
+                    if (self._index < 0)
                     {
                         // Unsafe.AsPointer is safe since it's pinned
-                        void* pointer = Unsafe.Add<T>(Unsafe.AsPointer(ref MemoryMarshal.GetArrayDataReference(Unsafe.As<T[]>(tmpObject))), _index & ReadOnlyMemory<T>.RemoveFlagsBitMask);
+                        void* pointer = Unsafe.Add<T>(Unsafe.AsPointer(ref MemoryMarshal.GetArrayDataReference(Unsafe.As<T[]>(self._object))), self._index & ReadOnlyMemory<T>.RemoveFlagsBitMask);
                         return new MemoryHandle(pointer);
                     }
                     else
                     {
                         // Unsafe.AsPointer is safe since the handle pins it
-                        GCHandle handle = GCHandle.Alloc(tmpObject, GCHandleType.Pinned);
-                        void* pointer = Unsafe.Add<T>(Unsafe.AsPointer(ref MemoryMarshal.GetArrayDataReference(Unsafe.As<T[]>(tmpObject))), _index);
+                        GCHandle handle = GCHandle.Alloc(self._object, GCHandleType.Pinned);
+                        void* pointer = Unsafe.Add<T>(Unsafe.AsPointer(ref MemoryMarshal.GetArrayDataReference(Unsafe.As<T[]>(self._object))), self._index);
                         return new MemoryHandle(pointer, handle);
                     }
                 }
                 else
                 {
-                    Debug.Assert(tmpObject is MemoryManager<T>);
-                    return Unsafe.As<MemoryManager<T>>(tmpObject).Pin(_index);
+                    Debug.Assert(self._object is MemoryManager<T>);
+                    return Unsafe.As<MemoryManager<T>>(self._object).Pin(self._index);
                 }
             }
 
@@ -466,10 +465,12 @@ namespace System
         /// </summary>
         public bool Equals(Memory<T> other)
         {
+            Memory<T> self = this;
+
             return
-                _object == other._object &&
-                _index == other._index &&
-                _length == other._length;
+                self._object == other._object &&
+                self._index == other._index &&
+                self._length == other._length;
         }
 
         /// <summary>
@@ -480,7 +481,8 @@ namespace System
         {
             // We use RuntimeHelpers.GetHashCode instead of Object.GetHashCode because the hash
             // code is based on object identity and referential equality, not deep equality (as common with string).
-            return (_object != null) ? HashCode.Combine(RuntimeHelpers.GetHashCode(_object), _index, _length) : 0;
+            object? selfObject = _object;
+            return (selfObject != null) ? HashCode.Combine(RuntimeHelpers.GetHashCode(selfObject), _index, _length) : 0;
         }
     }
 }
