@@ -341,7 +341,7 @@ namespace System
                         ThrowHelper.ThrowArgumentOutOfRangeException();
                     }
 
-                    reference = ref Unsafe.Add(ref reference, desiredStartIndex);
+                    reference = ref Unsafe.Add(ref reference, (nint)(uint)desiredStartIndex);
                     length = selfLength;
                 }
 
@@ -398,7 +398,7 @@ namespace System
                 {
                     // Unsafe.AsPointer is safe since the handle pins it
                     GCHandle handle = GCHandle.Alloc(self._object, GCHandleType.Pinned);
-                    ref char stringData = ref Unsafe.Add(ref s.GetRawStringData(), self._index);
+                    ref char stringData = ref Unsafe.Add(ref s.GetRawStringData(), (nint)(uint)self._index);
                     return new MemoryHandle(Unsafe.AsPointer(ref stringData), handle);
                 }
                 else if (RuntimeHelpers.ObjectHasComponentSize(self._object))
@@ -410,14 +410,14 @@ namespace System
                     if (self._index < 0)
                     {
                         // Unsafe.AsPointer is safe since it's pinned
-                        void* pointer = Unsafe.Add<T>(Unsafe.AsPointer(ref MemoryMarshal.GetArrayDataReference(Unsafe.As<T[]>(self._object))), self._index & ReadOnlyMemory<T>.RemoveFlagsBitMask);
+                        void* pointer = Unsafe.AsPointer(ref Unsafe.Add(ref MemoryMarshal.GetArrayDataReference(Unsafe.As<T[]>(self._object)), (nint)(uint)(self._index & ReadOnlyMemory<T>.RemoveFlagsBitMask)));
                         return new MemoryHandle(pointer);
                     }
                     else
                     {
                         // Unsafe.AsPointer is safe since the handle pins it
                         GCHandle handle = GCHandle.Alloc(self._object, GCHandleType.Pinned);
-                        void* pointer = Unsafe.Add<T>(Unsafe.AsPointer(ref MemoryMarshal.GetArrayDataReference(Unsafe.As<T[]>(self._object))), self._index);
+                        void* pointer = Unsafe.AsPointer(ref Unsafe.Add(ref MemoryMarshal.GetArrayDataReference(Unsafe.As<T[]>(self._object)), (nint)(uint)self._index));
                         return new MemoryHandle(pointer, handle);
                     }
                 }
