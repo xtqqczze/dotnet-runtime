@@ -193,9 +193,9 @@ namespace System.Linq
                 return Enumerable.SequenceEqual(immutableArray.array, itemsCol, comparer);
             }
 
-            return Enumerate(immutableArray, items, comparer);
+            return Enumerate(immutableArray, (IEnumerable<TBase>)items, comparer);
 
-            static bool Enumerate(ImmutableArray<TBase> immutableArray, IEnumerable<TDerived> items, IEqualityComparer<TBase>? comparer)
+            static bool Enumerate(ImmutableArray<TBase> immutableArray, IEnumerable<TBase> items, IEqualityComparer<TBase>? comparer)
             {
                 Requires.NotNull(items, nameof(items));
 
@@ -203,7 +203,7 @@ namespace System.Linq
 
                 int i = 0;
                 int n = immutableArray.Length;
-                foreach (TDerived item in items)
+                foreach (TBase item in items)
                 {
                     if (i == n)
                     {
