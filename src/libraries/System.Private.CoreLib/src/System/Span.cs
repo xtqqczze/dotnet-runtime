@@ -76,7 +76,7 @@ namespace System
             }
             if (!typeof(T).IsValueType && array.GetType() != typeof(T[]))
                 ThrowHelper.ThrowArrayTypeMismatchException();
-            if ((uint)start > (uint)array.Length || (uint)length > (uint)(array.Length - start))
+            if (start < 0 || length < 0 || length > array.Length - start)
                 ThrowHelper.ThrowArgumentOutOfRangeException();
 
             _reference = ref Unsafe.Add(ref MemoryMarshal.GetArrayDataReference(array), (nint)(uint)start /* force zero-extension */);
@@ -405,7 +405,7 @@ namespace System
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Span<T> Slice(int start, int length)
         {
-            if ((uint)start > (uint)_length || (uint)length > (uint)(_length - start))
+            if (start < 0 || length < 0 || length > _length - start)
                 ThrowHelper.ThrowArgumentOutOfRangeException();
 
             return new Span<T>(ref Unsafe.Add(ref _reference, (nint)(uint)start /* force zero-extension */), length);

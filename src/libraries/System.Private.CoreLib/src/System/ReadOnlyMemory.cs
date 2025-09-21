@@ -71,7 +71,7 @@ namespace System
                 this = default;
                 return; // returns default
             }
-            if ((uint)start > (uint)array.Length || (uint)length > (uint)(array.Length - start))
+            if (start < 0 || length < 0 || length > array.Length - start)
                 ThrowHelper.ThrowArgumentOutOfRangeException();
 
             _object = array;
@@ -167,7 +167,7 @@ namespace System
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public ReadOnlyMemory<T> Slice(int start, int length)
         {
-            if ((uint)start > (uint)_length || (uint)length > (uint)(_length - start))
+            if (start < 0 || length < 0 || length > _length - start)
                 ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.start);
 
             // It is expected for _index + start to be negative if the memory is already pre-pinned.
@@ -234,12 +234,11 @@ namespace System
                     // least to be in-bounds when compared with the original Memory<T> instance, so using the span won't
                     // AV the process.
 
-                    // We use 'nuint' because it gives us a free early zero-extension to 64 bits when running on a 64-bit platform.
-                    nuint desiredStartIndex = (uint)_index & (uint)RemoveFlagsBitMask;
+                    int desiredStartIndex = _index & RemoveFlagsBitMask;
 
                     int desiredLength = _length;
 
-                    if ((uint)desiredStartIndex > (uint)lengthOfUnderlyingSpan || (uint)desiredLength > (uint)lengthOfUnderlyingSpan - (uint)desiredStartIndex)
+                    if (desiredLength > lengthOfUnderlyingSpan - desiredStartIndex)
                     {
                         ThrowHelper.ThrowArgumentOutOfRangeException();
                     }

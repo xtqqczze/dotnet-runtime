@@ -111,7 +111,7 @@ namespace System.Collections.Generic
             int pos = _pos;
             Span<T> span = _span;
             // Use the same check as Span<T>.Slice so it can be folded
-            if ((uint)pos <= (uint)span.Length && (uint)length <= (uint)(span.Length - pos))
+            if (pos >= 0 && length >= 0 && length <= span.Length - pos)
             {
                 _pos = pos + length;
                 return span.Slice(pos, length);

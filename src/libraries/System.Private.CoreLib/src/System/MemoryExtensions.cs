@@ -198,7 +198,7 @@ namespace System
                 return default;
             }
 
-            if ((uint)start > (uint)text.Length || (uint)length > (uint)(text.Length - start))
+            if (start < 0 || length < 0 || length > text.Length - start)
                 ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.start);
 
             return new ReadOnlySpan<char>(ref Unsafe.Add(ref text.GetRawStringData(), (nint)(uint)start /* force zero-extension */), length);
@@ -274,7 +274,7 @@ namespace System
                 return default;
             }
 
-            if ((uint)start > (uint)text.Length || (uint)length > (uint)(text.Length - start))
+            if (start < 0 || length < 0 || length > text.Length - start)
                 ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument.start);
 
             return new ReadOnlyMemory<char>(text, start, length);

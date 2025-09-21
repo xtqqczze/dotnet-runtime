@@ -664,7 +664,7 @@ namespace System.Text
 
             // Try to fit the whole repeatCount in the current chunk
             // Use the same check as Span<T>.Slice so it can be folded
-            if ((uint)chunkLength <= (uint)chunkChars.Length && (uint)repeatCount <= (uint)(chunkChars.Length - chunkLength))
+            if (chunkLength >= 0 && repeatCount >= 0 && repeatCount <= chunkChars.Length - chunkLength)
             {
                 chunkChars.AsSpan(chunkLength, repeatCount).Fill(value);
                 m_ChunkLength += repeatCount;
