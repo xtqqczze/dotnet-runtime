@@ -368,7 +368,7 @@ namespace System
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal bool TryGetSpan(int startIndex, int count, out ReadOnlySpan<char> slice)
         {
-            if (startIndex < 0 || count < 0 || count > Length - startIndex)
+            if ((uint)startIndex > (uint)Length || (uint)count > (uint)(Length - startIndex))
             {
                 slice = default;
                 return false;

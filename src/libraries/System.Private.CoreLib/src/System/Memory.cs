@@ -93,7 +93,7 @@ namespace System
             }
             if (!typeof(T).IsValueType && array.GetType() != typeof(T[]))
                 ThrowHelper.ThrowArrayTypeMismatchException();
-            if (start < 0 || length < 0 || length > array.Length - start)
+            if ((uint)start > (uint)array.Length || (uint)length > (uint)(array.Length - start))
                 ThrowHelper.ThrowArgumentOutOfRangeException();
 
             _object = array;
@@ -238,7 +238,7 @@ namespace System
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Memory<T> Slice(int start, int length)
         {
-            if (start < 0 || length < 0 || length > _length - start)
+            if ((uint)start > (uint)_length || (uint)length > (uint)(_length - start))
                 ThrowHelper.ThrowArgumentOutOfRangeException();
 
             // It is expected for _index + start to be negative if the memory is already pre-pinned.
