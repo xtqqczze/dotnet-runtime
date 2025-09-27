@@ -44,9 +44,10 @@ namespace System
             if (!typeof(T).IsValueType && array.GetType() != typeof(T[]))
                 ThrowHelper.ThrowArrayTypeMismatchException();
 
-            _object = array;
+            int length = array.Length;
             _index = 0;
-            _length = array.Length;
+            _length = length;
+            _object = array;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -64,9 +65,10 @@ namespace System
             if ((uint)start > (uint)array.Length)
                 ThrowHelper.ThrowArgumentOutOfRangeException();
 
-            _object = array;
+            int length = array.Length - start;
             _index = start;
-            _length = array.Length - start;
+            _length = length;
+            _object = array;
         }
 
         /// <summary>
@@ -102,9 +104,9 @@ namespace System
                 ThrowHelper.ThrowArgumentOutOfRangeException();
 #endif
 
-            _object = array;
             _index = start;
             _length = length;
+            _object = array;
         }
 
         /// <summary>

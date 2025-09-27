@@ -46,9 +46,10 @@ namespace System
             if (array == null)
                 ThrowHelper.ThrowArgumentNullException(ExceptionArgument.array);
 
-            _array = array;
+            int count = array.Length;
             _offset = 0;
-            _count = array.Length;
+            _count = count;
+            _array = array;
         }
 
         public ArraySegment(T[] array, int offset, int count)
@@ -59,9 +60,9 @@ namespace System
             if (array == null || (uint)offset > (uint)array.Length || (uint)count > (uint)(array.Length - offset))
                 ThrowHelper.ThrowArraySegmentCtorValidationFailedExceptions(array, offset, count);
 
-            _array = array;
             _offset = offset;
             _count = count;
+            _array = array;
         }
 
         public T[]? Array => _array;

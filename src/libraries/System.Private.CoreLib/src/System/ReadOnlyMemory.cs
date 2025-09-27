@@ -44,9 +44,10 @@ namespace System
                 return; // returns default
             }
 
-            _object = array;
+            int length = array.Length;
             _index = 0;
-            _length = array.Length;
+            _length = length;
+            _object = array;
         }
 
         /// <summary>
@@ -80,9 +81,9 @@ namespace System
                 ThrowHelper.ThrowArgumentOutOfRangeException();
 #endif
 
-            _object = array;
             _index = start;
             _length = length;
+            _object = array;
         }
 
         /// <summary>Creates a new memory over the existing object, start, and length. No validation is performed.</summary>
@@ -100,9 +101,9 @@ namespace System
                 || (obj is T[])
                 || (obj is MemoryManager<T>));
 
-            _object = obj;
             _index = start;
             _length = length;
+            _object = obj;
         }
 
         /// <summary>
