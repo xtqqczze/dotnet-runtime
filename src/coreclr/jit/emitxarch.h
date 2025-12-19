@@ -180,7 +180,6 @@ bool AreUpperBitsSignExtended(regNumber reg, emitAttr size);
 
 bool IsRedundantCmp(emitAttr size, regNumber reg1, regNumber reg2);
 
-bool AreFlagsSetToZeroCmp(regNumber reg, emitAttr opSize, GenCondition cond);
 bool AreFlagsSetForSignJumpOpt(regNumber reg, emitAttr opSize, GenCondition cond);
 
 insOpts GetEmbRoundingMode(uint8_t mode) const;
@@ -768,9 +767,7 @@ bool        IsThreeOperandAVXInstruction(instruction ins) const;
 static bool HasRegularWideForm(instruction ins);
 static bool HasRegularWideImmediateForm(instruction ins);
 static bool DoesWriteZeroFlag(instruction ins);
-static bool DoesWriteParityFlag(instruction ins);
 static bool DoesWriteSignFlag(instruction ins);
-static bool DoesResetOverflowAndCarryFlags(instruction ins);
 bool        IsFlagsAlwaysModified(instrDesc* id);
 static bool IsRexW0Instruction(instruction ins);
 static bool IsRexW1Instruction(instruction ins);

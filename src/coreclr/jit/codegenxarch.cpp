@@ -6879,12 +6879,6 @@ bool CodeGen::genCanAvoidEmittingCompareAgainstZero(GenTree* tree, var_types opT
         cond = *mutableCond;
     }
 
-    if (GetEmitter()->AreFlagsSetToZeroCmp(op1->GetRegNum(), emitTypeSize(opType), cond))
-    {
-        JITDUMP("Not emitting compare due to flags being already set\n");
-        return true;
-    }
-
     if ((mutableCond != nullptr) &&
         GetEmitter()->AreFlagsSetForSignJumpOpt(op1->GetRegNum(), emitTypeSize(opType), cond))
     {

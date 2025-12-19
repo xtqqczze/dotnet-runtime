@@ -726,22 +726,6 @@ bool emitter::DoesWriteZeroFlag(instruction ins)
 }
 
 //------------------------------------------------------------------------
-// DoesWriteParityFlag: check if the instruction write the
-//     PF flag.
-//
-// Arguments:
-//    ins - instruction to test
-//
-// Return Value:
-//    true if instruction writes the PF flag, false otherwise.
-//
-bool emitter::DoesWriteParityFlag(instruction ins)
-{
-    insFlags flags = CodeGenInterface::instInfo[ins];
-    return (flags & Writes_PF) != 0;
-}
-
-//------------------------------------------------------------------------
 // DoesWriteSignFlag: check if the instruction writes the
 //     SF flag.
 //
@@ -755,22 +739,6 @@ bool emitter::DoesWriteSignFlag(instruction ins)
 {
     insFlags flags = CodeGenInterface::instInfo[ins];
     return (flags & Writes_SF) != 0;
-}
-
-//------------------------------------------------------------------------
-// DoesResetOverflowAndCarryFlags: check if the instruction resets the
-//     OF and CF flag to 0.
-//
-// Arguments:
-//    ins - instruction to test
-//
-// Return Value:
-//    true if instruction resets the OF and CF flag, false otherwise.
-//
-bool emitter::DoesResetOverflowAndCarryFlags(instruction ins)
-{
-    insFlags flags = CodeGenInterface::instInfo[ins];
-    return (flags & (Resets_OF | Resets_CF)) == (Resets_OF | Resets_CF);
 }
 
 //------------------------------------------------------------------------
@@ -1405,74 +1373,6 @@ bool emitter::IsRedundantCmp(emitAttr size, regNumber reg1, regNumber reg2)
     });
 
     return result;
-}
-
-//------------------------------------------------------------------------
-// AreFlagsSetToZeroCmp: Checks if the previous instruction set the SZ, and optionally OC, flags to
-//                       the same values as if there were a compare to 0
-//
-// Arguments:
-//    reg     - register of interest
-//    opSize  - size of register
-//    cond    - the condition being checked
-//
-// Return Value:
-//    true if the previous instruction set the flags for reg
-//    false if not, or if we can't safely determine
-//
-// Notes:
-//    Currently only looks back one instruction.
-bool emitter::AreFlagsSetToZeroCmp(regNumber reg, emitAttr opSize, GenCondition cond)
-{
-    assert(reg != REG_NA);
-
-    if (!emitComp->opts.OptimizationEnabled())
-    {
-        return false;
-    }
-
-    if (!emitCanPeepholeLastIns())
-    {
-        // Don't consider if not safe
-        return false;
-    }
-
-    instrDesc*  id      = emitLastIns;
-    instruction lastIns = id->idIns();
-
-    if (!id->idIsReg1Write() || (id->idReg1() != reg))
-    {
-        // Don't consider instructions which didn't write a register
-        return false;
-    }
-
-    if (id->idHasMemWrite() || id->idIsReg2Write())
-    {
-        // Don't consider instructions which also wrote a mem location or second register
-        return false;
-    }
-
-    assert(!id->idIsReg3Write());
-    assert(!id->idIsReg4Write());
-
-    // Certain instruction like and, or and xor modifies exactly same flags
-    // as "test" instruction.
-    // They reset OF and CF to 0 and modifies SF, ZF and PF.
-    if (DoesResetOverflowAndCarryFlags(lastIns) && DoesWriteSignFlag(lastIns) && DoesWriteZeroFlag(lastIns) &&
-        DoesWriteParityFlag(lastIns))
-    {
-        return id->idOpSize() == opSize;
-    }
-
-    if ((cond.GetCode() == GenCondition::NE) || (cond.GetCode() == GenCondition::EQ))
-    {
-        if (DoesWriteZeroFlag(lastIns) && IsFlagsAlwaysModified(id))
-        {
-            return id->idOpSize() == opSize;
-        }
-    }
-
-    return false;
 }
 
 //------------------------------------------------------------------------
