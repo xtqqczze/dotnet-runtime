@@ -1526,6 +1526,7 @@ namespace System
         // Throws:
         //  ArgumentException
         //
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int FromHex(char digit)
         {
             int result = HexConverter.FromChar(digit);
