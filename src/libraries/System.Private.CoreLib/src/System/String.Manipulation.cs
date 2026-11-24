@@ -2508,7 +2508,11 @@ namespace System
                 ThrowSubstringArgumentOutOfRange(startIndex, length, Length);
             }
 
-            return InternalSubString(startIndex, length);
+            string result = FastAllocateString(length);
+
+            Buffer.Memmove(ref result._firstChar, ref Unsafe.Add(ref _firstChar, startIndex), (uint)length);
+
+            return result;
         }
 
         public string Substring(int startIndex, int length)
@@ -2529,7 +2533,11 @@ namespace System
                 return this;
             }
 
-            return InternalSubString(startIndex, length);
+            string result = FastAllocateString(length);
+
+            Buffer.Memmove(ref result._firstChar, ref Unsafe.Add(ref _firstChar, startIndex), (uint)length);
+
+            return result;
         }
 
         [DoesNotReturn]
@@ -2545,21 +2553,6 @@ namespace System
             ArgumentOutOfRangeException.ThrowIfNegative(length);
 
             throw new ArgumentOutOfRangeException(nameof(length), SR.ArgumentOutOfRange_IndexLength);
-        }
-
-        private string InternalSubString(int startIndex, int length)
-        {
-            Debug.Assert(startIndex >= 0 && startIndex <= this.Length, "StartIndex is out of range!");
-            Debug.Assert(length >= 0 && startIndex <= this.Length - length, "length is out of range!");
-
-            string result = FastAllocateString(length);
-
-            Buffer.Memmove(
-                elementCount: (uint)length,
-                destination: ref result._firstChar,
-                source: ref Unsafe.Add(ref _firstChar, (nint)(uint)startIndex /* force zero-extension */));
-
-            return result;
         }
 
         // Creates a copy of this string in lower case.  The culture is set by culture.
@@ -2985,10 +2978,22 @@ namespace System
         private string CreateTrimmedString(int start, int end)
         {
             int len = end - start + 1;
-            return
-                len == Length ? this :
-                len == 0 ? Empty :
-                InternalSubString(start, len);
+
+            if (len == Length)
+            {
+                return this;
+            }
+
+            if (len == 0)
+            {
+                return Empty;
+            }
+
+            string result = FastAllocateString(len);
+
+            Buffer.Memmove(ref result._firstChar, ref Unsafe.Add(ref _firstChar, (nint)(uint)start /* force zero-extension */), (uint)len);
+
+            return result;
         }
     }
 }
