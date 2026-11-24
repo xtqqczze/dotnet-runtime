@@ -2490,6 +2490,7 @@ namespace System
 
         // Returns a substring of this string.
         //
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public string Substring(int startIndex)
         {
             if (startIndex == 0)
@@ -2511,6 +2512,7 @@ namespace System
             return InternalSubString(startIndex, length);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public string Substring(int startIndex, int length)
         {
             if ((uint)startIndex > (uint)Length || (uint)length > (uint)(Length - startIndex))
@@ -2982,6 +2984,7 @@ namespace System
             return CreateTrimmedString(start, end);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private string CreateTrimmedString(int start, int end)
         {
             int len = end - start + 1;
